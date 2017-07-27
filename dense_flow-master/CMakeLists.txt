@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( denseFlow )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( denseImage denseImage.cpp )
+target_link_libraries( denseImage ${OpenCV_LIBS} )
