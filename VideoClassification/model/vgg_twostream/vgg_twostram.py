@@ -1,18 +1,26 @@
+import types
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
 from VideoClassification.model.vgg_twostream.VGG16 import vgg16
+from VideoClassification.utils.toolkits import try_to_load_state_dict
+import VideoClassification.Config.Config as Config
 
 
 class VGG_Temporal_Net(nn.Module):
 
-    def __init__(self):
+    def __init__(self,pretrained=False):
 
         super(VGG_Temporal_Net,self).__init__()
 
         self.vgg16 = vgg16(in_channels=20,num_classes=101)
+
+        if pretrained==True:
+            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
+            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
 
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
@@ -49,11 +57,15 @@ class VGG_Temporal_Net(nn.Module):
 
 class VGG_Spatial_Net(nn.Module):
 
-    def __init__(self):
+    def __init__(self,pretrained=False):
 
         super(VGG_Spatial_Net,self).__init__()
 
         self.vgg16 = vgg16(in_channels=3,num_classes=101)
+
+        if pretrained==True:
+            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
+            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
 
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
@@ -81,23 +93,25 @@ class VGG_Spatial_Net(nn.Module):
         x = self.train_classifier(x)
         return x
 
-    def inferene(self,x):
+    def inference(self,x):
         x = self.vgg16(x)
         x = self.eval_classifier_1(x)
         self.midfeatures = x
         x = self.eval_classifier_2(x)
         return x
 
+ # try to merge spatial and temporal
+
 if __name__=='__main__':
 
     pass
 
-    x = torch.randn(2,3,224,224)
-    x = Variable(x).cuda()
-    module = VGG_Spatial_Net().cuda()
-    y = module.inferene(x)
-    z = module.midfeatures
-
     vgg16 = vgg16(in_channels=20,num_classes=101).cuda()
     pt = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
     vgg16.load_state_dict(torch.load(pt))
+
+    x = torch.randn(2,3,224,224)
+    x = Variable(x).cuda()
+    module = VGG_Spatial_Net().cuda()
+    y = module.inference(x)
+    z = module.midfeatures
