@@ -110,8 +110,8 @@ if __name__=='__main__':
     pt = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
     vgg16.load_state_dict(torch.load(pt))
 
-    x = torch.randn(2,3,224,224)
+    x = torch.randn(2,20,224,224)
     x = Variable(x).cuda()
-    module = VGG_Spatial_Net().cuda()
+    module = VGG_Temporal_Net(pretrained=True).cuda()
     y = module.inference(x)
     z = module.midfeatures

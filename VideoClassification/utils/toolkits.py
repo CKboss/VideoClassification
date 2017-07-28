@@ -22,9 +22,13 @@ def try_to_load_state_dict(self, state_dict):
         if isinstance(param, Parameter):
             # backwards compatibility for serialized parameters
             param = param.data
-        own_state[name].copy_(param)
+
+        try:
+            own_state[name].copy_(param)
+        except RuntimeError:
+            print('runtime error durring copy {}'.format(name))
 
     missing = set(own_state.keys()) - set(state_dict.keys())
     if len(missing) > 0:
-        print('missing keys in state_dict: "{}"'.format(missing))
+        print('try to load missing keys in state_dict: "{}"'.format(missing))
 
