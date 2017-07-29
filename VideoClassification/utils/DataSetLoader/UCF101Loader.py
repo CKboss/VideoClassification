@@ -16,7 +16,7 @@ def GaoImageID():
         with open('./data/classInd.txt','r') as f:
             for line in f.readlines():
                 value,key = line.split(' ')
-                image_id[key[:-1]] = int(value)
+                image_id[key[:-1]] = int(value)-1
 
 
 class UCF101_Spatial(Dataset):

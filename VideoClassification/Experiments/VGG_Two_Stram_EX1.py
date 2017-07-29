@@ -10,6 +10,7 @@ try:
     from cv2 import cv2
 except:
     import cv2
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -25,14 +26,17 @@ from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,Gen
 
 logger = Logger(Config.ExWorkSpace+'/LOG/EX1')
 savepath = Config.ExWorkSpace+'/EX1/'
-epochs = 20
-loops = 1000
-learningrate = 0.01
-attenuation = 0.5
 batchsize = 8
 
 ############
 
+def getACC(predit,target):
+    '''
+    predit = np.array(predit)
+    target = np.array(target)
+    '''
+    n = predit.shape[0]
+    return np.sum(np.equal(np.argmax(np.exp(predit)/(np.sum(np.exp(predit))),1),target))/n
 
 
 def GenVariables(dsl,**kwargs):
@@ -82,6 +86,11 @@ def GenVariables_Spatial(dsl,**kwargs):
 
 def VGG_Temporal_Net_Run():
 
+    epochs = 20
+    loops = 10000
+    learningrate = 0.01
+    attenuation = 0.5
+
     train_dsl = train_UCF0101_Temporal()
     test_dsl = test_UCF0101_Temporal()
 
@@ -101,22 +110,35 @@ def VGG_Temporal_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
+            logger.scalar_summary('Temporal/train_loss',loss.data[0],cnt)
             loss.backward()
             optim.step()
 
 
             if cnt%50 == 0:
 
-                imgs,labels = GenVariables(train_dsl)
+                imgs,labels = GenVariables(test_dsl)
+                pred = model(imgs)
                 loss = lossfunc(pred,labels)
-                logger.scalar_summary('loss',loss.data[0],cnt)
+
+                logger.scalar_summary('Temporal/test_loss',loss.data[0],cnt)
+
+                #acc
+                acc = getACC(pred.cpu().data.numpy(),labels.cpu().data.numpy())
+                logger.scalar_summary('Temporal/test_acc',acc,cnt)
 
 
-        savefile = savepath + 'VGG_Tempora_{:02d}.pt'.format(epoch%100)
+        savefile = savepath + 'VGG_Tempora_EX1_{:02d}.pt'.format(epoch%100)
+        print('save model to {}'.format(savefile))
         torch.save(module,savefile)
 
 
 def VGG_Spatial_Net_Run():
+
+    epochs = 20
+    loops = 10000
+    learningrate = 0.01
+    attenuation = 0.5
 
     train_dsl = train_UCF0101_Spatial()
     test_dsl = test_UCF0101_Spatial()
@@ -138,18 +160,24 @@ def VGG_Spatial_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
+            logger.scalar_summary('Spatial/train_loss',loss.data[0],cnt)
             loss.backward()
             optim.step()
 
 
             if cnt%50 == 0:
 
-                imgs,labels = GenVariables(train_dsl)
+                imgs,labels = GenVariables(test_dsl)
+                pred = model(imgs)
                 loss = lossfunc(pred,labels)
-                logger.scalar_summary('loss',loss.data[0],cnt)
+                logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
+
+                acc = getACC(pred.cpu().data.numpy(),labels.cpu().data.numpy())
+                logger.scalar_summary('Spatial/test_acc',acc,cnt)
 
 
-        savefile = savepath + 'VGG_Tempora_{:02d}.pt'.format(epoch%100)
+        savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%100)
+        print('save model to {}'.format(savefile))
         torch.save(module,savefile)
 
 
