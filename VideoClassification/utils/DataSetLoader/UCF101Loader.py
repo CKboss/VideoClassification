@@ -1,6 +1,7 @@
 import os
 import random
 from torch.utils.data import Dataset,DataLoader
+import numpy as np
 
 import VideoClassification.Config.Config as Config
 
@@ -94,6 +95,9 @@ class UCF101_Temporal(Dataset):
 
         return filepathlist,classid
 
+class Resize(object):
+    pass
+
 
 def test_UCF0101_Spatial():
     return UCF101_Spatial('./data/testlist01.txt')
@@ -109,13 +113,25 @@ def train_UCF0101_Temporal():
 
 if __name__=='__main__':
 
+    # TODO
+    # DataLoad 连续取多张图片有问题 !!!!
+
 
     testloader = [ DataLoader(test_UCF0101_Spatial(),drop_last=True),
                    DataLoader(test_UCF0101_Temporal(),drop_last=True),
                    DataLoader(train_UCF0101_Spatial(),drop_last=True),
                    DataLoader(train_UCF0101_Temporal(),drop_last=True)]
 
-    testloader = DataLoader(test_UCF0101_Temporal(),drop_last=True)
+    testloader = DataLoader(test_UCF0101_Temporal(),drop_last=True,batch_size=3)
+
+    tt = test_UCF0101_Temporal()
+
+    import random
+    random.choices(tt,k=3)
+
+
+    for i,item in enumerate(testloader):
+        print(item)
 
     imgpaths = []
     for tl in testloader :

@@ -8,8 +8,10 @@ resnet152_pretrainfile = '/home/lab/BackUp/pretrained/resnet152-b121ed2d.pth'
 
 ExWorkSpace = '/home/lab/ExperimentsWorkspace/VC/'
 
+Code_root = ''
 UCF101_images_root = './'
 
 
 
 ''' server '''
+

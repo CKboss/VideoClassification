@@ -28,10 +28,7 @@ def fitToPytorch(img):
     :return:
     '''
     if len(img.shape) == 2:
-        ret = np.zeros(((3,)+img.shape))
-        for i in range(3):
-            ret[i] = img
-        return ret
+        return img
     elif len(img.shape) == 3:
         ret = np.transpose(img,[2,0,1])
         return ret
@@ -143,15 +140,27 @@ def FlipUD(img,flag):
     return img
 
 @jit
-def CutImg(img,kind):
-    if kind==4:
-        return img
-    cr = [(1,1,224,224),
-          (30,30,250,250),
-          (1,30,224,250),
-          (30,1,250,224)]
+def CutImg(img,kind,kindw):
+
+    w = [254,223,191,167]
+    w = w[kindw]
+
+    cr = [ [0,w,0,w],
+           [255-w,255,0,w],
+           [0,w,339-w,339],
+           [255-w,255,339-w,339],
+           [w//2,225-w//2,w//2,339-w//2]
+           ]
+
     cr = cr[kind]
-    img = img[cr[0]:cr[2],cr[1]:cr[3]]
+
+    if kind == 4:
+        if cr[0] >= cr[1]:
+            cr[0],cr[1] = cr[1],cr[0]
+        if cr[2] >= cr[3]:
+            cr[2],cr[3] = cr[2],cr[3]
+
+    img = img[cr[0]:cr[1],cr[2]:cr[3]]
     return img
 
 @jit
@@ -191,21 +200,24 @@ def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
 
     return dst
 
-def ImgAugPipes(imgs):
+def ImgAugPipes(imgs,isTemporal=False):
 
     # Gen Paramer
     p1 = random.choice([True,False])
-    p2 = random.choice([True,False])
+    # p2 = random.choice([True,False])
     p3 = random.choice([0,1,2,3,4])
+    p4 = random.choice([0,1,2,3])
 
-    ParamerList = [ (ReSize,{'outshape':(256,256)}),
+    ParamerList = [(ReSize,{'outshape':(256,340)}),
                    (FlipLR,{'flag':p1}),
-                   (FlipUD,{'flag':p2}),
-                   (CutImg,{'kind':p3}),
+                   # (FlipUD,{'flag':p2}),
+                   (CutImg,{'kind':p3,'kindw':p4}),
                    (ReSize,{'outshape':(224,224)}),
                    (fitToPytorch,None)]
+    if isTemporal==True:
+        ParamerList = [(ToBlackAndWhite,None),
+                       (imadjust,None)] + ParamerList
 
-    print(ParamerList)
     # Run in PipeLine
 
     funcs = [ x[0] for x in ParamerList ]
@@ -222,10 +234,30 @@ def ImgAugPipes(imgs):
 
     return np.array(rets)
 
+def GenTensors(imgpathss,**kwargs) :
+    import torch
+    imgss = []
+    for imgpaths in imgpathss:
+
+        imgs = []
+
+        for path in imgpaths:
+            imgs.append(cv2.imread(path))
+
+        imgs = np.array(imgs)
+        imgs = ImgAugPipes(imgs,**kwargs)
+
+        imgss.append(imgs)
+
+    imgss = np.array(imgss)
+    return torch.from_numpy(imgss)
+
 if __name__=='__main__':
 
     imgpaths = ['/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/flow_x_0063.jpg',
     '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/flow_x_0064.jpg',]
+
+    imgpaths = imgpaths+imgpaths
 
     imgs = []
     for path in imgpaths:
@@ -235,9 +267,13 @@ if __name__=='__main__':
     id(imgs)
     type(imgs)
 
-    for i in range(10):
+
+    for i in range(1000):
         aimgs = ImgAugPipes(imgs)
         print(aimgs.shape)
+
+    imgpathss = [imgpaths,imgpaths,imgpaths]
+    timgs = GenTensors(imgpathss,isTemporal=True)
 
 
 
