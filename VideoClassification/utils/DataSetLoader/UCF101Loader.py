@@ -5,7 +5,7 @@ from torch.utils.data import Dataset,DataLoader
 import VideoClassification.Config.Config as Config
 
 
-Config.UCF101_images_root = '/datacenter/1/UCF_Data/'
+# Config.UCF101_images_root = '/datacenter/1/UCF_Data/'
 
 image_num = dict()
 image_id = dict()
@@ -38,7 +38,7 @@ class UCF101_Spatial(Dataset):
         filepath = Config.UCF101_images_root + filepath + '/image/'
 
         ####
-        # filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
+        filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
 
         n = image_num.get(filepath,-1)
         if n==-1:
@@ -71,8 +71,8 @@ class UCF101_Temporal(Dataset):
         filepath_y = Config.UCF101_images_root + filepath + '/flow_x/'
 
         ####
-        # filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
-        # filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
+        filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
+        filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
 
         n = image_num.get(filepath,-1)
         if n==-1:
@@ -115,10 +115,33 @@ if __name__=='__main__':
                    DataLoader(train_UCF0101_Spatial(),drop_last=True),
                    DataLoader(train_UCF0101_Temporal(),drop_last=True)]
 
+    testloader = DataLoader(test_UCF0101_Temporal(),drop_last=True)
+
+    imgpaths = []
     for tl in testloader :
-        for i,item in enumerate(tl):
-            if i % 100 == 0:
-                print(i)
+        for i,items in enumerate(tl):
+            if len(items) > 0:
+                for item in items:
+                    print(item[0])
+                    imgpaths.append(item[0])
+                break
+        break
+
+    from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,Imread_lru
+    import matplotlib.pyplot as plt
+
+
+    imgs = []
+    for imgpath in imgpaths :
+        imgs.append(Imread_lru(imgpath))
+
+    for img in imgs :
+        print(img.shape)
+
+    aimgs = ImgAugPipes(imgs)
+
+    print(aimgs.shape)
+
 
     # len(ds)
     # ds.items[-1]

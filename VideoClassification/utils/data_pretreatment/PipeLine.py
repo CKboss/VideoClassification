@@ -1,6 +1,8 @@
 from numba import jit
 import numpy as np
 from functools import lru_cache
+import random
+import bisect
 
 try:
     from cv2 import cv2
@@ -111,7 +113,7 @@ def RandGaussBlur(img):
 
 def PipeLineRun(img,funcs,params):
 
-    #assert len(funcs) == len(params), 'func and params showld have same length'
+    # assert len(funcs) == len(params), 'func and params showld have same length'
     Img = img.copy()
     for i,func in enumerate(funcs):
         if params[i] is None:
@@ -127,6 +129,115 @@ def DefaultPipe(img):
     :return: img
     '''
     return img
+
+@jit
+def FlipLR(img,flag):
+    if flag==True:
+        return cv2.flip(img,0)
+    return img
+
+@jit
+def FlipUD(img,flag):
+    if flag==True:
+        return cv2.flip(img,1)
+    return img
+
+@jit
+def CutImg(img,kind):
+    if kind==4:
+        return img
+    cr = [(1,1,224,224),
+          (30,30,250,250),
+          (1,30,224,250),
+          (30,1,250,224)]
+    cr = cr[kind]
+    img = img[cr[0]:cr[2],cr[1]:cr[3]]
+    return img
+
+@jit
+def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
+    # src : input one-layer image (numpy array)
+    # tol : tolerance, from 0 to 100.
+    # vin  : src image bounds
+    # vout : dst image bounds
+    # return : output img
+
+    assert len(src.shape) == 2 ,'Input image should be 2-dims'
+
+    tol = max(0, min(100, tol))
+
+    if tol > 0:
+        # Compute in and out limits
+        # Histogram
+        hist = np.histogram(src,bins=list(range(256)),range=(0,255))[0]
+
+        # Cumulative histogram
+        cum = np.cumsum(hist)
+
+        # Compute bounds
+        total = src.shape[0] * src.shape[1]
+        low_bound = total * tol / 100
+        upp_bound = total * (100 - tol) / 100
+        vin[0] = bisect.bisect_left(cum, low_bound)
+        vin[1] = bisect.bisect_left(cum, upp_bound)
+
+    # Stretching
+    scale = (vout[1] - vout[0]) / (vin[1] - vin[0])
+    vs = src-vin[0]
+    vs[src<vin[0]]=0
+    vd = vs*scale+0.5 + vout[0]
+    vd[vd>vout[1]] = vout[1]
+    dst = vd
+
+    return dst
+
+def ImgAugPipes(imgs):
+
+    # Gen Paramer
+    p1 = random.choice([True,False])
+    p2 = random.choice([True,False])
+    p3 = random.choice([0,1,2,3,4])
+
+    ParamerList = [ (ReSize,{'outshape':(256,256)}),
+                   (FlipLR,{'flag':p1}),
+                   (FlipUD,{'flag':p2}),
+                   (CutImg,{'kind':p3}),
+                   (ReSize,{'outshape':(224,224)}),
+                   (fitToPytorch,None)]
+
+    print(ParamerList)
+    # Run in PipeLine
+
+    funcs = [ x[0] for x in ParamerList ]
+    params = [ x[1] for x in ParamerList ]
+
+    # print(funcs)
+    # print(params)
+
+    rets = []
+
+    for img in imgs:
+        Img = PipeLineRun(img,funcs,params)
+        rets.append(Img)
+
+    return np.array(rets)
+
+if __name__=='__main__':
+
+    imgpaths = ['/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/flow_x_0063.jpg',
+    '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/flow_x_0064.jpg',]
+
+    imgs = []
+    for path in imgpaths:
+        imgs.append(cv2.imread(path))
+    imgs = np.array(imgs)
+
+    id(imgs)
+    type(imgs)
+
+    for i in range(10):
+        aimgs = ImgAugPipes(imgs)
+        print(aimgs.shape)
 
 
 
