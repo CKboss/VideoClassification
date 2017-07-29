@@ -13,7 +13,7 @@ image_id = dict()
 
 def GaoImageID():
     if len(image_id) == 0:
-        with open('./data/classInd.txt','r') as f:
+        with open(Config.Code_root+'/data/classInd.txt','r') as f:
             for line in f.readlines():
                 value,key = line.split(' ')
                 image_id[key[:-1]] = int(value)-1
@@ -39,7 +39,7 @@ class UCF101_Spatial(Dataset):
         filepath = Config.UCF101_images_root + filepath + '/image/'
 
         ####
-        filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
+        # filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
 
         n = image_num.get(filepath,-1)
         if n==-1:
@@ -72,8 +72,8 @@ class UCF101_Temporal(Dataset):
         filepath_y = Config.UCF101_images_root + filepath + '/flow_x/'
 
         ####
-        filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
-        filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
+        # filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
+        # filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
 
         n = image_num.get(filepath,-1)
         if n==-1:
@@ -100,16 +100,16 @@ class Resize(object):
 
 
 def test_UCF0101_Spatial():
-    return UCF101_Spatial('./data/testlist01.txt')
+    return UCF101_Spatial(Config.Code_root+'/data/testlist01.txt')
 
 def train_UCF0101_Spatial():
-    return UCF101_Spatial('./data/trainlist01.txt')
+    return UCF101_Spatial(Config.Code_root+'/data/trainlist01.txt')
 
 def test_UCF0101_Temporal():
-    return UCF101_Temporal('./data/testlist01.txt')
+    return UCF101_Temporal(Config.Code_root+'/data/testlist01.txt')
 
 def train_UCF0101_Temporal():
-    return UCF101_Temporal('./data/trainlist01.txt')
+    return UCF101_Temporal(Config.Code_root+'/data/trainlist01.txt')
 
 if __name__=='__main__':
 

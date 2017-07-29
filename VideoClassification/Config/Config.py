@@ -8,7 +8,7 @@ resnet152_pretrainfile = '/home/lab/BackUp/pretrained/resnet152-b121ed2d.pth'
 
 ExWorkSpace = '/home/lab/ExperimentsWorkspace/VC/'
 
-Code_root = ''
+Code_root = '/home/lab/Desktop/Development/VideoClassification/'
 UCF101_images_root = './'
 
 

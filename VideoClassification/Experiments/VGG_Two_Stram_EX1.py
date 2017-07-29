@@ -88,8 +88,8 @@ def VGG_Temporal_Net_Run():
 
     epochs = 20
     loops = 10000
-    learningrate = 0.01
-    attenuation = 0.5
+    learningrate = 0.005
+    attenuation = 0.1
 
     train_dsl = train_UCF0101_Temporal()
     test_dsl = test_UCF0101_Temporal()
@@ -114,6 +114,7 @@ def VGG_Temporal_Net_Run():
             loss.backward()
             optim.step()
 
+            print('epoch: {} cnt: {}'.format(epoch,cnt))
 
             if cnt%50 == 0:
 
@@ -127,6 +128,8 @@ def VGG_Temporal_Net_Run():
                 acc = getACC(pred.cpu().data.numpy(),labels.cpu().data.numpy())
                 logger.scalar_summary('Temporal/test_acc',acc,cnt)
 
+        learningrate = learningrate*attenuation
+        optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
 
         savefile = savepath + 'VGG_Tempora_EX1_{:02d}.pt'.format(epoch%100)
         print('save model to {}'.format(savefile))
@@ -135,10 +138,10 @@ def VGG_Temporal_Net_Run():
 
 def VGG_Spatial_Net_Run():
 
-    epochs = 20
-    loops = 10000
-    learningrate = 0.01
-    attenuation = 0.5
+    epochs = 10
+    loops = 4000
+    learningrate = 0.001
+    attenuation = 0.1
 
     train_dsl = train_UCF0101_Spatial()
     test_dsl = test_UCF0101_Spatial()
@@ -164,6 +167,7 @@ def VGG_Spatial_Net_Run():
             loss.backward()
             optim.step()
 
+            print('epoch: {} cnt: {}'.format(epoch,cnt))
 
             if cnt%50 == 0:
 
@@ -176,10 +180,13 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/test_acc',acc,cnt)
 
 
+        learningrate = learningrate*attenuation
+        optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
+
         savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%100)
         print('save model to {}'.format(savefile))
         torch.save(module,savefile)
 
 
 if __name__=='__main__':
-    cv2.imread()
+    VGG_Temporal_Net_Run()
