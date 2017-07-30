@@ -19,14 +19,15 @@ UCF101_images_root = './'
 
 ''' server '''
 
+Server_Root_Path = '/datacenter/1/UCF_Data/'
 
-vgg16pretrainfile = '/datacenter/1/UCF_Data/pretrainedmodel/vgg16-397923af.pth'
+vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
 
-ExWorkSpace = '/datacenter/1/UCF_Data/EX/'
+ExWorkSpace = Server_Root_Path+'EX/'
 
-LOGSpace = '/datacenter/1/UCF_Data/LOG/'
+LOGSpace = Server_Root_Path+'LOG/'
 
-Code_root = '/datacenter/1/UCF_Data/Code/VideoClassification/'
+Code_root = Server_Root_Path+'Code/VideoClassification/'
 
-UCF101_images_root = '/datacenter/1/UCF_Data/UCF101_images/'
+UCF101_images_root = Server_Root_Path+'UCF101_images/'
 

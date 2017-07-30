@@ -20,6 +20,15 @@ from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_T
 from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,GenTensors
 from VideoClassification.utils.toolkits import accuracy
 
+'''
+VGG TWO Stram 测试:
+1. Spatial 输入单张图片, SGD 10个 epoch 每个迭代4000次 
+初始学习率0.001, 每个epoch学习率*0.1
+
+2. Temporal 输入连续多20张光流, SGD 20个 epoch 每个迭代10000次
+初始学习率0.005 每个epoch学习率*0.1
+'''
+
 
 ############ Config
 
@@ -139,7 +148,7 @@ def VGG_Temporal_Net_Run():
 
         savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%100)
         print('Temporal save model to {}'.format(savefile))
-        torch.save(module,savefile)
+        torch.save(model,savefile)
 
 
 def VGG_Spatial_Net_Run():
@@ -203,7 +212,7 @@ def VGG_Spatial_Net_Run():
 
         savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%100)
         print('Spatial save model to {}'.format(savefile))
-        torch.save(module,savefile)
+        torch.save(model,savefile)
 
 
 def DoubleRun():
