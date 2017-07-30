@@ -14,7 +14,6 @@ LOGSpace = ExWorkSpace
 Code_root = '/home/lab/Desktop/Development/VideoClassification/'
 UCF101_images_root = './'
 
-
 '''
 
 ''' server '''

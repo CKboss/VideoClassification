@@ -98,7 +98,6 @@ class UCF101_Temporal(Dataset):
 class Resize(object):
     pass
 
-
 def test_UCF0101_Spatial():
     return UCF101_Spatial(Config.Code_root+'/data/testlist01.txt')
 

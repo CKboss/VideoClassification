@@ -25,8 +25,8 @@ VGG TWO Stram 测试:
 1. Spatial 输入单张图片, SGD 10个 epoch 每个迭代4000次 
 初始学习率0.001, 每个epoch学习率*0.1
 
-2. Temporal 输入连续多20张光流, SGD 20个 epoch 每个迭代10000次
-初始学习率0.005 每个epoch学习率*0.1
+2. Temporal 输入连续多20张光流, SGD 20个 epoch 每个迭代5000次
+初始学习率0.05 每个epoch学习率*0.5
 '''
 
 
@@ -92,16 +92,16 @@ def GenVariables_Spatial(dsl,**kwargs):
 def VGG_Temporal_Net_Run():
 
     epochs = 20
-    loops = 10000
-    learningrate = 0.005
-    attenuation = 0.1
+    loops = 5000
+    learningrate = 0.05
+    attenuation = 0.5
 
     train_dsl = train_UCF0101_Temporal()
     test_dsl = test_UCF0101_Temporal()
 
     model = VGG_Temporal_Net(pretrained=True).cuda()
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -144,12 +144,12 @@ def VGG_Temporal_Net_Run():
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
                 logger.scalar_summary('Temporal/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('Temporal/train_acc@5',acc[5],cnt)
-                logger.scalar_summary('Temporal/train_acc@10',acc[10],cnt)
+                logger.scalar_summary('Temporal/train_acc@5',acc[1],cnt)
+                logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
 
 
         learningrate = learningrate*attenuation
-        optim = torch.optim.SGD(model.parameters(),lr=learningrate)
+        optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
         savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%100)
         print('Temporal save model to {}'.format(savefile))

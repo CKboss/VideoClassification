@@ -16,7 +16,7 @@ import imgaug as ia
 各个部分通过img连接
 """
 
-@lru_cache(maxsize=4096)
+@lru_cache(maxsize=8096)
 def Imread_lru(imgfilepath):
     return cv2.imread(imgfilepath)
 
@@ -113,10 +113,15 @@ def PipeLineRun(img,funcs,params):
     # assert len(funcs) == len(params), 'func and params showld have same length'
     Img = img.copy()
     for i,func in enumerate(funcs):
-        if params[i] is None:
-            Img = func(Img)
-        else :
-            Img = func(Img,**params[i])
+        try:
+            if params[i] is None:
+                Img = func(Img)
+            else :
+                Img = func(Img,**params[i])
+        except Exception as e:
+            print(e)
+            print('in PipeLineRun func: ',func,' params: ',**params[i])
+
     return Img
 
 def DefaultPipe(img):
@@ -142,7 +147,7 @@ def FlipUD(img,flag):
 @jit
 def CutImg(img,kind,kindw):
 
-    w = [254,223,191,167]
+    w = [250,220,190,160]
     w = w[kindw]
 
     cr = [ [0,w,0,w],
