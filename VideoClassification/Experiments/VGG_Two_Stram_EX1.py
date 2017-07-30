@@ -34,6 +34,11 @@ VGG TWO Stram 测试:
 
 logger = Logger(Config.LOGSpace+'/EX1')
 savepath = Config.ExWorkSpace+'/EX1/'
+
+import os.path
+if os.path.isdir(savepath)==False:
+    os.mkdir(savepath)
+
 batchsize = 86
 
 ############
