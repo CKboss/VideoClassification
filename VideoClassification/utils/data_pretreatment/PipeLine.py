@@ -170,6 +170,7 @@ def CutImg(img,kind,kindw):
 
 @jit
 def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
+    # TODO 太慢了,可能有bug
     # src : input one-layer image (numpy array)
     # tol : tolerance, from 0 to 100.
     # vin  : src image bounds
@@ -221,7 +222,7 @@ def ImgAugPipes(imgs,isTemporal=False):
                    (fitToPytorch,None)]
     if isTemporal==True:
         ParamerList = [(ToBlackAndWhite,None),
-                       (imadjust,None)] + ParamerList
+                       ] + ParamerList
 
     # Run in PipeLine
 

@@ -17,8 +17,8 @@ import VideoClassification.Config.Config as Config
 from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_Net,VGG_Spatial_Net
 from VideoClassification.utils.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal,train_UCF0101_Spatial,test_UCF0101_Spatial
-from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,GenTensors
 from VideoClassification.utils.toolkits import accuracy
+from VideoClassification.utils.DataSetLoader.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
 
 '''
 VGG TWO Stram 测试:
@@ -44,51 +44,6 @@ batchsize = 86
 ############
 
 
-def GenVariables(dsl,**kwargs):
-
-    # TODO add requires_grad params
-
-    items = random.choices(dsl,k=batchsize)
-
-    imgpathss = []
-    labels = []
-
-    for item in items:
-        imgpathss.append(item[0])
-        labels.append(item[1])
-
-    imgs = GenTensors(imgpathss,isTemporal=True)
-
-    imgs = Variable(imgs,**kwargs).float().cuda()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long().cuda()
-
-    return imgs,labels
-
-def GenVariables_Spatial(dsl,**kwargs):
-
-    # TODO add requires_grad params
-
-    items = random.choices(dsl,k=batchsize)
-
-    imgpaths = []
-    labels = []
-
-    for item in items:
-        imgpaths.append(item[0])
-        labels.append(item[1])
-
-    imgs = []
-
-    for path in imgpaths:
-        imgs.append(cv2.imread(path))
-
-    imgs = np.array(ImgAugPipes(imgs))
-    imgs = Variable(torch.from_numpy(imgs),**kwargs).float().cuda()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long().cuda()
-
-    return imgs,labels
-
-
 def VGG_Temporal_Net_Run():
 
     epochs = 20
@@ -96,12 +51,12 @@ def VGG_Temporal_Net_Run():
     learningrate = 0.05
     attenuation = 0.5
 
-    train_dsl = train_UCF0101_Temporal()
-    test_dsl = test_UCF0101_Temporal()
-
     model = VGG_Temporal_Net(pretrained=True).cuda()
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
+
+    pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -110,7 +65,7 @@ def VGG_Temporal_Net_Run():
 
             cnt+=1
 
-            imgs,labels = GenVariables(train_dsl)
+            imgs,labels = pq_train.Get()
 
             model.zero_grad()
             pred =  model(imgs)
@@ -126,7 +81,7 @@ def VGG_Temporal_Net_Run():
 
             if cnt%50 == 0:
 
-                imgs,labels = GenVariables(test_dsl)
+                imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
@@ -139,7 +94,7 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/test_acc@10',acc[2],cnt)
 
 
-                imgs,labels = GenVariables(train_dsl)
+                imgs,labels = pq_train.Get()
                 pred = model.inference(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
@@ -163,14 +118,14 @@ def VGG_Spatial_Net_Run():
     learningrate = 0.001
     attenuation = 0.1
 
-    train_dsl = train_UCF0101_Spatial()
-    test_dsl = test_UCF0101_Spatial()
-
     model = VGG_Spatial_Net(pretrained=True).cuda()
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
     cnt = 0
+
+    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
 
     for epoch in range(epochs) :
 
@@ -178,7 +133,7 @@ def VGG_Spatial_Net_Run():
 
             cnt+=1
 
-            imgs,labels = GenVariables_Spatial(train_dsl)
+            imgs,labels = pq_train.Get()
 
             model.zero_grad()
             pred =  model(imgs)
@@ -193,8 +148,9 @@ def VGG_Spatial_Net_Run():
 
             if cnt%50 == 0:
 
-                imgs,labels = GenVariables_Spatial(test_dsl)
+                imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
+
                 loss = lossfunc(pred,labels)
                 logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
 
@@ -203,7 +159,7 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/test_acc@5',acc[1],cnt)
                 logger.scalar_summary('Spatial/test_acc@10',acc[2],cnt)
 
-                imgs,labels = GenVariables_Spatial(train_dsl)
+                imgs,labels = pq_train.Get()
                 pred = model.inference(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
