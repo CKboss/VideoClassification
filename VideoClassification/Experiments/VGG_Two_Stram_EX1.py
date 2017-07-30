@@ -3,8 +3,6 @@ from multiprocessing import Pool
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader,Dataset
 from torch.autograd import Variable
 
 try:
@@ -12,7 +10,6 @@ try:
 except:
     import cv2
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -28,7 +25,7 @@ from VideoClassification.utils.toolkits import accuracy
 
 logger = Logger(Config.LOGSpace+'/EX1')
 savepath = Config.ExWorkSpace+'/EX1/'
-batchsize = 64
+batchsize = 86
 
 ############
 
@@ -90,7 +87,7 @@ def VGG_Temporal_Net_Run():
 
     model = VGG_Temporal_Net(pretrained=True).cuda()
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -104,20 +101,19 @@ def VGG_Temporal_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
-            acc = accuracy(pred,labels,topk=(1,5,10))
+
             logger.scalar_summary('Temporal/train_loss',loss.data[0],cnt)
-            logger.scalar_summary('Temporal/train_acc@1',acc[0],cnt)
-            logger.scalar_summary('Temporal/train_acc@5',acc[5],cnt)
-            logger.scalar_summary('Temporal/train_acc@10',acc[10],cnt)
+
             loss.backward()
             optim.step()
+
 
             print('Temporal epoch: {} cnt: {}'.format(epoch,cnt))
 
             if cnt%50 == 0:
 
                 imgs,labels = GenVariables(test_dsl)
-                pred = model(imgs)
+                pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
                 logger.scalar_summary('Temporal/test_loss',loss.data[0],cnt)
@@ -129,8 +125,17 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/test_acc@10',acc[2],cnt)
 
 
+                imgs,labels = GenVariables(train_dsl)
+                pred = model.inference(imgs)
+
+                acc = accuracy(pred,labels,topk=(1,5,10))
+                logger.scalar_summary('Temporal/train_acc@1',acc[0],cnt)
+                logger.scalar_summary('Temporal/train_acc@5',acc[5],cnt)
+                logger.scalar_summary('Temporal/train_acc@10',acc[10],cnt)
+
+
         learningrate = learningrate*attenuation
-        optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
+        optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
         savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%100)
         print('Temporal save model to {}'.format(savefile))
@@ -149,7 +154,7 @@ def VGG_Spatial_Net_Run():
 
     model = VGG_Spatial_Net(pretrained=True).cuda()
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
     cnt = 0
 
@@ -164,11 +169,9 @@ def VGG_Spatial_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
-            acc = accuracy(pred,labels,topk=(1,5,10))
+
             logger.scalar_summary('Spatial/train_loss',loss.data[0],cnt)
-            logger.scalar_summary('Spatial/train_acc@1',acc[0],cnt)
-            logger.scalar_summary('Spatial/train_acc@5',acc[1],cnt)
-            logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
+
             loss.backward()
             optim.step()
 
@@ -177,7 +180,7 @@ def VGG_Spatial_Net_Run():
             if cnt%50 == 0:
 
                 imgs,labels = GenVariables_Spatial(test_dsl)
-                pred = model(imgs)
+                pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
                 logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
 
@@ -186,9 +189,17 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/test_acc@5',acc[1],cnt)
                 logger.scalar_summary('Spatial/test_acc@10',acc[2],cnt)
 
+                imgs,labels = GenVariables_Spatial(train_dsl)
+                pred = model.inference(imgs)
+
+                acc = accuracy(pred,labels,topk=(1,5,10))
+                logger.scalar_summary('Spatial/train_acc@1',acc[0],cnt)
+                logger.scalar_summary('Spatial/train_acc@5',acc[1],cnt)
+                logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
+
 
         learningrate = learningrate*attenuation
-        optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
+        optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
         savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%100)
         print('Spatial save model to {}'.format(savefile))

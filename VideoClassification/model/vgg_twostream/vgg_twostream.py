@@ -33,6 +33,8 @@ class VGG_Temporal_Net(nn.Module):
             nn.Linear(4096, 101),
         )
 
+        self.train_classifier = nn.DataParallel(self.train_classifier)
+
         self.eval_classifier_1 = nn.Sequential (
             nn.Linear(512*7*7,4096),
             nn.ReLU(True),
@@ -78,6 +80,8 @@ class VGG_Spatial_Net(nn.Module):
             nn.Dropout(0.9),
             nn.Linear(4096, 101),
         )
+
+        self.train_classifier = nn.DataParallel(self.train_classifier)
 
         self.eval_classifier_1 = nn.Sequential (
             nn.Linear(512*7*7,4096),
