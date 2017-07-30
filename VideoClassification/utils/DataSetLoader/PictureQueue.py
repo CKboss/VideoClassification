@@ -31,8 +31,8 @@ def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
 
     imgs = GenTensors(imgpathss,isTemporal=True)
 
-    imgs = Variable(imgs,**kwargs).float().cuda()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long().cuda()
+    imgs = Variable(imgs,**kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
 
     return imgs,labels
 
@@ -55,8 +55,8 @@ def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
         imgs.append(cv2.imread(path))
 
     imgs = np.array(ImgAugPipes(imgs))
-    imgs = Variable(torch.from_numpy(imgs),**kwargs).float().cuda()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long().cuda()
+    imgs = Variable(torch.from_numpy(imgs),**kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
 
     return imgs,labels
 
@@ -79,7 +79,8 @@ class PictureQueue(object):
             self.q.put(self.Gen(self.dsl,self.batchsize))
 
     def Get(self):
-        return self.q.get()
+        imgs,labels = self.q.get()
+        return imgs.cuda(),labels.cuda()
 
 if __name__=='__main__':
 
