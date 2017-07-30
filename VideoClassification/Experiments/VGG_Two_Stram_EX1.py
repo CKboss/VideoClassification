@@ -71,7 +71,7 @@ def GenVariables_Spatial(dsl,**kwargs):
         imgs.append(cv2.imread(path))
 
     imgs = np.array(ImgAugPipes(imgs))
-    imgs = Variable(imgs,**kwargs).float().cuda()
+    imgs = Variable(torch.from_numpy(imgs),**kwargs).float().cuda()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long().cuda()
 
     return imgs,labels
@@ -169,7 +169,7 @@ def VGG_Spatial_Net_Run():
 
             if cnt%50 == 0:
 
-                imgs,labels = GenVariables(test_dsl)
+                imgs,labels = GenVariables_Spatial(test_dsl)
                 pred = model(imgs)
                 loss = lossfunc(pred,labels)
                 logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
