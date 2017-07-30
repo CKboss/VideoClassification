@@ -48,7 +48,7 @@ def VGG_Temporal_Net_Run():
 
     epochs = 20
     loops = 5000
-    learningrate = 0.05
+    learningrate = 0.1
     attenuation = 0.5
 
     model = VGG_Temporal_Net(pretrained=True).cuda()
