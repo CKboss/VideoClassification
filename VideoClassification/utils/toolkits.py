@@ -1,4 +1,19 @@
+import numpy as np
+from numba import jit
+
 from torch.nn.parameter import Parameter
+
+@jit
+def Accuracy(outputs: np.ndarray,targets: np.ndarray) -> float:
+    '''
+    :param outputs: 输出的logic值 np.array
+    :param targets: 正确的标签
+    :return: acc 正确比率
+    '''
+    n = len(targets)
+    predicts = np.argmax(np.exp(outputs)/np.sum(np.exp(outputs)),axis=1)
+    acc = np.sum(np.fabs(targets-predicts)<1e-6)/n*100
+    return acc
 
 
 def try_to_load_state_dict(self, state_dict):

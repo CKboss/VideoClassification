@@ -20,23 +20,16 @@ from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_N
 from VideoClassification.utils.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal,train_UCF0101_Spatial,test_UCF0101_Spatial
 from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,GenTensors
+from VideoClassification.utils.toolkits import Accuracy
 
 
 ############ Config
 
-logger = Logger(Config.ExWorkSpace+'/LOG/EX1')
+logger = Logger(Config.LOGSpace+'/EX1')
 savepath = Config.ExWorkSpace+'/EX1/'
 batchsize = 8
 
 ############
-
-def getACC(predit,target):
-    '''
-    predit = np.array(predit)
-    target = np.array(target)
-    '''
-    n = predit.shape[0]
-    return np.sum(np.equal(np.argmax(np.exp(predit)/(np.sum(np.exp(predit))),1),target))/n
 
 
 def GenVariables(dsl,**kwargs):
@@ -110,7 +103,9 @@ def VGG_Temporal_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
+            acc = Accuracy(pred.cpu().data.numpy(),labels.cpu().data.numpy())
             logger.scalar_summary('Temporal/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('Temporal/train_acc',acc,cnt)
             loss.backward()
             optim.step()
 
@@ -125,8 +120,9 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/test_loss',loss.data[0],cnt)
 
                 #acc
-                acc = getACC(pred.cpu().data.numpy(),labels.cpu().data.numpy())
+                acc = Accuracy(pred.cpu().data.numpy(),labels.cpu().data.numpy())
                 logger.scalar_summary('Temporal/test_acc',acc,cnt)
+
 
         learningrate = learningrate*attenuation
         optim = torch.optim.Adadelta(model.parameters(),lr=learningrate)
@@ -163,7 +159,9 @@ def VGG_Spatial_Net_Run():
             model.zero_grad()
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
+            acc = Accuracy(pred.cpu().data.numpy(),labels.cpu().data.numpy())
             logger.scalar_summary('Spatial/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('Spatial/train_acc',acc,cnt)
             loss.backward()
             optim.step()
 
@@ -176,7 +174,7 @@ def VGG_Spatial_Net_Run():
                 loss = lossfunc(pred,labels)
                 logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
 
-                acc = getACC(pred.cpu().data.numpy(),labels.cpu().data.numpy())
+                acc = Accuracy(pred.cpu().data.numpy(),labels.cpu().data.numpy())
                 logger.scalar_summary('Spatial/test_acc',acc,cnt)
 
 

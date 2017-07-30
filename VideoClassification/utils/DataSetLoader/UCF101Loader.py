@@ -68,8 +68,8 @@ class UCF101_Temporal(Dataset):
         classname = filepath.split('/')[0]
         classid = image_id[classname]
 
-        filepath_x = Config.UCF101_images_root + filepath + '/flow_y/'
-        filepath_y = Config.UCF101_images_root + filepath + '/flow_x/'
+        filepath_x = Config.UCF101_images_root + filepath + '/flow_x/'
+        filepath_y = Config.UCF101_images_root + filepath + '/flow_y/'
 
         ####
         # filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
