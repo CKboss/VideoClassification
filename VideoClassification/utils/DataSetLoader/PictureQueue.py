@@ -75,7 +75,8 @@ class PictureQueue(object):
             self.ts[i].start()
 
     def pr(self):
-        self.q.put(self.Gen(self.dsl,self.batchsize))
+        while True:
+            self.q.put(self.Gen(self.dsl,self.batchsize))
 
     def Get(self):
         return self.q.get()
