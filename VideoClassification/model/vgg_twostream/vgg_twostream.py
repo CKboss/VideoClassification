@@ -17,6 +17,7 @@ class VGG_Temporal_Net(nn.Module):
         super(VGG_Temporal_Net,self).__init__()
 
         self.vgg16 = vgg16(in_channels=20,num_classes=101)
+        self.vgg16 = nn.DataParallel(self.vgg16)
 
         if pretrained==True:
             self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
@@ -62,6 +63,7 @@ class VGG_Spatial_Net(nn.Module):
         super(VGG_Spatial_Net,self).__init__()
 
         self.vgg16 = vgg16(in_channels=3,num_classes=101)
+        self.vgg16 = nn.DataParallel(self.vgg16)
 
         if pretrained==True:
             self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
