@@ -32,8 +32,8 @@ VGG TWO Stram 测试:
 
 ############ Config
 
-logger = Logger(Config.LOGSpace+'/EX2')
-savepath = Config.ExWorkSpace+'/EX2/'
+logger = Logger(Config.LOGSpace+Config.EX_ID)
+savepath = Config.ExWorkSpace+Config.EX_ID+'/'
 
 import os.path
 if os.path.isdir(savepath)==False:
@@ -103,7 +103,7 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
 
             if cnt%1000 == 0:
-                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%100)
+                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%20)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
@@ -122,7 +122,7 @@ def VGG_Spatial_Net_Run():
 
     model = VGG_Spatial_Net(pretrained=False).cuda()
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
     cnt = 0
 
@@ -169,13 +169,16 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
 
+            if cnt%1000 == 0:
+                savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%20)
+                print('Spatial save model to {}'.format(savefile))
+                torch.save(model,savefile)
 
-        learningrate = learningrate*attenuation
-        optim = torch.optim.SGD(model.parameters(),lr=learningrate)
 
-        savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%100)
-        print('Spatial save model to {}'.format(savefile))
-        torch.save(model,savefile)
+        if epoch in [5,10,15]:
+            learningrate = learningrate*attenuation
+            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
+
 
 
 def DoubleRun():
