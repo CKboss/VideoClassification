@@ -78,7 +78,7 @@ def VGG_Temporal_Net_Run():
             optim.step()
 
 
-            print('Temporal epoch: {} cnt: {}'.format(epoch,cnt))
+            print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
             if cnt%50 == 0:
 
@@ -147,7 +147,7 @@ def VGG_Spatial_Net_Run():
             loss.backward()
             optim.step()
 
-            print('Spatial epoch: {} cnt: {}'.format(epoch,cnt))
+            print('Spatial epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
             if cnt%50 == 0:
 
