@@ -25,22 +25,42 @@ class C3D(nn.Module):
         self.fc1 = nn.Linear(512*9,4096)
         self.fc2 = nn.Linear(4096,101)
 
+        self.Flow = nn.Sequential (
+            self.conv1,
+            self.mxpool1,
+            self.conv2,
+            self.mxpool2,
+            self.conv3,
+            self.conv4,
+            self.mxpool3,
+            self.conv5,
+            self.conv6,
+            self.mxpool4,
+            self.conv7,
+            self.conv8,
+            self.mxpool5,
+        )
+
+        self.Flow = nn.DataParallel(self.Flow)
+
 
     def forward(self,x):
 
-        x = self.conv1(x)
-        x = self.mxpool1(x)
-        x = self.conv2(x)
-        x = self.mxpool2(x)
-        x = self.conv3(x)
-        x = self.conv4(x)
-        x = self.mxpool3(x)
-        x = self.conv5(x)
-        x = self.conv6(x)
-        x = self.mxpool4(x)
-        x = self.conv7(x)
-        x = self.conv8(x)
-        x = self.mxpool5(x)
+        # x = self.conv1(x)
+        # x = self.mxpool1(x)
+        # x = self.conv2(x)
+        # x = self.mxpool2(x)
+        # x = self.conv3(x)
+        # x = self.conv4(x)
+        # x = self.mxpool3(x)
+        # x = self.conv5(x)
+        # x = self.conv6(x)
+        # x = self.mxpool4(x)
+        # x = self.conv7(x)
+        # x = self.conv8(x)
+        # x = self.mxpool5(x)
+
+        x = self.Flow(x)
 
         x = x.view(-1,512*9)
 
