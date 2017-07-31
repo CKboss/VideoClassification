@@ -176,7 +176,7 @@ def VGG_Spatial_Net_Run():
                 torch.save(model,savefile)
 
 
-        if epoch in [0,2,10]:
+        if epoch in [10,15,20]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
