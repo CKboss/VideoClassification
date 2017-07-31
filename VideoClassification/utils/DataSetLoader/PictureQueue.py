@@ -82,7 +82,7 @@ def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
 
 class PictureQueue(object):
 
-    def __init__(self,dsl,Gen,batchsize=8,worker=10,mxsize=128):
+    def __init__(self,dsl,Gen,batchsize=8,worker=10,mxsize=32):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
