@@ -116,6 +116,7 @@ def C3D_Net_Run():
                 print('C3D save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
+
         if epoch in [20,40,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.Adam(model.parameters(),lr=learningrate)
