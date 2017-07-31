@@ -3,6 +3,7 @@ import math
 
 import torch
 import torch.nn as nn
+from torch.nn import init
 import torch.nn.functional as F
 from torch.autograd import Variable
 
@@ -59,6 +60,8 @@ class VGG_Temporal_Net(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+            elif isinstance(m,nn.Linear):
+                init.xavier_uniform(m.weight.data)
 
     def forward(self,x):
         x = self.vgg16(x)
@@ -74,7 +77,7 @@ class VGG_Temporal_Net(nn.Module):
 
 class VGG_Spatial_Net(nn.Module):
 
-    def __init__(self,pretrained=False,dropout1=0.95,dropout2=0.9):
+    def __init__(self,pretrained=False,dropout1=0.2,dropout2=0.1):
 
         super(VGG_Spatial_Net,self).__init__()
 
@@ -118,6 +121,8 @@ class VGG_Spatial_Net(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+            elif isinstance(m,nn.Linear):
+                init.xavier_uniform(m.weight.data)
 
     def forward(self,x):
         x = self.vgg16(x)

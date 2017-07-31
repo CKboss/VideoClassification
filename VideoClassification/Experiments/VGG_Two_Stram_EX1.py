@@ -120,7 +120,7 @@ def VGG_Spatial_Net_Run():
     learningrate = 0.1
     attenuation = 0.1
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.5,dropout2=0.5).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
@@ -175,7 +175,7 @@ def VGG_Spatial_Net_Run():
                 torch.save(model,savefile)
 
 
-        if epoch in [2,5,10]:
+        if epoch in [1,3,10]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
