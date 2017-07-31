@@ -33,4 +33,4 @@ UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
 EX_ID = '/EX6'
 
-LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/EX5/VGG_Spatial_EX1_05.pt'
+LOAD_SAVED_MODE_PATH = None
