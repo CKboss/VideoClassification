@@ -46,12 +46,12 @@ batchsize = 86
 
 def VGG_Temporal_Net_Run():
 
-    epochs = 20
-    loops = 5000
+    epochs = 30
+    loops = 1000
     learningrate = 0.1
     attenuation = 0.1
 
-    model = VGG_Temporal_Net(pretrained=False).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.5,dropout2=0.5).cuda()
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
@@ -107,7 +107,7 @@ def VGG_Temporal_Net_Run():
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
-        if epoch in [5,10,15]:
+        if epoch in [2,5,10]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
@@ -115,12 +115,12 @@ def VGG_Temporal_Net_Run():
 
 def VGG_Spatial_Net_Run():
 
-    epochs = 20
-    loops = 4000
+    epochs = 30
+    loops = 1000
     learningrate = 0.1
     attenuation = 0.1
 
-    model = VGG_Spatial_Net(pretrained=False).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.5,dropout2=0.5).cuda()
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 
@@ -175,7 +175,7 @@ def VGG_Spatial_Net_Run():
                 torch.save(model,savefile)
 
 
-        if epoch in [5,10,15]:
+        if epoch in [2,5,10]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
 

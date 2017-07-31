@@ -13,7 +13,7 @@ import VideoClassification.Config.Config as Config
 
 class VGG_Temporal_Net(nn.Module):
 
-    def __init__(self,pretrained=False):
+    def __init__(self,pretrained=False,dropout1=0.9,dropout2=0.8):
 
         super(VGG_Temporal_Net,self).__init__()
 
@@ -24,10 +24,10 @@ class VGG_Temporal_Net(nn.Module):
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
             nn.ReLU(True),
-            nn.Dropout(0.9),
+            nn.Dropout(dropout1),
             nn.Linear(4096, 4096),
             nn.ReLU(True),
-            nn.Dropout(0.8),
+            nn.Dropout(dropout2),
             nn.Linear(4096, 101),
         )
 
@@ -74,7 +74,7 @@ class VGG_Temporal_Net(nn.Module):
 
 class VGG_Spatial_Net(nn.Module):
 
-    def __init__(self,pretrained=False):
+    def __init__(self,pretrained=False,dropout1=0.95,dropout2=0.9):
 
         super(VGG_Spatial_Net,self).__init__()
 
@@ -84,10 +84,10 @@ class VGG_Spatial_Net(nn.Module):
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
             nn.ReLU(True),
-            nn.Dropout(0.95),
+            nn.Dropout(dropout1),
             nn.Linear(4096, 4096),
             nn.ReLU(True),
-            nn.Dropout(0.9),
+            nn.Dropout(dropout2),
             nn.Linear(4096, 101),
         )
 
