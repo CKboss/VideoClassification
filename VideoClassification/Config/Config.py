@@ -33,4 +33,4 @@ UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
 EX_ID = '/EX6'
 
-LOAD_SAVED_MODE_PATH = None
+LOAD_SAVED_MODE_PATH = None 
