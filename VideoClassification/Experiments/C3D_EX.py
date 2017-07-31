@@ -41,7 +41,7 @@ def C3D_Net_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.01
+    learningrate = 0.1
     attenuation = 0.5
 
     model = C3D().cuda()
@@ -65,33 +65,33 @@ def C3D_Net_Run():
 
             cnt+=1
 
-            print('--------------')
+            # print('--------------')
             imgs,labels = pq_train.Get()
-            print('imgs size: ',imgs.size())
+            # print('imgs size: ',imgs.size())
 
             model.zero_grad()
 
-            print('{} before pred'.format(cnt))
+            # print('{} before pred'.format(cnt))
             pred =  model(imgs)
-            print('{} before loss'.format(cnt))
+            # print('{} before loss'.format(cnt))
 
             loss = lossfunc(pred,labels)
 
             logger.scalar_summary('C3D/train_loss',loss.data[0],cnt)
 
-            print('{} before bp'.format(cnt))
+            # print('{} before bp'.format(cnt))
             loss.backward()
 
-            print('{} before optim'.format(cnt))
+            # print('{} before optim'.format(cnt))
             optim.step()
 
 
-            print('C3D epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
+            # print('C3D epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
             if cnt%20 == 0:
 
                 imgs,labels = pq_test.Get()
-                pred = model.inference(imgs)
+                pred = model(imgs)
                 loss = lossfunc(pred,labels)
 
                 logger.scalar_summary('C3D/test_loss',loss.data[0],cnt)
@@ -104,7 +104,7 @@ def C3D_Net_Run():
 
 
                 imgs,labels = pq_train.Get()
-                pred = model.inference(imgs)
+                pred = model(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
                 logger.scalar_summary('C3D/train_acc@1',acc[0],cnt)
