@@ -41,7 +41,7 @@ def C3D_Net_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.1
+    learningrate = 0.01
     attenuation = 0.5
 
     model = C3D().cuda()
@@ -53,7 +53,7 @@ def C3D_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+    optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
     pq_train = PictureQueue(dsl=train_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize)
@@ -118,7 +118,7 @@ def C3D_Net_Run():
 
         if epoch in [20,40,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+            optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
 
 if __name__=='__main__':
