@@ -47,7 +47,7 @@ batchsize = 86
 
 def VGG_Temporal_Net_Run():
 
-    epochs = 30
+    epochs = 80
     loops = 1000
     learningrate = 0.1
     attenuation = 0.5
@@ -110,12 +110,12 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
 
-            if cnt%1000 == 0:
+            if cnt%2000 == 0:
                 savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%20)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
-        if epoch in [5,10,15]:
+        if epoch in [20,50,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
@@ -123,7 +123,7 @@ def VGG_Temporal_Net_Run():
 
 def VGG_Spatial_Net_Run():
 
-    epochs = 30
+    epochs = 80
     loops = 1000
     learningrate = 0.1
     attenuation = 0.5
@@ -184,13 +184,13 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
 
-            if cnt%1000 == 0:
+            if cnt % 2000 == 0:
                 savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%20)
                 print('Spatial save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
 
-        if epoch in [10,15,20]:
+        if epoch in [20,50,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
