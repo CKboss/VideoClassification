@@ -32,8 +32,8 @@ VGG TWO Stram 测试:
 
 ############ Config
 
-logger = Logger(Config.LOGSpace+'/EX1')
-savepath = Config.ExWorkSpace+'/EX1/'
+logger = Logger(Config.LOGSpace+'/EX2')
+savepath = Config.ExWorkSpace+'/EX2/'
 
 import os.path
 if os.path.isdir(savepath)==False:
@@ -113,9 +113,9 @@ def VGG_Temporal_Net_Run():
 
 def VGG_Spatial_Net_Run():
 
-    epochs = 10
+    epochs = 20
     loops = 4000
-    learningrate = 0.001
+    learningrate = 0.1
     attenuation = 0.1
 
     model = VGG_Spatial_Net(pretrained=True).cuda()

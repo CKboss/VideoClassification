@@ -1,4 +1,5 @@
 import types
+import math
 
 import torch
 import torch.nn as nn
@@ -19,9 +20,6 @@ class VGG_Temporal_Net(nn.Module):
         self.vgg16 = vgg16(in_channels=20,num_classes=101)
         self.vgg16 = nn.DataParallel(self.vgg16)
 
-        if pretrained==True:
-            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
-            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
 
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
@@ -46,6 +44,22 @@ class VGG_Temporal_Net(nn.Module):
             nn.Linear(4096, 101),
         )
 
+        if pretrained==True:
+            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
+            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
+        elif pretrained==False:
+            self.init_weight()
+
+
+    def init_weight(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+
     def forward(self,x):
         x = self.vgg16(x)
         x = self.train_classifier(x)
@@ -66,10 +80,6 @@ class VGG_Spatial_Net(nn.Module):
 
         self.vgg16 = vgg16(in_channels=3,num_classes=101)
         self.vgg16 = nn.DataParallel(self.vgg16)
-
-        if pretrained==True:
-            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
-            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
 
         self.train_classifier = nn.Sequential(
             nn.Linear(512 * 7 * 7, 4096),
@@ -93,6 +103,21 @@ class VGG_Spatial_Net(nn.Module):
             nn.ReLU(True),
             nn.Linear(4096, 101),
         )
+
+        if pretrained==True:
+            self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
+            self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
+        elif pretrained==False:
+            self.init_weight()
+
+    def init_weight(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
 
     def forward(self,x):
         x = self.vgg16(x)
