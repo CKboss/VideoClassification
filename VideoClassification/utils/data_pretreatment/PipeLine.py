@@ -135,13 +135,13 @@ def DefaultPipe(img):
 @jit
 def FlipLR(img,flag):
     if flag==True:
-        return cv2.flip(img,0)
+        return cv2.flip(img,1)
     return img
 
 @jit
 def FlipUD(img,flag):
     if flag==True:
-        return cv2.flip(img,1)
+        return cv2.flip(img,0)
     return img
 
 @jit
@@ -206,19 +206,19 @@ def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
 
     return dst
 
-def ImgAugPipes(imgs,isTemporal=False):
+def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
 
     # Gen Paramer
     p1 = random.choice([True,False])
-    # p2 = random.choice([True,False])
+    p2 = random.choice([True,False])
     p3 = random.choice([0,1,2,3,4])
     p4 = random.choice([0,1,2,3])
 
     ParamerList = [(ReSize,{'outshape':(256,340)}),
                    (FlipLR,{'flag':p1}),
-                   # (FlipUD,{'flag':p2}),
+                   (FlipUD,{'flag':p2}),
                    (CutImg,{'kind':p3,'kindw':p4}),
-                   (ReSize,{'outshape':(224,224)}),
+                   (ReSize,{'outshape':outputshape}),
                    (fitToPytorch,None)]
     if isTemporal==True:
         ParamerList = [(ToBlackAndWhite,None),
@@ -239,6 +239,7 @@ def ImgAugPipes(imgs,isTemporal=False):
         rets.append(Img)
 
     return np.array(rets)
+
 
 def GenTensors(imgpathss,**kwargs) :
     import torch

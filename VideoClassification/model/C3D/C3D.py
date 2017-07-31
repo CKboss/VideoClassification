@@ -55,7 +55,7 @@ if __name__=='__main__':
 
     module = C3D().cuda()
 
-    x = torch.randn(2,3,16,112,112)
+    x = torch.randn(2,3,20,112,112)
     x = Variable(x).cuda()
 
     y = module(x)

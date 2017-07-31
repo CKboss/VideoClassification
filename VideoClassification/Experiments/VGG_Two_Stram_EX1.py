@@ -124,7 +124,7 @@ def VGG_Temporal_Net_Run():
 def VGG_Spatial_Net_Run():
 
     epochs = 80
-    loops = 1000
+    loops = 2000
     learningrate = 0.1
     attenuation = 0.5
 
@@ -137,7 +137,7 @@ def VGG_Spatial_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
     cnt = 0
 
@@ -192,7 +192,7 @@ def VGG_Spatial_Net_Run():
 
         if epoch in [20,50,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
 
 

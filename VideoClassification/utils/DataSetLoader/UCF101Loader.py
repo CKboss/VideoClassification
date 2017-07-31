@@ -18,6 +18,48 @@ def GaoImageID():
                 value,key = line.split(' ')
                 image_id[key[:-1]] = int(value)-1
 
+class UCF101_C3D(Dataset):
+
+    def __init__(self,file):
+        with open(file,'r') as f:
+            self.items = [ line[:-1] for line in f.readlines()]
+            GaoImageID()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, id):
+
+        filepath = self.items[id].split('.')[0]
+
+        classname = filepath.split('/')[0]
+        classid = image_id[classname]
+
+        filepath = Config.UCF101_images_root + filepath + '/image/'
+
+        ####
+        # filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
+
+        n = image_num.get(filepath,-1)
+        if n==-1:
+            n = image_num[filepath] = len(os.listdir(filepath))
+
+        i = random.randint(1,n)
+
+        l = max(i-9,1)
+        r = min(n,i+10)
+
+        if l==1 : r = 20
+        if r==n : l = n-19
+
+        filepathlist = []
+
+        for i in range(l,r+1):
+            filepathlist.append(filepath+'image_{:04d}.jpg'.format(i))
+
+        return filepathlist,classid
+
+
 
 class UCF101_Spatial(Dataset):
 
@@ -110,6 +152,13 @@ def test_UCF0101_Temporal():
 def train_UCF0101_Temporal():
     return UCF101_Temporal(Config.Code_root+'/data/trainlist01.txt')
 
+def test_UCF101_C3D():
+    return UCF101_C3D(Config.Code_root+'/data/testlist01.txt')
+
+def train_UCF101_C3D():
+    return UCF101_C3D(Config.Code_root+'/data/trainlist01.txt')
+
+
 if __name__=='__main__':
 
     # TODO
@@ -123,10 +172,12 @@ if __name__=='__main__':
 
     testloader = DataLoader(test_UCF0101_Temporal(),drop_last=True,batch_size=3)
 
+    uc = UCF101_C3D(Config.Code_root+'/data/testlist01.txt')
+
     tt = test_UCF0101_Temporal()
 
     import random
-    random.choices(tt,k=3)
+    random.choices(uc,k=3)
 
 
     for i,item in enumerate(testloader):

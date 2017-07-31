@@ -8,18 +8,38 @@ import torch
 from torch.autograd import Variable
 
 from VideoClassification.utils.data_pretreatment.PipeLine import GenTensors,ImgAugPipes
-from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF0101_Spatial,test_UCF0101_Temporal
+from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF0101_Spatial,test_UCF0101_Temporal,test_UCF101_C3D
 
 try:
     from cv2 import cv2
 except:
     import cv2
 
+def GenVariables_C3D(dsl,batchsize=8,**kwargs):
+
+    # TODO add requires_grad params
+    items = random.choices(dsl,k=batchsize)
+
+    imgpathss = []
+    labels = []
+
+    for item in items:
+        imgpathss.append(item[0])
+        labels.append(item[1])
+
+    imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112))
+
+    imgs = torch.transpose(imgs,1,2)
+
+    imgs = Variable(imgs,**kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
+
+    return imgs,labels
+
 
 def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
 
     # TODO add requires_grad params
-
     items = random.choices(dsl,k=batchsize)
 
     imgpathss = []
@@ -91,8 +111,8 @@ class PictureQueue(object):
 
 if __name__=='__main__':
 
-    dsl = test_UCF0101_Temporal()
+    dsl = test_UCF101_C3D()
 
-    pq = PictureQueue(dsl,GenVariables_Temporal,3)
+    pq = PictureQueue(dsl,GenVariables_C3D,3)
 
     pa,pb = pq.Get()
