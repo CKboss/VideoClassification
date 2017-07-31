@@ -210,13 +210,13 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
 
     # Gen Paramer
     p1 = random.choice([True,False])
-    p2 = random.choice([True,False])
+    # p2 = random.choice([True,False])
     p3 = random.choice([0,1,2,3,4])
     p4 = random.choice([0,1,2,3])
 
     ParamerList = [(ReSize,{'outshape':(256,340)}),
                    (FlipLR,{'flag':p1}),
-                   (FlipUD,{'flag':p2}),
+                   # (FlipUD,{'flag':p2}),
                    (CutImg,{'kind':p3,'kindw':p4}),
                    (ReSize,{'outshape':outputshape}),
                    (fitToPytorch,None)]
