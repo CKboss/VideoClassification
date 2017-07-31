@@ -18,8 +18,8 @@ UCF101_images_root = './'
 
 ''' server '''
 
-# Server_Root_Path = '/ssd/2/UCF_Data/'
-Server_Root_Path = '/datacenter/1/UCF_Data/'
+Server_Root_Path = '/ssd/2/UCF_Data/'
+# Server_Root_Path = '/datacenter/1/UCF_Data/'
 
 vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
 
