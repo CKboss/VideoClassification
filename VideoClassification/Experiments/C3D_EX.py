@@ -65,7 +65,9 @@ def C3D_Net_Run():
 
             cnt+=1
 
+            print('--------------')
             imgs,labels = pq_train.Get()
+            print('imgs size: ',imgs.size())
 
             model.zero_grad()
             pred =  model(imgs)
