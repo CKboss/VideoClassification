@@ -80,7 +80,7 @@ def VGG_Temporal_Net_Run():
 
             print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%50 == 0:
+            if cnt%20 == 0:
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
@@ -149,7 +149,7 @@ def VGG_Spatial_Net_Run():
 
             print('Spatial epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%50 == 0:
+            if cnt%20 == 0:
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)

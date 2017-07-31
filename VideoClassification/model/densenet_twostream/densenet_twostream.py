@@ -33,15 +33,15 @@ class dense_twostram(nn.Module):
             nn.Linear(1024,num_classes),
         )
 
-    def forward(self,x):
-        x = self.dense(x)
-        x = self.train_classification(x)
-        return x
-
-    def inference(self,x):
-        x = self.dense(x)
-        x = self.test_classfication(x)
-        return x
+    # def forward(self,x):
+    #     x = self.dense(x)
+    #     x = self.train_classification(x)
+    #     return x
+    #
+    # def inference(self,x):
+    #     x = self.dense(x)
+    #     x = self.test_classfication(x)
+    #     return x
 
 def dense_spatialNet(pretrained=False,**kwargs):
     return dense_twostram(pretrained=pretrained,in_channels=3,drop1=0.8,**kwargs)

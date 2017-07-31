@@ -21,28 +21,34 @@ class VGG_Temporal_Net(nn.Module):
         self.vgg16 = vgg16(in_channels=20,num_classes=101)
         self.vgg16 = nn.DataParallel(self.vgg16)
 
+        self.fc1 = nn.Linear(512*7*7,4096)
+        self.relu1 = nn.ReLU()
+        self.fc2 = nn.Linear(4096,4096)
+        self.relu2 = nn.ReLU()
+        self.fc3 = nn.Linear(4096,101)
+
 
         self.train_classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 4096),
-            nn.ReLU(True),
+            self.fc1,
+            self.relu1,
             nn.Dropout(dropout1),
-            nn.Linear(4096, 4096),
-            nn.ReLU(True),
+            self.fc2,
+            self.relu2,
             nn.Dropout(dropout2),
-            nn.Linear(4096, 101),
+            self.fc3,
         )
 
         self.train_classifier = nn.DataParallel(self.train_classifier)
 
         self.eval_classifier_1 = nn.Sequential (
-            nn.Linear(512*7*7,4096),
-            nn.ReLU(True),
-            nn.Linear(4096, 4096),
+            self.fc1,
+            self.relu1,
+            self.fc2,
         )
 
         self.eval_classifier_2 = nn.Sequential(
-            nn.ReLU(True),
-            nn.Linear(4096, 101),
+            self.relu2,
+            self.fc3,
         )
 
         if pretrained==True:
@@ -84,27 +90,34 @@ class VGG_Spatial_Net(nn.Module):
         self.vgg16 = vgg16(in_channels=3,num_classes=101)
         self.vgg16 = nn.DataParallel(self.vgg16)
 
+        self.fc1 = nn.Linear(512*7*7,4096)
+        self.relu1 = nn.ReLU()
+        self.fc2 = nn.Linear(4096,4096)
+        self.relu2 = nn.ReLU()
+        self.fc3 = nn.Linear(4096,101)
+
+
         self.train_classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 4096),
-            nn.ReLU(True),
+            self.fc1,
+            self.relu1,
             nn.Dropout(dropout1),
-            nn.Linear(4096, 4096),
-            nn.ReLU(True),
+            self.fc2,
+            self.relu2,
             nn.Dropout(dropout2),
-            nn.Linear(4096, 101),
+            self.fc3,
         )
 
         self.train_classifier = nn.DataParallel(self.train_classifier)
 
         self.eval_classifier_1 = nn.Sequential (
-            nn.Linear(512*7*7,4096),
-            nn.ReLU(True),
-            nn.Linear(4096, 4096),
+            self.fc1,
+            self.relu1,
+            self.fc2,
         )
 
         self.eval_classifier_2 = nn.Sequential(
-            nn.ReLU(True),
-            nn.Linear(4096, 101),
+            self.relu2,
+            self.fc3
         )
 
         if pretrained==True:
@@ -141,12 +154,15 @@ class VGG_Spatial_Net(nn.Module):
 if __name__=='__main__':
 
 
-    vgg16 = vgg16(in_channels=20,num_classes=101).cuda()
+    # vgg16 = vgg16(in_channels=20,num_classes=101).cuda()
     # pt = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
     # vgg16.load_state_dict(torch.load(pt))
 
-    # x = torch.randn(2,20,224,224)
-    # x = Variable(x).cuda()
-    # module = VGG_Temporal_Net(pretrained=True).cuda()
-    # y = module.inference(x)
-    # z = module.midfeatures
+    x = torch.randn(2,20,224,224)
+    x = Variable(x).cuda()
+    module = VGG_Temporal_Net(pretrained=False).cuda()
+    y = module.inference(x)
+    z = module.midfeatures
+
+    print(y.size())
+    print(z.size())
