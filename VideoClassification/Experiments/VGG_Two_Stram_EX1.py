@@ -20,6 +20,7 @@ from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_T
 from VideoClassification.utils.toolkits import accuracy
 from VideoClassification.utils.DataSetLoader.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
 
+
 '''
 VGG TWO Stram 测试:
 1. Spatial 输入单张图片, SGD 10个 epoch 每个迭代4000次 
