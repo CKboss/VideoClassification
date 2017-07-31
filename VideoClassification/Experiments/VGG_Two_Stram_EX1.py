@@ -50,11 +50,11 @@ def VGG_Temporal_Net_Run():
     epochs = 30
     loops = 1000
     learningrate = 0.1
-    attenuation = 0.1
+    attenuation = 0.5
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.5,dropout2=0.5).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
     pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
@@ -108,9 +108,9 @@ def VGG_Temporal_Net_Run():
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
-        if epoch in [0,2,10]:
+        if epoch in [5,10,15]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.001)
+            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
 
 
@@ -119,7 +119,7 @@ def VGG_Spatial_Net_Run():
     epochs = 30
     loops = 1000
     learningrate = 0.1
-    attenuation = 0.1
+    attenuation = 0.5
 
     model = VGG_Spatial_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
     lossfunc = nn.CrossEntropyLoss()
