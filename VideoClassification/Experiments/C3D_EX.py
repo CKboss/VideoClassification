@@ -70,12 +70,19 @@ def C3D_Net_Run():
             print('imgs size: ',imgs.size())
 
             model.zero_grad()
+
+            print('{} before pred'.format(cnt))
             pred =  model(imgs)
+            print('{} before loss'.format(cnt))
+
             loss = lossfunc(pred,labels)
 
             logger.scalar_summary('C3D/train_loss',loss.data[0],cnt)
 
+            print('{} before bp'.format(cnt))
             loss.backward()
+
+            print('{} before optim'.format(cnt))
             optim.step()
 
 
