@@ -17,7 +17,7 @@ import VideoClassification.Config.Config as Config
 from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_Net,VGG_Spatial_Net
 from VideoClassification.utils.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal,train_UCF0101_Spatial,test_UCF0101_Spatial
-from VideoClassification.utils.toolkits import accuracy
+from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
 from VideoClassification.utils.DataSetLoader.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
 
 
@@ -53,6 +53,13 @@ def VGG_Temporal_Net_Run():
     attenuation = 0.5
 
     model = VGG_Temporal_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
+
+    if Config.LOAD_SAVED_MODE_PATH is not None :
+        import types
+        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
+        print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
+
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
@@ -122,8 +129,15 @@ def VGG_Spatial_Net_Run():
     attenuation = 0.5
 
     model = VGG_Spatial_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
+
+    if Config.LOAD_SAVED_MODE_PATH is not None :
+        import types
+        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
+        print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
+
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
     cnt = 0
 
@@ -178,7 +192,7 @@ def VGG_Spatial_Net_Run():
 
         if epoch in [10,15,20]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
 
 

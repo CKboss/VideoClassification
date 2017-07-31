@@ -82,6 +82,13 @@ class PictureQueue(object):
         imgs,labels = self.q.get()
         return imgs.cuda(),labels.cuda()
 
+    def Close(self):
+        '''
+        May Be Need To Stop Threads
+        :return:
+        '''
+        pass
+
 if __name__=='__main__':
 
     dsl = test_UCF0101_Temporal()
