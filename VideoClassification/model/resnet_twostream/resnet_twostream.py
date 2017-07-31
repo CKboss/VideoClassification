@@ -37,28 +37,28 @@ class resnet_TwoStreamNet(nn.Module):
         self.drop1 = nn.Dropout(0.9)
         self.fc2 = nn.Linear(1024,101)
 
-    # def forward(self,x):
-    #
-    #     x = self.resnet(x)
-    #
-    #     x = self.fc1(x)
-    #     x = self.relu1(x)
-    #     x = self.drop1(x)
-    #     x = self.fc2(x)
-    #
-    #     return x
-    #
-    # def inference(self,x):
-    #
-    #     x = self.resnet(x)
-    #
-    #     self.midfeatures = x
-    #
-    #     x = self.fc1(x)
-    #     x = self.relu1(x)
-    #     x = self.fc2(x)
-    #
-    #     return x
+    def forward(self,x):
+
+        x = self.resnet(x)
+
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.drop1(x)
+        x = self.fc2(x)
+
+        return x
+
+    def inference(self,x):
+
+        x = self.resnet(x)
+
+        self.midfeatures = x
+
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.fc2(x)
+
+        return x
 
 def resnet_SpatialNet(pretrained=False,level=101):
     return resnet_TwoStreamNet(in_channels=3,pretrained=pretrained,level=level)

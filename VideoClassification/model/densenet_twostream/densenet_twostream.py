@@ -21,27 +21,35 @@ class dense_twostram(nn.Module):
 
         self.dense = DENSEnet(in_channels=in_channels)
 
+        self.fc1 = nn.Linear(2208,1024)
+        self.relu = nn.ReLU
+        self.fc2 =nn.Linear(1024,num_classes)
+
         self.train_classification = nn.Sequential(
-            nn.Linear(2208,1024),
-            nn.ReLU(True),
+            self.fc1,
+            self.relu,
             nn.Dropout(drop1),
-            nn.Linear(1024,num_classes),
+            self.fc2
         )
 
         self.test_classfication = nn.Sequential (
-            nn.Linear(2208,1024),
-            nn.Linear(1024,num_classes),
+            self.fc1,
+            self.relu,
+            self.fc2,
         )
 
-    # def forward(self,x):
-    #     x = self.dense(x)
-    #     x = self.train_classification(x)
-    #     return x
-    #
-    # def inference(self,x):
-    #     x = self.dense(x)
-    #     x = self.test_classfication(x)
-    #     return x
+    def forward(self,x):
+        x = self.dense(x)
+        x = self.train_classification(x)
+        return x
+
+    def inference(self,x):
+        x = self.dense(x)
+        x = self.fc1(x)
+        x = self.relu(x)
+        self.midfeatures = x
+        x = self.fc2(x)
+        return x
 
 def dense_spatialNet(pretrained=False,**kwargs):
     return dense_twostram(pretrained=pretrained,in_channels=3,drop1=0.8,**kwargs)
