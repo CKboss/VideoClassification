@@ -84,7 +84,7 @@ def C3D_Net_Run():
             if cnt%20 == 0:
 
                 imgs,labels = pq_test.Get()
-                pred = model(imgs)
+                pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
                 logger.scalar_summary('C3D/test_loss',loss.data[0],cnt)
@@ -97,7 +97,7 @@ def C3D_Net_Run():
 
 
                 imgs,labels = pq_train.Get()
-                pred = model(imgs)
+                pred = model.inference(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
                 logger.scalar_summary('C3D/train_acc@1',acc[0],cnt)

@@ -6,7 +6,7 @@ from torch.autograd import Variable
 
 class C3D(nn.Module):
 
-    def __init__(self):
+    def __init__(self,drop=0.8):
 
         super(C3D,self).__init__()
 
@@ -30,6 +30,8 @@ class C3D(nn.Module):
         self.mxpool5 = nn.MaxPool3d(2)
         self.fc1 = nn.Linear(512*9,4096)
         self.fc2 = nn.Linear(4096,101)
+
+        self.drop1 = nn.Dropout(drop)
 
         self.Flow = nn.Sequential (
             self.conv1,
@@ -61,24 +63,18 @@ class C3D(nn.Module):
 
     def forward(self,x):
 
-        # x = self.conv1(x)
-        # x = self.mxpool1(x)
-        # x = self.conv2(x)
-        # x = self.mxpool2(x)
-        # x = self.conv3(x)
-        # x = self.conv4(x)
-        # x = self.mxpool3(x)
-        # x = self.conv5(x)
-        # x = self.conv6(x)
-        # x = self.mxpool4(x)
-        # x = self.conv7(x)
-        # x = self.conv8(x)
-        # x = self.mxpool5(x)
+        x = self.Flow(x)
+        x = x.view(-1,512*9)
+        x = self.fc1(x)
+        x = self.drop1(x)
+        x = self.fc2(x)
+
+        return x
+
+    def inference(self,x):
 
         x = self.Flow(x)
-
         x = x.view(-1,512*9)
-
         x = self.fc1(x)
         self.midfeatures = x
         x = self.fc2(x)
@@ -108,4 +104,5 @@ if __name__=='__main__':
     x = Variable(x).cuda()
 
     y = module(x)
+    y = module.inference(x)
     z = module.midfeatures
