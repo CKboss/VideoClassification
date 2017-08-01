@@ -56,8 +56,8 @@ def VGG_Temporal_Net_Run():
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
-        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
-        model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
+        # model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
