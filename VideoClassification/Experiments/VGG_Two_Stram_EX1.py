@@ -55,8 +55,8 @@ def VGG_Temporal_Net_Run():
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
-        # model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
-        model.load(torch.load(Config.LOAD_SAVED_MODE_PATH))
+        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
@@ -112,7 +112,7 @@ def VGG_Temporal_Net_Run():
             if cnt%2000 == 0:
                 savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%50)
                 print('Temporal save model to {}'.format(savefile))
-                torch.save(model,savefile)
+                torch.save(model.state_dict(),savefile)
 
         if epoch in [20,50,60]:
             learningrate = learningrate*attenuation
@@ -186,7 +186,7 @@ def VGG_Spatial_Net_Run():
             if cnt % 2000 == 0:
                 savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%50)
                 print('Spatial save model to {}'.format(savefile))
-                torch.save(model,savefile)
+                torch.save(model.state_dict(),savefile)
 
 
         if epoch in [20,50,60]:
