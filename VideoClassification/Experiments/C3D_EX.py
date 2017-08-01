@@ -32,7 +32,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 30
+batchsize = 40
 
 ############
 
