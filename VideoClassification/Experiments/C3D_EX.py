@@ -65,24 +65,17 @@ def C3D_Net_Run():
 
             cnt+=1
 
-            # print('--------------')
             imgs,labels = pq_train.Get()
-            # print('imgs size: ',imgs.size())
 
             model.zero_grad()
-
-            # print('{} before pred'.format(cnt))
             pred =  model(imgs)
-            # print('{} before loss'.format(cnt))
 
             loss = lossfunc(pred,labels)
 
             logger.scalar_summary('C3D/train_loss',loss.data[0],cnt)
 
-            # print('{} before bp'.format(cnt))
             loss.backward()
 
-            # print('{} before optim'.format(cnt))
             optim.step()
 
 
@@ -114,7 +107,7 @@ def C3D_Net_Run():
             if cnt%2000 == 0:
                 savefile = savepath + 'C3D_EX1_{:02d}.pt'.format(epoch%20)
                 print('C3D save model to {}'.format(savefile))
-                torch.save(model,savefile)
+                torch.save(model.state_dict(),savefile)
 
 
         if epoch in [20,40,60]:
