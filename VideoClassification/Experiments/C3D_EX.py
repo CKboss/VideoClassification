@@ -32,7 +32,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 40
+batchsize = 30
 
 ############
 
@@ -41,7 +41,7 @@ def C3D_Net_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.1
+    learningrate = 0.01
     attenuation = 0.5
 
     model = C3D().cuda()
