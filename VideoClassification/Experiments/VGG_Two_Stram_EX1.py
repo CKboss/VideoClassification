@@ -48,11 +48,11 @@ batchsize = 86
 def VGG_Temporal_Net_Run():
 
     epochs = 80
-    loops = 1000
-    learningrate = 0.1
+    loops = 2000
+    learningrate = 0.001
     attenuation = 0.5
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -111,7 +111,7 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
 
             if cnt%2000 == 0:
-                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%20)
+                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%50)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model,savefile)
 
@@ -128,7 +128,7 @@ def VGG_Spatial_Net_Run():
     learningrate = 0.1
     attenuation = 0.5
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.1,dropout2=0.1).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.9,dropout2=0.8).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -185,7 +185,7 @@ def VGG_Spatial_Net_Run():
                 logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
 
             if cnt % 2000 == 0:
-                savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%20)
+                savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%50)
                 print('Spatial save model to {}'.format(savefile))
                 torch.save(model,savefile)
 

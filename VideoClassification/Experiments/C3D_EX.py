@@ -86,7 +86,7 @@ def C3D_Net_Run():
             optim.step()
 
 
-            # print('C3D epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
+            print('C3D epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
             if cnt%20 == 0:
 
