@@ -2,8 +2,8 @@
 
 ''' local pc '''
 
-
 '''
+
 vgg16pretrainfile = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
 resnet101_pretrainfile = '/home/lab/BackUp/pretrained/resnet101-5d3b4d8f.pth'
 resnet152_pretrainfile = '/home/lab/BackUp/pretrained/resnet152-b121ed2d.pth'
@@ -35,6 +35,5 @@ UCF101_images_root = Server_Root_Path+'UCF101_images/'
 EX_ID = '/EX9'
 
 LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/EX8/C3D_EX1_14.pt'
-
 
 

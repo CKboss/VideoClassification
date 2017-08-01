@@ -18,6 +18,79 @@ def GaoImageID():
                 value,key = line.split(' ')
                 image_id[key[:-1]] = int(value)-1
 
+class ChooseFromSameVideo(Dataset):
+
+    def __init__(self,file,dsl,num=8):
+        self.num = num
+        self.dsl = dsl(file)
+        with open(file,'r') as f:
+            self.items = [ line[:-1] for line in f.readlines()]
+            GaoImageID()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, id):
+
+        filelists = []
+        labels = []
+        for i in range(self.num):
+            a,b = self.dsl[id]
+            filelists.append(a)
+            labels.append(b)
+        return filelists,labels
+
+
+class UCF101_TwoStream(Dataset):
+    # 对于一个视频返回一堆图片文件
+
+    def __init__(self,file):
+        with open(file,'r') as f:
+            self.items = [ line[:-1] for line in f.readlines()]
+            GaoImageID()
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, id):
+
+        filepath = self.items[id].split('.')[0]
+
+        classname = filepath.split('/')[0]
+        classid = image_id[classname]
+
+        filepath = Config.UCF101_images_root + filepath + '/image/'
+        filepath_x = Config.UCF101_images_root + filepath + '/flow_x/'
+        filepath_y = Config.UCF101_images_root + filepath + '/flow_y/'
+
+        ####
+        # filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
+        # filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
+        # filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
+
+        n = image_num.get(filepath,-1)
+
+        if n==-1:
+            n = image_num[filepath] = len(os.listdir(filepath))
+
+        filepathlist = []
+
+        i = random.randint(1,n)
+
+        l = max(i-4,1)
+        r = min(n,i+5)
+
+        if l==1 : r = 10
+        if r==n : l = n-9
+
+        filepathlist.append(filepath+'image_{:04d}.jpg'.format(i))
+        for i in range(l,r+1):
+            filepathlist.append(filepath_x+'flow_x_{:04d}.jpg'.format(i))
+            filepathlist.append(filepath_y+'flow_y_{:04d}.jpg'.format(i))
+
+        return filepathlist,classid
+
+
 class UCF101_C3D(Dataset):
 
     def __init__(self,file):
@@ -51,6 +124,7 @@ class UCF101_C3D(Dataset):
 
         if l==1 : r = 20
         if r==n : l = n-19
+
 
         filepathlist = []
 
