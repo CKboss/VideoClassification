@@ -44,7 +44,6 @@ batchsize = 86
 
 ############
 
-
 def VGG_Temporal_Net_Run():
 
     epochs = 80
