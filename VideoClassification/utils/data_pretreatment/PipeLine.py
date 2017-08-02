@@ -169,8 +169,8 @@ def CutImg(img,kind,kindw):
     return img
 
 @jit
-def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
-    # TODO 太慢了,可能有bug
+def imadjust(src, tol=0, vin=[0,255], vout=(0,255)):
+    # 删除了tol参数
     # src : input one-layer image (numpy array)
     # tol : tolerance, from 0 to 100.
     # vin  : src image bounds
@@ -182,19 +182,20 @@ def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
     tol = max(0, min(100, tol))
 
     if tol > 0:
-        # Compute in and out limits
-        # Histogram
-        hist = np.histogram(src,bins=list(range(256)),range=(0,255))[0]
-
-        # Cumulative histogram
-        cum = np.cumsum(hist)
-
-        # Compute bounds
-        total = src.shape[0] * src.shape[1]
-        low_bound = total * tol / 100
-        upp_bound = total * (100 - tol) / 100
-        vin[0] = bisect.bisect_left(cum, low_bound)
-        vin[1] = bisect.bisect_left(cum, upp_bound)
+        raise NotImplementedError
+    #     # Compute in and out limits
+    #     # Histogram
+    #     hist = np.histogram(src,bins=list(range(256)),range=(0,255))[0]
+    #
+    #     # Cumulative histogram
+    #     cum = np.cumsum(hist)
+    #
+    #     # Compute bounds
+    #     total = src.shape[0] * src.shape[1]
+    #     low_bound = total * tol / 100
+    #     upp_bound = total * (100 - tol) / 100
+    #     vin[0] = bisect.bisect_left(cum, low_bound)
+    #     vin[1] = bisect.bisect_left(cum, upp_bound)
 
     # Stretching
     scale = (vout[1] - vout[0]) / (vin[1] - vin[0])
@@ -205,6 +206,20 @@ def imadjust(src, tol=1, vin=[0,255], vout=(0,255)):
     dst = vd
 
     return dst
+
+@jit
+def hisEqul(img):
+    return cv2.equalizeHist(img)
+
+@jit
+def hisEqulColor(img):
+    ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCR_CB)
+    channels = cv2.split(ycrcb)
+    cv2.equalizeHist(channels[0], channels[0])
+    cv2.merge(channels, ycrcb)
+    cv2.cvtColor(ycrcb, cv2.COLOR_YCR_CB2BGR, img)
+    return img
+
 
 def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
 
