@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 using namespace cv;
+using namespace std;
 
 static void convertFlowToImage(const Mat &flow_x, const Mat &flow_y, Mat &img_x, Mat &img_y, double lowerBound, double higherBound) {
 	#define CAST(v, L, H) ((v) > (H) ? 255 : (v) < (L) ? 0 : cvRound(255*((v) - (L))/((H)-(L))))
