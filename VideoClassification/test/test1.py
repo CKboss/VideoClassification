@@ -20,3 +20,7 @@ target = Variable(torch.from_numpy(target))
 acc = accuracy(out,target,topk=(1,2))
 
 acc = [ a.data[0] for a in acc]
+
+import torchvision.transforms as transforms
+
+normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])

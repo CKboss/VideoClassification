@@ -214,11 +214,29 @@ def hisEqul(img):
 
 @jit
 def hisEqulColor(img):
+
+    if len(img.shape) == 2:
+        return hisEqul(img)
+
     ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCR_CB)
     channels = cv2.split(ycrcb)
     cv2.equalizeHist(channels[0], channels[0])
     cv2.merge(channels, ycrcb)
     cv2.cvtColor(ycrcb, cv2.COLOR_YCR_CB2BGR, img)
+    return img
+
+@jit
+def Normalize(img,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+
+    img = img.astype(np.float32)
+    img = (img-np.min(img)) / (np.max(img)-np.min(img))
+    level = len(img.shape)
+
+    assert level <= 3 , 'level should <= 3'
+
+    for i in range(level):
+        img[:,:,i] = (img[:,:,i] - mean[i]) / std[i]
+
     return img
 
 
@@ -235,9 +253,12 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
                    # (FlipUD,{'flag':p2}),
                    (CutImg,{'kind':p3,'kindw':p4}),
                    (ReSize,{'outshape':outputshape}),
+                   (Normalize,None),
                    (fitToPytorch,None)]
+
     if isTemporal==True:
         ParamerList = [(ToBlackAndWhite,None),
+                       (hisEqulColor,None),
                        ] + ParamerList
 
     # Run in PipeLine
