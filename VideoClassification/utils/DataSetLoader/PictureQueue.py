@@ -80,6 +80,17 @@ def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
 
     return imgs,labels
 
+def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
+
+    itemss,labelss = random.choices(dsl,k=batchsize)
+
+    imgpaths = []
+    flow_imgpaths = []
+    labels = [ items[0] for items in labelss]
+
+
+
+
 class PictureQueue(object):
 
     def __init__(self,dsl,Gen,batchsize=8,worker=10,mxsize=32):

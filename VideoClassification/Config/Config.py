@@ -2,22 +2,21 @@
 
 ''' local pc '''
 
-'''
 
-vgg16pretrainfile = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
-resnet101_pretrainfile = '/home/lab/BackUp/pretrained/resnet101-5d3b4d8f.pth'
-resnet152_pretrainfile = '/home/lab/BackUp/pretrained/resnet152-b121ed2d.pth'
+vgg16pretrainfile = '/home/itrc/BackUp/pretrained/vgg16-397923af.pth'
+resnet101_pretrainfile = '/home/itrc/BackUp/pretrained/resnet101-5d3b4d8f.pth'
+resnet152_pretrainfile = '/home/itrc/BackUp/pretrained/resnet152-b121ed2d.pth'
 
-ExWorkSpace = '/home/lab/ExperimentsWorkspace/VC/'
+ExWorkSpace = '/home/itrc/ExperimentsWorkspace/VC/'
 LOGSpace = ExWorkSpace
 
-Code_root = '/home/lab/Desktop/Development/VideoClassification/'
+Code_root = '/home/itrc/Desktop/Development/VideoClassification/'
 UCF101_images_root = './'
-
-'''
+EX_ID='/EX_test1'
 
 ''' server '''
 
+'''
 
 # Server_Root_Path = '/ssd/2/UCF_Data/'
 Server_Root_Path = '/datacenter/1/UCF_Data/'
@@ -34,6 +33,8 @@ UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
 EX_ID = '/EX9'
 
-LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/EX8/C3D_EX1_14.pt'
+LOAD_SAVED_MODE_PATH = None
+LOAD_SAVED_MODE_PATH_2 = None
 
 
+'''

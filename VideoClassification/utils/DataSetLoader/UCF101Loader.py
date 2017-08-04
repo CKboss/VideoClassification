@@ -18,9 +18,10 @@ def GaoImageID():
                 value,key = line.split(' ')
                 image_id[key[:-1]] = int(value)-1
 
-class ChooseFromSameVideo(Dataset):
+class ChooseRandomFromSameVideo(Dataset):
 
     def __init__(self,file,dsl,num=8):
+        super(ChooseRandomFromSameVideo,self).__init__()
         self.num = num
         self.dsl = dsl(file)
         with open(file,'r') as f:
@@ -39,6 +40,25 @@ class ChooseFromSameVideo(Dataset):
             filelists.append(a)
             labels.append(b)
         return filelists,labels
+
+class ChooseOrderFromSameVideo(ChooseRandomFromSameVideo):
+    '''
+    Has Order but not uniform
+    '''
+
+    def __init__(self,**kwargs):
+        super(ChooseOrderFromSameVideo,self).__init__(**kwargs)
+
+    def __getitem__(self, item):
+
+        filelists,lbs = super(ChooseOrderFromSameVideo,self).__getitem__(item)
+
+        lsts = list(zip(filelists,lbs))
+        tims = [ int(files[0][0][-8:-4]) for files in lsts ]
+        filelists = sorted(list(zip(tims,filelists)))
+        filelists = [ files[1] for files in filelists ]
+
+        return filelists,lbs
 
 
 class UCF101_TwoStream(Dataset):
@@ -64,9 +84,9 @@ class UCF101_TwoStream(Dataset):
         filepath_y = Config.UCF101_images_root + filepath + '/flow_y/'
 
         ####
-        # filepath = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
-        # filepath_x = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
-        # filepath_y = '/home/lab/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
+        filepath = '/home/itrc/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
+        filepath_x = '/home/itrc/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_x/'
+        filepath_y = '/home/itrc/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/flow_y/'
 
         n = image_num.get(filepath,-1)
 
@@ -232,6 +252,8 @@ def test_UCF101_C3D():
 def train_UCF101_C3D():
     return UCF101_C3D(Config.Code_root+'/data/trainlist01.txt')
 
+def test_UCF101_ChooseRandomFromSameVideo(**kwargs):
+    return ChooseRandomFromSameVideo(Config.Code_root+'/data/testlist01.txt',**kwargs)
 
 if __name__=='__main__':
 

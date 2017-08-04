@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 from torchvision.models import densenet161
+from torchvision.models import inception_v3
 
 import numpy as np
 from VideoClassification.utils.toolkits import accuracy
