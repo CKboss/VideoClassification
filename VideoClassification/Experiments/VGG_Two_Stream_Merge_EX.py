@@ -44,8 +44,10 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
 
     if spa_model_save_file is not None:
         spa_model.load_state_dict(torch.load(spa_model_save_file))
+        print('load spa_model success!')
     if tem_model_save_file is not None:
         tem_model.load_state_dict(torch.load(tem_model_save_file))
+        print('load tem_model success!')
 
     imgs,labels = gen()
 
