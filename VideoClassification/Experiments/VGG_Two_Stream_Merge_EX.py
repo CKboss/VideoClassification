@@ -76,15 +76,33 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             predict_all = torch.cumsum(predict_all,0)
             predict_all = predict_all[-1,:]
             predict_all = predict_all / b
+            predict_all = predict_all.view(1,101)
+
+            target = labels[0].view(1,1)
 
             print('predict_all: ',predict_all.size())
 
-            acc = accuracy(predict_all,labels[i],topk=(1,5,10))
+            # acc = accuracy(predict_1,target,topk=(1,5,10))
+            # print(' only avg spatial net acc:')
+            # print('acc@1: ',acc[0])
+            # print('acc@5: ',acc[1])
+            # print('acc@10: ',acc[2])
+            # print('-'*20)
+            #
+            #
+            # acc = accuracy(predict_2,target,topk=(1,5,10))
+            # print(' only avg temporal net acc:')
+            # print('acc@1: ',acc[0])
+            # print('acc@5: ',acc[1])
+            # print('acc@10: ',acc[2])
+            # print('-'*20)
 
-            print('nth: {} -----> '.format(n))
+            acc = accuracy(predict_all,target,topk=(1,5,10))
+            print(' avg merge two net acc: ')
             print('acc@1: ',acc[0])
             print('acc@5: ',acc[1])
             print('acc@10: ',acc[2])
+            print('-'*20)
 
 def VGG_Two_Stream_TSN():
     pass
