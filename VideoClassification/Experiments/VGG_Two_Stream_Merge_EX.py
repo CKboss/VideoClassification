@@ -78,7 +78,9 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             predict_all = predict_all / b
             predict_all = predict_all.view(1,101)
 
-            target = labels[0].view(1,1)
+            # target = labels[0].view(1,1)
+            target = labels[0]
+            print('target: ',target)
 
             print('predict_all: ',predict_all.size())
 
