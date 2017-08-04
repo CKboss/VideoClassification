@@ -68,13 +68,16 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             predict_1 = spa_model.inference(spatial_input)
             predict_2 = tem_model.inference(temporal_input)
 
+            print('predict_1: ',predict_1.size())
+            print('predict_2: ',predict_2.size())
+
             predict_all = (predict_1+predict_2)/2
 
             predict_all = torch.cumsum(predict_all,0)
             predict_all = predict_all[-1,:]
             predict_all = predict_all / b
 
-            print('predict_all: ',predict_all)
+            print('predict_all: ',predict_all.size())
 
             acc = accuracy(predict_all,labels[i],topk=(1,5,10))
 
