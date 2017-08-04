@@ -33,7 +33,7 @@ Code_root = Server_Root_Path+'Code/VideoClassification/'
 
 UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
-EX_ID = '/EX10'
+EX_ID = '/EX11'
 
 LOAD_SAVED_MODE_PATH = None
 LOAD_SAVED_MODE_PATH_2 = None

@@ -127,7 +127,7 @@ def VGG_Spatial_Net_Run():
     learningrate = 0.1
     attenuation = 0.5
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.9,dropout2=0.8).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
