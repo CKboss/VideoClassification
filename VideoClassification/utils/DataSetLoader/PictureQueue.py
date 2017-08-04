@@ -92,8 +92,6 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
         # 8x21 picture paths and 8 same labels
         imgpathss,labels = itemss[b]
 
-        print(imgpathss)
-
         n = len(labels)
         m = len(imgpathss[0])
 
