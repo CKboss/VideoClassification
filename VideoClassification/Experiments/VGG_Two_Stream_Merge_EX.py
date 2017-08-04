@@ -26,7 +26,7 @@ batchsize = 10
 
 ############
 
-spa_model_save_file = Config.Server_Root_Path+'pretrainedmodel/Sptail.pt'
+spa_model_save_file = Config.Server_Root_Path+'pretrainedmodel/Spatial.pt'
 tem_model_save_file = Config.Server_Root_Path+'pretrainedmodel/Temporal.pt'
 
 dsl = test_UCF101_ChooseOrderFromSameVideo(dsl=UCF101_TwoStream)
