@@ -26,8 +26,8 @@ batchsize = 10
 
 ############
 
-spa_model_save_file = None
-tem_model_save_file = None
+spa_model_save_file = Config.Server_Root_Path+'pretrainedmodel/Sptail.pt'
+tem_model_save_file = Config.Server_Root_Path+'pretrainedmodel/Temporal.pt'
 
 dsl = test_UCF101_ChooseOrderFromSameVideo(dsl=UCF101_TwoStream)
 def gen():
@@ -60,8 +60,8 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             spatial_input = Variable(torch.from_numpy(imgs[i,:,0:3,:,:])).cuda().float()
             temporal_input = Variable(torch.from_numpy(imgs[i,:,3:,:,:])).cuda().float()
 
-            predict_1 = spa_model(spatial_input)
-            predict_2 = tem_model(temporal_input)
+            predict_1 = spa_model.inference(spatial_input)
+            predict_2 = tem_model.inference(temporal_input)
 
             predict_all = (predict_1+predict_2)/2
 
@@ -75,6 +75,9 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             print('acc@1: ',acc[0])
             print('acc@5: ',acc[1])
             print('acc@10: ',acc[2])
+
+def VGG_Two_Stream_TSN():
+    pass
 
 if __name__=='__main__':
     pass
