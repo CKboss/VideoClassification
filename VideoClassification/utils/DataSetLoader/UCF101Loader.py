@@ -255,6 +255,9 @@ def train_UCF101_C3D():
 def test_UCF101_ChooseRandomFromSameVideo(**kwargs):
     return ChooseRandomFromSameVideo(Config.Code_root+'/data/testlist01.txt',**kwargs)
 
+def test_UCF101_ChooseOrderFromSameVideo(**kwargs):
+    return ChooseOrderFromSameVideo(file=Config.Code_root+'/data/testlist01.txt',**kwargs)
+
 if __name__=='__main__':
 
     # TODO

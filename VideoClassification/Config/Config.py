@@ -2,6 +2,7 @@
 
 ''' local pc '''
 
+'''
 
 vgg16pretrainfile = '/home/itrc/BackUp/pretrained/vgg16-397923af.pth'
 resnet101_pretrainfile = '/home/itrc/BackUp/pretrained/resnet101-5d3b4d8f.pth'
@@ -14,9 +15,10 @@ Code_root = '/home/itrc/Desktop/Development/VideoClassification/'
 UCF101_images_root = './'
 EX_ID='/EX_test1'
 
+'''
+
 ''' server '''
 
-'''
 
 # Server_Root_Path = '/ssd/2/UCF_Data/'
 Server_Root_Path = '/datacenter/1/UCF_Data/'
@@ -31,10 +33,8 @@ Code_root = Server_Root_Path+'Code/VideoClassification/'
 
 UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
-EX_ID = '/EX9'
+EX_ID = '/EX10'
 
 LOAD_SAVED_MODE_PATH = None
 LOAD_SAVED_MODE_PATH_2 = None
 
-
-'''

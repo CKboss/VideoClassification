@@ -82,7 +82,7 @@ def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
 
 def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
-    itemss,labelss = random.choices(dsl,k=batchsize)
+    itemss = random.choices(dsl,k=batchsize)
 
     ret_imgs= []
     ret_labels = []
