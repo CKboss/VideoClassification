@@ -62,6 +62,9 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             spatial_input = Variable(torch.from_numpy(imgs[i,:,0:3,:,:])).cuda().float()
             temporal_input = Variable(torch.from_numpy(imgs[i,:,3:,:,:])).cuda().float()
 
+            print('spatial_input: ',spatial_input.size())
+            print('temporal_input: ',temporal_input.size())
+
             predict_1 = spa_model.inference(spatial_input)
             predict_2 = tem_model.inference(temporal_input)
 
