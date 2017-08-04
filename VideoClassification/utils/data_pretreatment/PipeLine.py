@@ -147,23 +147,24 @@ def FlipUD(img,flag):
 @jit
 def CutImg(img,kind,kindw):
 
-    w = [250,220,190,160]
+    w = [250,220,230,240]
     w = w[kindw]
 
     cr = [ [0,w,0,w],
            [255-w,255,0,w],
            [0,w,339-w,339],
            [255-w,255,339-w,339],
-           [w//2,225-w//2,w//2,339-w//2]
+           [255-w,255,339-w,339],
+           # [w//2,225-w//2,w//2,339-w//2]
            ]
 
     cr = cr[kind]
 
-    if kind == 4:
-        if cr[0] >= cr[1]:
-            cr[0],cr[1] = cr[1],cr[0]
-        if cr[2] >= cr[3]:
-            cr[2],cr[3] = cr[2],cr[3]
+    # if kind == 4:
+    #     if cr[0] >= cr[1]:
+    #         cr[0],cr[1] = cr[1],cr[0]
+    #     if cr[2] >= cr[3]:
+    #         cr[2],cr[3] = cr[2],cr[3]
 
     img = img[cr[0]:cr[1],cr[2]:cr[3]]
     return img
@@ -229,7 +230,7 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
     p3 = random.choice([0,1,2,3,4])
     p4 = random.choice([0,1,2,3])
 
-    ParamerList = [(ReSize,{'outshape':(256,340)}),
+    ParamerList = [(ReSize,{'outshape':(256,256)}),
                    (FlipLR,{'flag':p1}),
                    # (FlipUD,{'flag':p2}),
                    (CutImg,{'kind':p3,'kindw':p4}),
