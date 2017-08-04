@@ -74,18 +74,18 @@ class UCF101_TwoStream(Dataset):
 
     def __getitem__(self, id):
 
-        filepath = self.items[id].split('.')[0]
+        filepath_ = self.items[id].split('.')[0]
 
-        classname = filepath.split('/')[0]
+        classname = filepath_.split('/')[0]
         classid = image_id[classname]
 
-        filepath = Config.UCF101_images_root + filepath + '/image/'
-        filepath_x = Config.UCF101_images_root + filepath + '/flow_x/'
-        filepath_y = Config.UCF101_images_root + filepath + '/flow_y/'
+        filepath = Config.UCF101_images_root + filepath_ + '/image/'
+        filepath_x = Config.UCF101_images_root + filepath_ + '/flow_x/'
+        filepath_y = Config.UCF101_images_root + filepath_ + '/flow_y/'
 
-        print('filepath: ',filepath)
-        print('filepath_x: ',filepath_x)
-        print('filepath_y: ',filepath_y)
+        # print('filepath: ',filepath)
+        # print('filepath_x: ',filepath_x)
+        # print('filepath_y: ',filepath_y)
 
         ####
         # filepath = '/home/itrc/Desktop/Development/dense_flow_fbf/testfile-fbf/UCF101_images/ApplyLipstick/v_ApplyLipstick_g01_c02/image/'
