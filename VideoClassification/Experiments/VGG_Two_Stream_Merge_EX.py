@@ -71,6 +71,8 @@ def VGG_TwoStream_Video_AVG_Merge_Test():
             predict_all = predict_all[-1,:]
             predict_all = predict_all / b
 
+            print('predict_all: ',predict_all)
+
             acc = accuracy(predict_all,labels[i],topk=(1,5,10))
 
             print('nth: {} -----> '.format(n))
