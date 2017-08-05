@@ -229,7 +229,10 @@ def hisEqulColor(img):
 def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
 
     img = img.astype(np.float32)
-    img = (img-np.min(img)) / (np.max(img)-np.min(img))
+    if np.max(img) - np.min(img) > 0.001:
+        img = (img-np.min(img)) / (np.max(img)-np.min(img))
+    else:
+        img = img - np.min(img)
 
     if Norm :
         level = len(img.shape)

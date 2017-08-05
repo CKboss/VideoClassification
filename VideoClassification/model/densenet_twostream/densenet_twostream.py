@@ -8,7 +8,7 @@ from VideoClassification.model.densenet_twostream.densenet import densenet161,de
 
 class dense_twostram(nn.Module):
 
-    def __init__(self,pretrained=False,in_channels=3,num_classes=101,level=161,drop1=0.9,drop2=0.8):
+    def __init__(self,pretrained=False,in_channels=3,num_classes=101,level=161,dropout=0.9,drop2=0.8,**kwargs):
 
         super(dense_twostram,self).__init__()
 
@@ -28,7 +28,7 @@ class dense_twostram(nn.Module):
         self.train_classification = nn.Sequential(
             self.fc1,
             self.relu,
-            nn.Dropout(drop1),
+            nn.Dropout(dropout),
             self.fc2
         )
 
@@ -57,17 +57,17 @@ def dense_spatialNet(pretrained=False,**kwargs):
 def dense_temporalNet(pretrained=False,**kwargs):
     return dense_twostram(pretrained=pretrained,in_channels=20,drop1=0.9,**kwargs)
 
-def dense161_spatialNet(pretrained=False):
-    return dense_spatialNet(pretrained=pretrained,level=161)
+def dense161_spatialNet(pretrained=False,**kwargs):
+    return dense_spatialNet(pretrained=pretrained,level=161,**kwargs)
 
-def dense161_temporalNet(pretrained=False):
-    return dense_temporalNet(pretrained=pretrained,level=161)
+def dense161_temporalNet(pretrained=False,**kwargs):
+    return dense_temporalNet(pretrained=pretrained,level=161,**kwargs)
 
-def dense201_spatialNet(pretrained=False):
-    return dense_spatialNet(pretrained=pretrained,level=201)
+def dense201_spatialNet(pretrained=False,**kwargs):
+    return dense_spatialNet(pretrained=pretrained,level=201,**kwargs)
 
-def dense201_temporalNet(pretrained=False):
-    return dense_temporalNet(pretrained=pretrained,level=201)
+def dense201_temporalNet(pretrained=False,**kwargs):
+    return dense_temporalNet(pretrained=pretrained,level=201,**kwargs)
 
 if __name__=='__main__':
 

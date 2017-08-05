@@ -8,7 +8,7 @@ except:
     import cv2
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.model.resnet_twostream.resnet_twostream import resnet152_TemporalNet,resnet101_TemporalNet
+from VideoClassification.model.densenet_twostream.densenet_twostream import dense161_temporalNet,dense201_temporalNet
 from VideoClassification.utils.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal
 from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
@@ -28,14 +28,14 @@ batchsize = 86
 
 ############
 
-def ResNet101_Temporal_Net_Run():
+def DenseNet161_temporal_Run():
 
     epochs = 80
     loops = 2000
     learningrate = 0.1
     attenuation = 0.5
 
-    model = resnet101_TemporalNet(pretrained=False,dropout=0.4).cuda()
+    model = dense161_temporalNet(pretrained=False,dropout=0.4).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -62,7 +62,7 @@ def ResNet101_Temporal_Net_Run():
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
 
-            logger.scalar_summary('ResNet101/Temporal/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('DenseNet161/Temporal/train_loss',loss.data[0],cnt)
 
             loss.backward()
             optim.step()
@@ -76,25 +76,25 @@ def ResNet101_Temporal_Net_Run():
                 pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
-                logger.scalar_summary('ResNet101/Temporal/test_loss',loss.data[0],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/test_loss',loss.data[0],cnt)
 
                 #acc
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('ResNet101/Temporal/test_acc@1',acc[0],cnt)
-                logger.scalar_summary('ResNet101/Temporal/test_acc@5',acc[1],cnt)
-                logger.scalar_summary('ResNet101/Temporal/test_acc@10',acc[2],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/test_acc@1',acc[0],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/test_acc@5',acc[1],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/test_acc@10',acc[2],cnt)
 
 
                 imgs,labels = pq_train.Get()
                 pred = model.inference(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('ResNet101/Temporal/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('ResNet101/Temporal/train_acc@5',acc[1],cnt)
-                logger.scalar_summary('ResNet101/Temporal/train_acc@10',acc[2],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/train_acc@1',acc[0],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/train_acc@5',acc[1],cnt)
+                logger.scalar_summary('DenseNet161/Temporal/train_acc@10',acc[2],cnt)
 
             if cnt%2000 == 0:
-                savefile = savepath + 'ResNet101_Temporal_EX1_{:02d}.pt'.format(epoch%50)
+                savefile = savepath + 'DenseNet161_Temporal_EX1_{:02d}.pt'.format(epoch%50)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
@@ -102,14 +102,15 @@ def ResNet101_Temporal_Net_Run():
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
-def ResNet152_Temporal_Net_Run():
+
+def DenseNet201_temporal_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.2
+    learningrate = 0.1
     attenuation = 0.5
 
-    model = resnet152_TemporalNet(pretrained=False,dropout=0.4).cuda()
+    model = dense201_temporalNet(pretrained=False,dropout=0.4).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -136,7 +137,7 @@ def ResNet152_Temporal_Net_Run():
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
 
-            logger.scalar_summary('ResNet152/Temporal/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('DenseNet201/Temporal/train_loss',loss.data[0],cnt)
 
             loss.backward()
             optim.step()
@@ -150,25 +151,25 @@ def ResNet152_Temporal_Net_Run():
                 pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
-                logger.scalar_summary('ResNet152/Temporal/test_loss',loss.data[0],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/test_loss',loss.data[0],cnt)
 
                 #acc
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('ResNet152/Temporal/test_acc@1',acc[0],cnt)
-                logger.scalar_summary('ResNet152/Temporal/test_acc@5',acc[1],cnt)
-                logger.scalar_summary('ResNet152/Temporal/test_acc@10',acc[2],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/test_acc@1',acc[0],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/test_acc@5',acc[1],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/test_acc@10',acc[2],cnt)
 
 
                 imgs,labels = pq_train.Get()
                 pred = model.inference(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('ResNet152/Temporal/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('ResNet152/Temporal/train_acc@5',acc[1],cnt)
-                logger.scalar_summary('ResNet152/Temporal/train_acc@10',acc[2],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/train_acc@1',acc[0],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/train_acc@5',acc[1],cnt)
+                logger.scalar_summary('DenseNet201/Temporal/train_acc@10',acc[2],cnt)
 
             if cnt%2000 == 0:
-                savefile = savepath + 'ResNet152_Temporal_EX1_{:02d}.pt'.format(epoch%50)
+                savefile = savepath + 'DenseNet201_Temporal_EX1_{:02d}.pt'.format(epoch%50)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
@@ -180,6 +181,5 @@ if __name__=='__main__':
 
     x = torch.randn(3,20,224,224)
     x = Variable(x)
-    model = resnet101_TemporalNet()
-    y = model(x)
-    y.size()
+
+    model = dense201_spatialNet()

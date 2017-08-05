@@ -20,8 +20,8 @@ EX_ID='/EX_test1'
 ''' server '''
 
 
-Server_Root_Path = '/ssd/2/UCF_Data/'
-# Server_Root_Path = '/datacenter/1/UCF_Data/'
+# Server_Root_Path = '/ssd/2/UCF_Data/'
+Server_Root_Path = '/datacenter/1/UCF_Data/'
 
 vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
 
@@ -33,8 +33,9 @@ Code_root = Server_Root_Path+'Code/VideoClassification/'
 
 UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
-EX_ID = '/EX9_'
+EX_ID = '/ResNet101_Spatial_EX2'
+# EX_ID = '/ResNet101_Temporal_EX2'
 
-LOAD_SAVED_MODE_PATH = None
+LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/ResNet101_Spatial_EX1/ResNet101_Spatial_01.pt'
 LOAD_SAVED_MODE_PATH_2 = None
 

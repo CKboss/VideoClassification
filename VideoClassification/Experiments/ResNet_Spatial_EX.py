@@ -35,7 +35,7 @@ def Resenet101_SpatialNet_Run():
     learningrate = 0.2
     attenuation = 0.5
 
-    model = resnet101_SpatialNet(pretrained=False,dropout=0.4).cuda()
+    model = resnet101_SpatialNet(pretrained=False,dropout=0.95).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -46,8 +46,8 @@ def Resenet101_SpatialNet_Run():
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -93,7 +93,7 @@ def Resenet101_SpatialNet_Run():
                 logger.scalar_summary('ResNet101/Spatial/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('ResNet101/Spatial/train_acc@10',acc[2],cnt)
 
-            if cnt%2000 == 0:
+            if cnt%1000 == 0:
                 savefile = savepath + 'ResNet101_Spatial_{:02d}.pt'.format(epoch%50)
                 print('Spatial save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)

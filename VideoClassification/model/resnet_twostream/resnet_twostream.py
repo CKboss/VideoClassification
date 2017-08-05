@@ -16,7 +16,7 @@ class resnet_TwoStreamNet(nn.Module):
 
         super(resnet_TwoStreamNet,self).__init__()
 
-
+        savefile = None
         if level == 152:
             resnet = resnet152
             # savefile = Config.resnet152_pretrainfile
@@ -27,15 +27,23 @@ class resnet_TwoStreamNet(nn.Module):
             raise 'level showld be 101 or 152'
 
         self.resnet = resnet(in_channels=in_channels,num_classes=101)
+        self.resnet = nn.DataParallel(self.resnet)
 
         if pretrained==True:
             self.resnet.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.resnet)
             self.resnet.try_to_load_state_dict(torch.load(savefile))
 
         self.fc1 = nn.Linear(2048,1024)
+        self.fc1 = nn.DataParallel(self.fc1)
+
         self.relu1 = nn.ReLU()
+        self.relu1 = nn.DataParallel(self.relu1)
+
         self.drop1 = nn.Dropout(dropout)
+        self.drop1 = nn.DataParallel(self.drop1)
+
         self.fc2 = nn.Linear(1024,101)
+        self.fc2 = nn.DataParallel(self.fc2)
 
     def forward(self,x):
 
