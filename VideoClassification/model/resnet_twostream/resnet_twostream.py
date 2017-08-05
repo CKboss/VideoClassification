@@ -12,17 +12,17 @@ from VideoClassification.utils.toolkits import try_to_load_state_dict
 
 class resnet_TwoStreamNet(nn.Module):
 
-    def __init__(self,in_channels=3,pretrained=False,level=101):
+    def __init__(self,in_channels=3,dropout=0.9,pretrained=False,level=101):
 
         super(resnet_TwoStreamNet,self).__init__()
 
 
         if level == 152:
             resnet = resnet152
-            savefile = Config.resnet152_pretrainfile
+            # savefile = Config.resnet152_pretrainfile
         elif level==101:
             resnet = resnet101
-            savefile = Config.resnet101_pretrainfile
+            # savefile = Config.resnet101_pretrainfile
         else :
             raise 'level showld be 101 or 152'
 
@@ -34,7 +34,7 @@ class resnet_TwoStreamNet(nn.Module):
 
         self.fc1 = nn.Linear(2048,1024)
         self.relu1 = nn.ReLU()
-        self.drop1 = nn.Dropout(0.9)
+        self.drop1 = nn.Dropout(dropout)
         self.fc2 = nn.Linear(1024,101)
 
     def forward(self,x):
@@ -60,23 +60,23 @@ class resnet_TwoStreamNet(nn.Module):
 
         return x
 
-def resnet_SpatialNet(pretrained=False,level=101):
-    return resnet_TwoStreamNet(in_channels=3,pretrained=pretrained,level=level)
+def resnet_SpatialNet(pretrained=False,level=101,**kwargs):
+    return resnet_TwoStreamNet(in_channels=3,pretrained=pretrained,level=level,**kwargs)
 
-def resnet_TemporalNet(pretrained=False,level=101):
-    return resnet_TwoStreamNet(in_channels=20,pretrained=pretrained,level=level)
+def resnet_TemporalNet(pretrained=False,level=101,**kwargs):
+    return resnet_TwoStreamNet(in_channels=20,pretrained=pretrained,level=level,**kwargs)
 
-def resnet101_SpatialNet(pretrained=False):
-    return resnet_SpatialNet(pretrained=pretrained,level=101)
+def resnet101_SpatialNet(pretrained=False,**kwargs):
+    return resnet_SpatialNet(pretrained=pretrained,level=101,**kwargs)
 
-def resnet101_TemporalNet(pretrained=False):
-    return resnet_TemporalNet(pretrained=pretrained,level=101)
+def resnet101_TemporalNet(pretrained=False,**kwargs):
+    return resnet_TemporalNet(pretrained=pretrained,level=101,**kwargs)
 
-def resnet152_SpatialNet(pretrained=False):
-    return resnet_SpatialNet(pretrained=pretrained,level=152)
+def resnet152_SpatialNet(pretrained=False,**kwargs):
+    return resnet_SpatialNet(pretrained=pretrained,level=152,**kwargs)
 
-def resnet152_TemporalNet(pretrained=False):
-    return resnet_TemporalNet(pretrained=pretrained,level=152)
+def resnet152_TemporalNet(pretrained=False,**kwargs):
+    return resnet_TemporalNet(pretrained=pretrained,level=152,**kwargs)
 
 
 if __name__=='__main__':

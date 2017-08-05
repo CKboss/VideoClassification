@@ -48,10 +48,10 @@ def VGG_Temporal_Net_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.001
+    learningrate = 0.2
     attenuation = 0.5
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.4,dropout2=0.3).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -60,7 +60,7 @@ def VGG_Temporal_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
     pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
@@ -114,7 +114,7 @@ def VGG_Temporal_Net_Run():
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
-        if epoch in [20,50,60]:
+        if epoch in [10,20,50,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
@@ -127,7 +127,7 @@ def VGG_Spatial_Net_Run():
     learningrate = 0.1
     attenuation = 0.5
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.2,dropout2=0.1).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -136,7 +136,7 @@ def VGG_Spatial_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
     cnt = 0
 
@@ -189,9 +189,9 @@ def VGG_Spatial_Net_Run():
                 torch.save(model.state_dict(),savefile)
 
 
-        if epoch in [20,50,60]:
+        if epoch in [10,20,50,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9,)
 
 
 

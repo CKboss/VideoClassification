@@ -226,16 +226,16 @@ def hisEqulColor(img):
     return img
 
 @jit
-def Normalize(img,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
 
     img = img.astype(np.float32)
     img = (img-np.min(img)) / (np.max(img)-np.min(img))
-    level = len(img.shape)
 
-    assert level <= 3 , 'level should <= 3'
-
-    for i in range(level):
-        img[:,:,i] = (img[:,:,i] - mean[i]) / std[i]
+    if Norm :
+        level = len(img.shape)
+        assert level <= 3 , 'level should <= 3'
+        for i in range(level):
+            img[:,:,i] = (img[:,:,i] - mean[i]) / std[i]
 
     return img
 
@@ -258,7 +258,7 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
 
     if isTemporal==True:
         ParamerList = [(ToBlackAndWhite,None),
-                       (hisEqulColor,None),
+                       # (hisEqulColor,None),
                        ] + ParamerList
 
     # Run in PipeLine
