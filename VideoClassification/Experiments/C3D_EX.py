@@ -42,9 +42,9 @@ def C3D_Net_Run():
     epochs = 81
     loops = 2001
     learningrate = 0.00001
-    attenuation = 0.5
+    attenuation = 0.2
 
-    model = C3D(drop=0.2).cuda()
+    model = C3D(drop=0.9).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types

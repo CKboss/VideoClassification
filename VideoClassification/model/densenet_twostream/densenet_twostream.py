@@ -15,14 +15,16 @@ class dense_twostram(nn.Module):
 
         if level==161:
             DENSEnet = densenet161
+            nn1 = 2208
         elif level==201:
             DENSEnet = densenet201
+            nn1 = 1920
         else:
             raise NotImplementedError('level should be 161 or 201')
 
         self.dense = DENSEnet(in_channels=in_channels)
 
-        self.fc1 = nn.Linear(2208,1024)
+        self.fc1 = nn.Linear(nn1,1024)
         self.relu = nn.ReLU()
         self.fc2 =nn.Linear(1024,num_classes)
 
@@ -91,10 +93,10 @@ def dense201_temporalNet(pretrained=False,**kwargs):
 
 if __name__=='__main__':
 
-    x = torch.randn(2,3,224,224)
+    x = torch.randn(2,20,224,224)
     x = Variable(x).cuda()
 
-    module = dense161_spatialNet().cuda()
+    module = dense201_temporalNet().cuda()
 
     y = module(x)
     print(y.size())

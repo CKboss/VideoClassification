@@ -33,7 +33,7 @@ def DenseNet161_SpatialNet_Run():
     epochs = 80
     loops = 2000
     learningrate = 0.0002
-    attenuation = 0.5
+    attenuation = 0.1
 
     model = dense161_spatialNet(pretrained=False,dropout=0.90).cuda()
 

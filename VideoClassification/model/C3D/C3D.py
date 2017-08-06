@@ -36,7 +36,7 @@ class C3D(nn.Module):
         self.relu8 = nn.ReLU()
         self.bn5 = nn.BatchNorm3d(512)
         self.mxpool5 = nn.MaxPool3d(2)
-        self.fc1 = nn.Linear(512*9,2048)
+        self.fc1 = nn.Linear(512*9*1,2048)
         self.relu_fc1 = nn.ReLU()
         self.fc2 = nn.Linear(2048,2048)
         self.relu_fc2 = nn.ReLU()
@@ -85,7 +85,7 @@ class C3D(nn.Module):
     def forward(self,x):
 
         x = self.Flow(x)
-        x = x.view(-1,512*9)
+        x = x.view(-1,512*9*1)
         x = self.fc1(x)
         x = self.relu_fc1(x)
         x = self.drop1(x)
@@ -99,7 +99,7 @@ class C3D(nn.Module):
     def inference(self,x):
 
         x = self.Flow(x)
-        x = x.view(-1,512*9)
+        x = x.view(-1,512*9*1)
         x = self.fc1(x)
         x = self.relu_fc1(x)
         x = self.fc2(x)
