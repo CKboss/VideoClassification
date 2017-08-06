@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.nn import init
 import torch.nn.functional as F
 from torch.autograd import Variable
 
@@ -22,7 +23,7 @@ class dense_twostram(nn.Module):
         self.dense = DENSEnet(in_channels=in_channels)
 
         self.fc1 = nn.Linear(2208,1024)
-        self.relu = nn.ReLU
+        self.relu = nn.ReLU()
         self.fc2 =nn.Linear(1024,num_classes)
 
         self.train_classification = nn.Sequential(
@@ -32,11 +33,16 @@ class dense_twostram(nn.Module):
             self.fc2
         )
 
-        self.test_classfication = nn.Sequential (
-            self.fc1,
-            self.relu,
-            self.fc2,
-        )
+        # self.test_classfication = nn.Sequential (
+        #     self.fc1,
+        #     self.relu,
+        #     self.fc2,
+        # )
+
+        self.dense = nn.DataParallel(self.dense)
+        self.train_classification = nn.DataParallel(self.train_classification)
+
+        self._initialize_weights()
 
     def forward(self,x):
         x = self.dense(x)
@@ -50,6 +56,20 @@ class dense_twostram(nn.Module):
         self.midfeatures = x
         x = self.fc2(x)
         return x
+
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                init.xavier_normal(m.weight.data)
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                init.xavier_normal(m.weight.data)
+                m.bias.data.zero_()
 
 def dense_spatialNet(pretrained=False,**kwargs):
     return dense_twostram(pretrained=pretrained,in_channels=3,drop1=0.8,**kwargs)

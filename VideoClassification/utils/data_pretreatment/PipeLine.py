@@ -243,7 +243,7 @@ def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.22
     return img
 
 
-def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
+def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True):
 
     # Gen Paramer
     p1 = random.choice([True,False])
@@ -251,13 +251,21 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
     p3 = random.choice([0,1,2,3,4])
     p4 = random.choice([0,1,2,3])
 
-    ParamerList = [(ReSize,{'outshape':(256,256)}),
-                   (FlipLR,{'flag':p1}),
-                   # (FlipUD,{'flag':p2}),
-                   (CutImg,{'kind':p3,'kindw':p4}),
-                   (ReSize,{'outshape':outputshape}),
-                   (Normalize,None),
-                   (fitToPytorch,None)]
+    if isNormal==True:
+        ParamerList = [(ReSize,{'outshape':(256,256)}),
+                       (FlipLR,{'flag':p1}),
+                       # (FlipUD,{'flag':p2}),
+                       (CutImg,{'kind':p3,'kindw':p4}),
+                       (ReSize,{'outshape':outputshape}),
+                       (Normalize,None),
+                       (fitToPytorch,None)]
+    else:
+        ParamerList = [(ReSize,{'outshape':(256,256)}),
+                       (FlipLR,{'flag':p1}),
+                       # (FlipUD,{'flag':p2}),
+                       (CutImg,{'kind':p3,'kindw':p4}),
+                       (ReSize,{'outshape':outputshape}),
+                       (fitToPytorch,None)]
 
     if isTemporal==True:
         ParamerList = [(ToBlackAndWhite,None),
@@ -279,6 +287,7 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224)):
         rets.append(Img)
 
     return np.array(rets)
+
 
 
 def GenTensors(imgpathss,**kwargs) :

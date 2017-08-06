@@ -33,9 +33,13 @@ Code_root = Server_Root_Path+'Code/VideoClassification/'
 
 UCF101_images_root = Server_Root_Path+'UCF101_images/'
 
-EX_ID = '/ResNet101_Spatial_EX2'
+# EX_ID = '/ResNet101_Spatial_EX2'
 # EX_ID = '/ResNet101_Temporal_EX2'
+# EX_ID = '/C3D_EX7'
+EX_ID = '/DenseNet_Spatial_EX1'
 
-LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/ResNet101_Spatial_EX1/ResNet101_Spatial_01.pt'
+# LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/ResNet101_Spatial_EX1/ResNet101_Spatial_01.pt'
+LOAD_SAVED_MODE_PATH = None
 LOAD_SAVED_MODE_PATH_2 = None
+
 

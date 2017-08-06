@@ -16,6 +16,14 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="server_210">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/ssd/2/UCF_Data/Code/VideoClassification" local="$PROJECT_DIR$" web="/" />
+            <mapping local="" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
     <option name="myAutoUpload" value="ALWAYS" />
   </component>

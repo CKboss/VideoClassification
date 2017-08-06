@@ -27,7 +27,7 @@ def GenVariables_C3D(dsl,batchsize=8,**kwargs):
         imgpathss.append(item[0])
         labels.append(item[1])
 
-    imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112))
+    imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112),isNormal=False)
 
     imgs = torch.transpose(imgs,1,2)
 
