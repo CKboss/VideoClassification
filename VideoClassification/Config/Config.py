@@ -20,7 +20,6 @@ if WHERE=='LOCAL':
 elif WHERE=='SERVER':
 
     ''' server '''
-
     Server_Root_Path = '/ssd/2/UCF_Data/'
     # Server_Root_Path = '/datacenter/1/UCF_Data/'
 
