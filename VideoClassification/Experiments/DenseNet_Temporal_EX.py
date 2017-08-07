@@ -105,12 +105,12 @@ def DenseNet161_temporal_Run():
 
 def DenseNet201_temporal_Run():
 
-    epochs = 80
-    loops = 2000
+    epochs = 81
+    loops = 2001
     learningrate = 0.1
     attenuation = 0.5
 
-    model = dense201_temporalNet(pretrained=False,dropout=0.4).cuda()
+    model = dense201_temporalNet(pretrained=False,dropout=0.9).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -182,4 +182,3 @@ if __name__=='__main__':
     x = torch.randn(3,20,224,224)
     x = Variable(x)
 
-    model = dense201_spatialNet()

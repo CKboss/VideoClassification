@@ -30,8 +30,8 @@ batchsize = 40
 
 def DenseNet161_SpatialNet_Run():
 
-    epochs = 80
-    loops = 2000
+    epochs = 121
+    loops = 2001
     learningrate = 0.0002
     attenuation = 0.1
 
@@ -102,14 +102,14 @@ def DenseNet161_SpatialNet_Run():
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
-def Resenet152_SpatialNet_Run():
+def DenseNet201_SpatialNet_Run():
 
-    epochs = 80
-    loops = 2000
+    epochs = 121
+    loops = 2001
     learningrate = 0.2
     attenuation = 0.5
 
-    model = dense201_spatialNet(pretrained=False,dropout=0.4).cuda()
+    model = dense201_spatialNet(pretrained=False,dropout=0.95).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -120,8 +120,8 @@ def Resenet152_SpatialNet_Run():
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
 
     cnt = 0
     for epoch in range(epochs) :
