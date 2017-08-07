@@ -2,6 +2,14 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+class Block(nn.Module):
+
+    def __init__(self):
+        super(Block,self).__init__()
+
+    def forward(self,x):
+        pass
+
 
 class Res_C3D(nn.Module):
 
