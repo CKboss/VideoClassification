@@ -1,11 +1,8 @@
 
-
-''' local pc '''
-
-WHERE = 'LOCAL'
-
+WHERE = 'SERVER'
 
 if WHERE=='LOCAL':
+    ''' local pc '''
     vgg16pretrainfile = '/home/itrc/BackUp/pretrained/vgg16-397923af.pth'
     resnet101_pretrainfile = '/home/itrc/BackUp/pretrained/resnet101-5d3b4d8f.pth'
     resnet152_pretrainfile = '/home/itrc/BackUp/pretrained/resnet152-b121ed2d.pth'
@@ -16,6 +13,9 @@ if WHERE=='LOCAL':
     Code_root = '/home/itrc/Desktop/Development/VideoClassification/'
     UCF101_images_root = './'
     EX_ID='/EX_test1'
+
+    ExWorkSpace = '/home/itrc/ExperimentsWorkspace/VC/'
+    LOGSpace = ExWorkSpace
 
 elif WHERE=='SERVER':
 
@@ -42,4 +42,7 @@ elif WHERE=='SERVER':
     LOAD_SAVED_MODE_PATH = None
     LOAD_SAVED_MODE_PATH_2 = None
 
-
+elif WHERE=='DOCKER':
+    raise NotImplementedError
+else:
+    raise NotImplementedError
