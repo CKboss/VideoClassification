@@ -112,7 +112,7 @@ class C3D(nn.Module):
 
     def _initialize_weights(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):
+            if isinstance(m, nn.Conv2d) or isinstance(m,nn.Conv3d):
                 init.xavier_normal(m.weight.data)
                 if m.bias is not None:
                     m.bias.data.zero_()
