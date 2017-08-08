@@ -150,7 +150,7 @@ def DenseNet201_SpatialNet_Run():
                 pred = model.inference(imgs)
                 loss = lossfunc(pred,labels)
 
-                logger.scalar_summary('ResNet152/Spatial/test_loss',loss.data[0],cnt)
+                logger.scalar_summary('DenseNet201/Spatial/test_loss',loss.data[0],cnt)
 
                 #acc
                 acc = accuracy(pred,labels,topk=(1,5,10))
