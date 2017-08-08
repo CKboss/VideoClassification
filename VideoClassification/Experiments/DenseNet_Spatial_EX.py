@@ -106,10 +106,10 @@ def DenseNet201_SpatialNet_Run():
 
     epochs = 121
     loops = 2001
-    learningrate = 0.2
+    learningrate = 0.1
     attenuation = 0.5
 
-    model = dense201_spatialNet(pretrained=False,dropout=0.95).cuda()
+    model = dense201_spatialNet(pretrained=False,dropout=0.6).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
