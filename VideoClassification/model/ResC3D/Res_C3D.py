@@ -23,6 +23,7 @@ class Bottleneck(nn.Module):
 
         self.downsample = downsample
 
+
     def forward(self,x):
 
         out = self.conv1(x)
