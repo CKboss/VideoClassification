@@ -1,4 +1,5 @@
 import sqlite3
+import os.path
 
 # build db set
 
@@ -9,34 +10,62 @@ import sqlite3
 
 DBSET:
 
-TABLE 1 IMAGE:
-id,filepath,label,kind(origin/flow)
+TABLE 1 ImgSets:
 
-TABLE 2 VIDEO:
-id,filepath,short_screen_num,label,kind
+id , splitkind [train/test/val] , imgfilepath [] , imgfilename [] \
+imgkind [frame/optial] , video_name , label
 
 '''
 
-CREATE_TABLE_IMAGES_SQL = 'CREATE TABLE IMAGES ' \
+CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
                           '(' \
                           'ID INTEGER PRIMARY KEY autoincrement,' \
-                          'filepath VARCHAR(200),' \
-                          'label INTEGER,' \
-                          'kind VARCHAR(10)' \
+                          'splitkind VARCHAR(32),' \
+                          'imgpath VARCHAR(1024),' \
+                          'imgname VARCHAR(1024),' \
+                          'imgkind VARCHAR(32),' \
+                          'videoname VARCHAR(1024),' \
+                          'label INTEGER' \
                           ');'
 
+INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, label) VALUES ' \
+                   '(' \
+                   '?,?,?,?,?,?' \
+                   ');'
 
-CREATE_TABLE_VIDEOS_SQL = 'CREATE TABLE VIDEOS' \
-                          '(' \
-                          'ID INTEGER PRIMARY KEY autoincrement,' \
-                          'filepath VARCHAR(200),' \
-                          'short_num INTEGER,' \
-                          'label INTEGER,' \
-                          'kind VARCHAR(10)' \
-                          ');'
+'''
+TABLE 2 VideoSet:
 
-CREATE_TABLE_SQL = CREATE_TABLE_IMAGES_SQL+CREATE_TABLE_VIDEOS_SQL
+id , splitkind , videoname , videopath , label
+
+'''
+
+CREATE_TABLE_VideoSets_SQL = 'CREATE TABLE VideoSets' \
+                             '(' \
+                             'ID INTEGER PRIMARY KEY autoincrement,' \
+                             'splitkind VARCHAR(32),' \
+                             'videoname VARCHAR(1024),' \
+                             'videopath VARCHAR(1024),' \
+                             'label INTEGER' \
+                             ');'
+
+DB = './data/UCF101.db'
+
+def CreateTable():
+    os.path.exists('./data/UCF101.db')
+    if os.path.exists('./data/UCF101.db') :
+        print('DB alread create!')
+        return
+    with sqlite3.connect('./data/UCF101.db') as conn:
+        cursor = conn.cursor()
+        cursor.executescript(CREATE_TABLE_ImgSets_SQL+CREATE_TABLE_VideoSets_SQL)
+        cursor.close()
+
+def ExecutorSQL(sql):
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.executescript(sql)
+        cursor.close()
 
 
-
-
+CreateTable()
