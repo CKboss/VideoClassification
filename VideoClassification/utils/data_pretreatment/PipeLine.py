@@ -258,7 +258,7 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True):
                        # (FlipUD,{'flag':p2}),
                        (CutImg,{'kind':p3,'kindw':p4}),
                        (ReSize,{'outshape':outputshape}),
-                       (Normalize,None),
+                       (Normalize,{'Norm':True}),
                        (fitToPytorch,None)]
     else:
         ParamerList = [(ReSize,{'outshape':(256,256)}),
