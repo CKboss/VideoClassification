@@ -1,3 +1,5 @@
+import types
+
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -6,6 +8,7 @@ from torch.autograd import Variable
 
 import VideoClassification.Config.Config as Config
 from VideoClassification.model.densenet_twostream.densenet import densenet161,densenet201
+from VideoClassification.utils.toolkits import try_to_load_state_dict
 
 class dense_twostram(nn.Module):
 
@@ -13,12 +16,14 @@ class dense_twostram(nn.Module):
 
         super(dense_twostram,self).__init__()
 
+        savefile = None
         if level==161:
             DENSEnet = densenet161
             nn1 = 2208
         elif level==201:
             DENSEnet = densenet201
             nn1 = 1920
+            savefile = Config.dense201_pretrainfile
         else:
             raise NotImplementedError('level should be 161 or 201')
 
@@ -44,7 +49,12 @@ class dense_twostram(nn.Module):
         self.dense = nn.DataParallel(self.dense)
         self.train_classification = nn.DataParallel(self.train_classification)
 
-        self._initialize_weights()
+        if pretrained==True:
+            self.dense.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.resnet)
+            self.dense.try_to_load_state_dict(torch.load(savefile))
+            print('OK pretrained model: {} load success!'.format(savefile))
+        elif pretrained==False:
+            self._initialize_weights()
 
     def forward(self,x):
         x = self.dense(x)

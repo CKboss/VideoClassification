@@ -20,10 +20,12 @@ if WHERE=='LOCAL':
 elif WHERE=='SERVER':
 
     ''' server '''
-    # Server_Root_Path = '/ssd/2/UCF_Data/'
-    Server_Root_Path = '/datacenter/1/UCF_Data/'
+    Server_Root_Path = '/ssd/2/UCF_Data/'
+    # Server_Root_Path = '/datacenter/1/UCF_Data/'
 
     vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
+    resnet152_pretrainfile = Server_Root_Path+'pretrainedmodel/resnet152-b121ed2d.pth'
+    dense201_pretrainfile = Server_Root_Path+'pretrainedmodel/densenet201-4c113574.pth'
 
     ExWorkSpace = Server_Root_Path+'EX/'
 
@@ -36,7 +38,7 @@ elif WHERE=='SERVER':
     # EX_ID = '/ResNet101_Spatial_EX2'
     # EX_ID = '/ResNet101_Temporal_EX2'
     # EX_ID = '/C3D_EX8'
-    EX_ID = '/DenseNet201_S_EX2'
+    EX_ID = '/Res152_Spatial_FineTure_EX1'
 
     # LOAD_SAVED_MODE_PATH = '/datacenter/1/UCF_Data/EX/ResNet101_Spatial_EX1/ResNet101_Spatial_01.pt'
     LOAD_SAVED_MODE_PATH = None

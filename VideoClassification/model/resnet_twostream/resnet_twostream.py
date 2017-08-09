@@ -2,6 +2,7 @@ import types
 
 import torch
 import torch.nn as nn
+from torch.nn import init
 import torch.nn.functional as F
 from torch.autograd import Variable
 
@@ -19,7 +20,7 @@ class resnet_TwoStreamNet(nn.Module):
         savefile = None
         if level == 152:
             resnet = resnet152
-            # savefile = Config.resnet152_pretrainfile
+            savefile = Config.resnet152_pretrainfile
         elif level==101:
             resnet = resnet101
             # savefile = Config.resnet101_pretrainfile
@@ -28,10 +29,6 @@ class resnet_TwoStreamNet(nn.Module):
 
         self.resnet = resnet(in_channels=in_channels,num_classes=101)
         self.resnet = nn.DataParallel(self.resnet)
-
-        if pretrained==True:
-            self.resnet.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.resnet)
-            self.resnet.try_to_load_state_dict(torch.load(savefile))
 
         self.fc1 = nn.Linear(2048,1024)
         self.fc1 = nn.DataParallel(self.fc1)
@@ -44,6 +41,13 @@ class resnet_TwoStreamNet(nn.Module):
 
         self.fc2 = nn.Linear(1024,101)
         self.fc2 = nn.DataParallel(self.fc2)
+
+        if pretrained==True:
+            self.resnet.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.resnet)
+            self.resnet.try_to_load_state_dict(torch.load(savefile))
+            print('OK pretrained model: {} load success!'.format(savefile))
+        elif pretrained==False:
+            self._initialize_weights()
 
     def forward(self,x):
 
@@ -67,6 +71,19 @@ class resnet_TwoStreamNet(nn.Module):
         x = self.fc2(x)
 
         return x
+
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d) or isinstance(m,nn.Conv3d):
+                init.xavier_normal(m.weight.data)
+                if m.bias is not None:
+                    m.bias.data.zero_()
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                init.xavier_normal(m.weight.data)
+                m.bias.data.zero_()
 
 def resnet_SpatialNet(pretrained=False,level=101,**kwargs):
     return resnet_TwoStreamNet(in_channels=3,pretrained=pretrained,level=level,**kwargs)
