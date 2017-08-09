@@ -13,7 +13,7 @@ DBSET:
 TABLE 1 ImgSets:
 
 id , splitkind [train/test/val] , imgfilepath [] , imgfilename [] \
-imgkind [frame/optial] , video_name , label
+imgkind [frame/optial] , video_name , label , ord
 
 '''
 
@@ -25,7 +25,8 @@ CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
                           'imgname VARCHAR(1024),' \
                           'imgkind VARCHAR(32),' \
                           'videoname VARCHAR(1024),' \
-                          'label INTEGER' \
+                          'label INTEGER,' \
+                          'ord INTEGER' \
                           ');'
 
 INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, label) VALUES ' \
@@ -67,5 +68,10 @@ def ExecutorSQL(sql):
         cursor.executescript(sql)
         cursor.close()
 
+def InsertInToImages(items: list):
+    with sqlite3.connect(DB) as conn:
+        cursor = conn.cursor()
+        cursor.executemany(INSERT_NEW_IMAGE,items)
+        cursor.close()
 
 CreateTable()
