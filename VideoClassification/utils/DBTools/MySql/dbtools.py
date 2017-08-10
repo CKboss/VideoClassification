@@ -36,7 +36,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
                   int(items[3])*1000+\
                   int(items[4])
         elif imgkind=='frame':
-            ord = int(items[-2])*1000 + int(item[-1])
+            ord = int(items[-2])*1000 + int(items[-1])
         imagepath = None
         return splitkind,imagepath,imgname,imgkind,videoname,labels,ord
     elif item[:3] == 'val':
@@ -50,7 +50,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
     item = item[:-4]
     items  = item.split('_')
 
-    print('items:',items)
+    # print('items:',items)
 
     imgkind = items[1]
 
@@ -59,7 +59,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
               int(items[3])*1000+ \
               int(items[4])
     elif imgkind=='frame':
-        ord = int(items[-2])*1000 + int(item[-1])
+        ord = int(items[-2])*1000 + int(items[-1])
 
     items = items[0].split('-')
 
@@ -111,9 +111,9 @@ def InsertIntoImageSets():
 
 if __name__=='__main__':
 
-    # line1 = 'test--1-lsvc000005.avi_flow_0_0_1.jpg	10483	FlRYhnjGBGX_Hfrb4HxfQT4BXG6o	15023249189263833	image/jpeg	0'
-    # line2 = 'train-159,23-lsvc032949.webm_frame_21_19.jpg	34217	FnnAbXN-ln6qXkCrH2FwpmRuIEBf	15023256195611639	image/jpeg	0'
+    line1 = 'test--1-lsvc000005.avi_frame_0_21.jpg	10483	FlRYhnjGBGX_Hfrb4HxfQT4BXG6o	15023249189263833	image/jpeg	0'
+    line2 = 'train-159,23-lsvc032949.webm_frame_21_19.jpg	34217	FnnAbXN-ln6qXkCrH2FwpmRuIEBf	15023256195611639	image/jpeg	0'
     # line3 = 'val-159,23-lsvc032949.webm_frame_21_19.jpg	34217	FnnAbXN-ln6qXkCrH2FwpmRuIEBf	15023256195611639	image/jpeg	0'
 
-    # chuliline(line3)
-    InsertIntoImageSets()
+    chuliline(line2)
+    # InsertIntoImageSets()
