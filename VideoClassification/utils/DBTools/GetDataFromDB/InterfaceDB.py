@@ -16,7 +16,6 @@ def getFrames_imgfilepath(splitkind='test'):
     res = cursor.fetchone()
 
     # print(res)
-
     videoname = res[1]
     ord = res[2]
 
