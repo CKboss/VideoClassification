@@ -73,7 +73,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
 
 def InsertIntoImageSets():
 
-    filepath = '/workspace/personal_data/bucketlist.txt'
+    filepath = '/workspace/personal_data/data/bucketlist.txt'
     # filepath = '/home/itrc/Desktop/bucketlist.txt'
     # filepath = '/home/itrc/Desktop/test_line.txt'
 
