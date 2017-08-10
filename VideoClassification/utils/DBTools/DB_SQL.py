@@ -13,31 +13,28 @@ DBSET:
 TABLE 1 ImgSets:
 
 id , splitkind [train/test/val] , imgfilepath [] , imgfilename [] \
-imgkind [frame/optial] , video_name , label , ord
+imgkind [frame/optial] , video_name , label , ordinvideo
 
 '''
 
 CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
-                          '(' \
-                          'ID INTEGER PRIMARY KEY autoincrement,' \
-                          'splitkind VARCHAR(32),' \
-                          'imgpath VARCHAR(1024),' \
-                          'imgname VARCHAR(1024),' \
-                          'imgkind VARCHAR(32),' \
-                          'videoname VARCHAR(1024),' \
-                          'label INTEGER,' \
-                          'ord INTEGER' \
-                          ');'
+                           '(' \
+                           'ID INTEGER PRIMARY KEY autoincrement,' \
+                           'splitkind VARCHAR(32),' \
+                           'imgpath VARCHAR(1024),' \
+                           'imgname VARCHAR(1024),' \
+                           'imgkind VARCHAR(32),' \
+                           'videoname VARCHAR(1024),' \
+                           'label INTEGER,' \
+                           'ordinvideo INTEGER' \
+                           ');'
 
-INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, label) VALUES ' \
-                   '(' \
-                   '?,?,?,?,?,?' \
-                   ');'
+INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, label) VALUES ( ?,?,?,?,?,? );'
 
 '''
 TABLE 2 VideoSet:
 
-id , splitkind , videoname , videopath , label
+id , splitkind[train/test/val] , videoname , videopath , label, imgsnum
 
 '''
 
@@ -47,7 +44,8 @@ CREATE_TABLE_VideoSets_SQL = 'CREATE TABLE VideoSets' \
                              'splitkind VARCHAR(32),' \
                              'videoname VARCHAR(1024),' \
                              'videopath VARCHAR(1024),' \
-                             'label INTEGER' \
+                             'label INTEGER,' \
+                             'imgsnum INTEGER ,'\
                              ');'
 
 DB = './data/UCF101.db'

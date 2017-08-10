@@ -50,7 +50,7 @@ class dense_twostram(nn.Module):
         self.train_classification = nn.DataParallel(self.train_classification)
 
         if pretrained==True:
-            self.dense.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.resnet)
+            self.dense.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.dense)
             self.dense.try_to_load_state_dict(torch.load(savefile))
             print('OK pretrained model: {} load success!'.format(savefile))
         elif pretrained==False:

@@ -24,7 +24,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 60
+batchsize = 80
 
 ############
 
@@ -35,7 +35,7 @@ def DenseNet201_SpatialNet_Run():
     learningrate = 0.001
     attenuation = 0.1
 
-    model = dense201_spatialNet(pretrained=False,dropout=0.7).cuda()
+    model = dense201_spatialNet(pretrained=True,dropout=0.7).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
