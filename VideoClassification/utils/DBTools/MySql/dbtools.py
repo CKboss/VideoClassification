@@ -73,7 +73,8 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
 
 def InsertIntoImageSets():
 
-    filepath = '/home/itrc/Desktop/bucketlist_part.txt'
+    filepath = '/workspace/personal_data/bucketlist.txt'
+    # filepath = '/home/itrc/Desktop/bucketlist.txt'
     # filepath = '/home/itrc/Desktop/test_line.txt'
 
     cnt = 0
@@ -101,6 +102,9 @@ def InsertIntoImageSets():
                         cursor.execute(INSERT_VIDEO_LABELS,(videoname,l))
                     except Exception as E:
                         print(E)
+
+            if cnt%200==0:
+                print('---> ',cnt)
 
     cursor.close()
     conn.close()

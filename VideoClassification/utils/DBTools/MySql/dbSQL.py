@@ -18,10 +18,10 @@ CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
                            '(' \
                            'ID INTEGER PRIMARY KEY AUTO_INCREMENT,' \
                            'splitkind VARCHAR(32),' \
-                           'imgpath VARCHAR(1024),' \
-                           'imgname VARCHAR(1024) UNIQUE ,' \
+                           'imgpath VARCHAR(512),' \
+                           'imgname VARCHAR(512) UNIQUE ,' \
                            'imgkind VARCHAR(32),' \
-                           'videoname VARCHAR(1024),' \
+                           'videoname VARCHAR(512),' \
                            'first_label INTEGER,' \
                            'ord INTEGER' \
                            ');'
@@ -37,7 +37,7 @@ id , videoname, labels
 CREATE_VIDEO_LABELS_SQL = 'CREATE TABLE VideoLabels' \
                           '(' \
                           'ID INTEGER PRIMARY KEY AUTO_INCREMENT,' \
-                          'videoname VARCHAR(1024) ,' \
+                          'videoname VARCHAR(512) ,' \
                           'label INTEGER ,' \
                           'UNIQUE KEY (videoname,label)' \
                           ') ;'
@@ -53,8 +53,8 @@ CREATE_TABLE_VideoSets_SQL = 'CREATE TABLE VideoSets' \
                              '(' \
                              'ID INTEGER PRIMARY KEY AUTO_INCREMENT,' \
                              'splitkind VARCHAR(32),' \
-                             'videoname VARCHAR(1024) UNIQUE ,' \
-                             'videopath VARCHAR(1024),' \
+                             'videoname VARCHAR(512) UNIQUE ,' \
+                             'videopath VARCHAR(512),' \
                              'label INTEGER,' \
                              'imgnum INTEGER ' \
                              ');'
