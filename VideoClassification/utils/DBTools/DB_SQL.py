@@ -18,16 +18,16 @@ imgkind [frame/optial] , video_name , label , ord
 '''
 
 CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
-                          '(' \
-                          'ID INTEGER PRIMARY KEY autoincrement,' \
-                          'splitkind VARCHAR(32),' \
-                          'imgpath VARCHAR(1024),' \
-                          'imgname VARCHAR(1024),' \
-                          'imgkind VARCHAR(32),' \
-                          'videoname VARCHAR(1024),' \
-                          'label INTEGER,' \
-                          'ord INTEGER' \
-                          ');'
+                           '(' \
+                           'ID INTEGER PRIMARY KEY autoincrement,' \
+                           'splitkind VARCHAR(32),' \
+                           'imgpath VARCHAR(1024),' \
+                           'imgname VARCHAR(1024),' \
+                           'imgkind VARCHAR(32),' \
+                           'videoname VARCHAR(1024),' \
+                           'label INTEGER,' \
+                           'ord INTEGER' \
+                           ');'
 
 INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, label) VALUES ' \
                    '(' \
@@ -37,7 +37,7 @@ INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, v
 '''
 TABLE 2 VideoSet:
 
-id , splitkind , videoname , videopath , label
+id , splitkind , videoname , videopath , label, imgnum
 
 '''
 
@@ -47,7 +47,8 @@ CREATE_TABLE_VideoSets_SQL = 'CREATE TABLE VideoSets' \
                              'splitkind VARCHAR(32),' \
                              'videoname VARCHAR(1024),' \
                              'videopath VARCHAR(1024),' \
-                             'label INTEGER' \
+                             'label INTEGER,' \
+                             'imgnum INTEGER ' \
                              ');'
 
 DB = './data/UCF101.db'
