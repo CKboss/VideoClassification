@@ -1,4 +1,4 @@
-from VideoClassification.utils.DBTools.MySql.dbSQL import CREATE_TABLE_VideoSets_SQL,CREATE_VIDEO_LABELS_SQL,CREATE_TABLE_ImgSets_SQL
+from VideoClassification.utils.DBTools.MySql.dbSQL import CREATE_TABLE_VideoSets_SQL,CREATE_VIDEO_LABELS_SQL,CREATE_TABLE_ImgSets_SQL,INSERT_NEW_IMAGE,INSERT_VIDEO_LABELS
 from VideoClassification.utils.DBTools.MySql.dbcore import ConnPool
 
 
@@ -16,6 +16,10 @@ def CreateTabels():
 
 def chuliline(line: str) -> [str,str,str,str,list,int]:
 
+    if len(line) == 0 :
+        return
+
+    line = line.split(' ')[0]
     item = line.split('\t')[0]
 
     if item[:4] == 'test':
@@ -28,7 +32,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
         labels = None
 
         if imgkind=='flow':
-            ord = int(items[2])*10000+\
+            ord = int(items[2])*1000000+\
                   int(items[3])*1000+\
                   int(items[4])
         elif imgkind=='frame':
@@ -51,7 +55,7 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
     imgkind = items[1]
 
     if imgkind=='flow':
-        ord = int(items[2])*10000+ \
+        ord = int(items[2])*1000000+ \
               int(items[3])*1000+ \
               int(items[4])
     elif imgkind=='frame':
@@ -70,13 +74,39 @@ def chuliline(line: str) -> [str,str,str,str,list,int]:
 def InsertIntoImageSets():
 
     filepath = '/home/itrc/Desktop/bucketlist_part.txt'
+    # filepath = '/home/itrc/Desktop/test_line.txt'
 
     cnt = 0
+    conn = ConnPool.connect()
+    cursor = conn.cursor()
+
     with open(filepath,'r') as f:
+
         for line in f.readlines():
             splitkind,imagepath,imgname,imgkind,videoname,labels,ord = chuliline(line)
             cnt+=1
-            # print('cnt:',cnt)
+            if labels == None:
+                templst = [splitkind,imagepath,imgname,imgkind,videoname,None,ord]
+            else:
+                templst = [splitkind,imagepath,imgname,imgkind,videoname,labels[0],ord]
+
+            try:
+                cursor.execute(INSERT_NEW_IMAGE,(templst))
+            except Exception as E:
+                print(E)
+
+            if labels!=None:
+                for l in labels:
+                    try:
+                        cursor.execute(INSERT_VIDEO_LABELS,(videoname,l))
+                    except Exception as E:
+                        print(E)
+
+    cursor.close()
+    conn.close()
+
+
+
 
 
 if __name__=='__main__':
