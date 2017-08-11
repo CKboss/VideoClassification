@@ -1,11 +1,9 @@
 import os
 import os.path
-import sys
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.utils.DataSetLoader.UCF101Loader import GaoImageID,image_id
-from VideoClassification.utils.DBTools.DB_SQL import InsertInToImages
-
+from VideoClassification.utils.DBTools.SQlite3Tools.DB_SQL import InsertInToImages
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import GaoImageID, image_id
 
 testlst = []
 

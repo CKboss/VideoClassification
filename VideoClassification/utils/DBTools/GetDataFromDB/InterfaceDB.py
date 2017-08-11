@@ -1,4 +1,4 @@
-from VideoClassification.utils.DBTools.MySql.dbcore import ConnPool
+from VideoClassification.utils.DBTools.MySqlTools.dbcore import ConnPool
 
 # 借助MYSQL的文件提取接口
 

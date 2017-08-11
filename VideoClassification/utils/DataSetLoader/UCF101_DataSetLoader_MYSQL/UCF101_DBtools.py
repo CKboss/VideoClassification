@@ -1,11 +1,10 @@
 import os
 import os.path
-import sys
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.utils.DataSetLoader.UCF101Loader import GaoImageID,image_id
-from VideoClassification.utils.DBTools.MySql.dbSQL import INSERT_NEW_IMAGE,INSERT_VIDEO_LABELS
-from VideoClassification.utils.DBTools.MySql.dbcore import ConnPool
+from VideoClassification.utils.DBTools.MySqlTools.dbSQL import INSERT_NEW_IMAGE, INSERT_VIDEO_LABELS
+from VideoClassification.utils.DBTools.MySqlTools.dbcore import ConnPool
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import GaoImageID, image_id
 
 testlst = []
 

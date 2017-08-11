@@ -10,9 +10,10 @@ except:
 import VideoClassification.Config.Config as Config
 from VideoClassification.model.densenet_twostream.densenet_twostream import dense161_temporalNet,dense201_temporalNet
 from VideoClassification.utils.Logger import Logger
-from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal
 from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
-from VideoClassification.utils.DataSetLoader.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue, \
+    GenVariables_Temporal
 
 
 ############ Config

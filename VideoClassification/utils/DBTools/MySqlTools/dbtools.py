@@ -1,5 +1,5 @@
-from VideoClassification.utils.DBTools.MySql.dbSQL import CREATE_TABLE_VideoSets_SQL,CREATE_VIDEO_LABELS_SQL,CREATE_TABLE_ImgSets_SQL,INSERT_NEW_IMAGE,INSERT_VIDEO_LABELS
-from VideoClassification.utils.DBTools.MySql.dbcore import ConnPool
+from VideoClassification.utils.DBTools.MySqlTools.dbSQL import CREATE_TABLE_VideoSets_SQL,CREATE_VIDEO_LABELS_SQL,CREATE_TABLE_ImgSets_SQL,INSERT_NEW_IMAGE,INSERT_VIDEO_LABELS
+from VideoClassification.utils.DBTools.MySqlTools.dbcore import ConnPool
 
 def CreateTabels():
 

@@ -1,8 +1,6 @@
-import random
-from VideoClassification.utils.DataSetLoader.UCF101Loader import ChooseRandomFromSameVideo,UCF101_TwoStream,UCF101_C3D,ChooseOrderFromSameVideo
 import VideoClassification.Config.Config as Config
-
-from importlib import reload
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import \
+    ChooseRandomFromSameVideo, UCF101_TwoStream, UCF101_C3D, ChooseOrderFromSameVideo
 
 cfsv = ChooseOrderFromSameVideo(file=Config.Code_root+'/data/testlist01.txt', dsl=UCF101_TwoStream)
 
@@ -34,16 +32,10 @@ lbs
 ##########################################################################################
 
 import random
-import threading
-from queue import Queue
 
 import numpy as np
 
-import torch
-from torch.autograd import Variable
-
-from VideoClassification.utils.data_pretreatment.PipeLine import GenTensors,ImgAugPipes
-from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF0101_Spatial,test_UCF0101_Temporal,test_UCF101_C3D
+from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes
 
 import matplotlib.pyplot as plt
 
