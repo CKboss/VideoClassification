@@ -108,16 +108,16 @@ def RandElastic(img):
 def RandGaussBlur(img):
     return iaa.Grayscale(alpha=(0,0.5)).augment_image(img)
 
-def PipeLineRun(img,funcs,params):
+def PipeLineRun(img,funcs,params,**kwargs):
 
     # assert len(funcs) == len(params), 'func and params showld have same length'
     Img = img.copy()
     for i,func in enumerate(funcs):
         try:
             if params[i] is None:
-                Img = func(Img)
+                Img = func(Img,**kwargs)
             else :
-                Img = func(Img,**params[i])
+                Img = func(Img,**params[i],**kwargs)
         except Exception as e:
             print(e)
             print('in PipeLineRun func: ',func,' params: ',**params[i])
@@ -238,13 +238,16 @@ def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.22
     if Norm :
         level = len(img.shape)
         assert level <= 3 , 'level should <= 3'
-        for i in range(level):
-            img[:,:,i] = (img[:,:,i] - mean[i]) / std[i]
+        if level==3:
+            for i in range(level):
+                img[:,:,i] = (img[:,:,i] - mean[i]) / std[i]
+        else:
+            img[:,:] = (img[:,:] - mean[0]) / std[0]
 
     return img
 
 
-def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True):
+def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
 
     # Gen Paramer
     p1 = random.choice([True,False])

@@ -6,28 +6,32 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 
-from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_C3D
+import VideoClassification.Config.Config as Config
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_C3D,test_UCF0101_Spatial,test_UCF0101_Temporal
 from VideoClassification.utils.DataPretreatment.PipeLine import GenTensors, ImgAugPipes
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_MYSQL.UCF101_DBtools import getFrames_imgfilepath,getTemporals_imgfilepath
 
 try:
     from cv2 import cv2
 except:
     import cv2
 
-def GenVariables_C3D(dsl,batchsize=8,**kwargs):
+def GenVariables_C3D(splitkind='test',batchsize=8,**kwargs):
 
     # TODO add requires_grad params
-    items = random.choices(dsl,k=batchsize)
 
     imgpathss = []
     labels = []
 
-    for item in items:
-        imgpathss.append(item[0])
-        labels.append(item[1])
+    while len(labels) < batchsize:
+        items = getFrames_imgfilepath(splitkind)
+        if len(items)<20:
+            continue
+        else :
+            imgpathss.append([ Config.UCF101_images_root+item[0] for item in items[:20]])
+            labels.append(items[0][1])
 
     imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112),isNormal=False)
-
     imgs = torch.transpose(imgs,1,2)
 
     imgs = Variable(imgs,**kwargs).float()
@@ -36,17 +40,21 @@ def GenVariables_C3D(dsl,batchsize=8,**kwargs):
     return imgs,labels
 
 
-def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
+def GenVariables_Temporal(splitkind='test',batchsize=8,**kwargs):
 
-    # TODO add requires_grad params
-    items = random.choices(dsl,k=batchsize)
 
     imgpathss = []
     labels = []
 
-    for item in items:
-        imgpathss.append(item[0])
-        labels.append(item[1])
+    while len(labels) < batchsize:
+        items = getTemporals_imgfilepath(splitkind)
+        if len(items)<20:
+            continue
+        else :
+            imgpathss.append([ Config.UCF101_images_root+item[0] for item in items[:20]])
+            labels.append(items[0][1])
+
+    # TODO add requires_grad params
 
     imgs = GenTensors(imgpathss,isTemporal=True)
 
@@ -55,23 +63,25 @@ def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
 
     return imgs,labels
 
-def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
+def GenVariables_Spatial(splitkind='test',batchsize=8,**kwargs):
 
     # TODO add requires_grad params
-
-    items = random.choices(dsl,k=batchsize)
 
     imgpaths = []
     labels = []
 
-    for item in items:
-        imgpaths.append(item[0])
-        labels.append(item[1])
+    while len(labels) < batchsize:
+        items = getFrames_imgfilepath(splitkind)
+        if len(items)<1:
+            continue
+        else :
+            imgpaths.append([ Config.UCF101_images_root+items[0][0]])
+            labels.append(items[0][1])
 
     imgs = []
 
     for path in imgpaths:
-        imgs.append(cv2.imread(path))
+        imgs.append(cv2.imread(path[0]))
 
     imgs = np.array(ImgAugPipes(imgs))
     imgs = Variable(torch.from_numpy(imgs),**kwargs).float()
@@ -171,6 +181,10 @@ class PictureQueue(object):
 if __name__=='__main__':
 
     dsl = test_UCF101_C3D()
+    dsl = test_UCF0101_Spatial()
+    dsl = test_UCF0101_Temporal()
+
+    itemss = random.choices(dsl,k=3)
 
     pq = PictureQueue(dsl,GenVariables_C3D,3)
 

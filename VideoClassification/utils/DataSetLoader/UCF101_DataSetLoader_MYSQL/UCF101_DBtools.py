@@ -79,8 +79,7 @@ def FindAndInsertImages():
 def getFrames_imgfilepath(splitkind='test'):
 
     '''
-    :param splitkind: test / val / train
-    :return:
+    :return: 连续的原始图片
     '''
     sql1 = 'SELECT imgname,videoname,ord FROM ImgSets WHERE splitkind="{}" and imgkind="frame" ORDER BY RAND(),videoname,RAND(),ord LIMIT 1;'.format(splitkind)
 
@@ -93,8 +92,9 @@ def getFrames_imgfilepath(splitkind='test'):
     videoname = res[1]
     ord = res[2]
 
-    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="frame" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+50)
+    sql2 = 'SELECT imgpath,first_label FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="frame" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+50)
 
+    # print(sql2)
     cursor.execute(sql2)
     res = cursor.fetchall()
 
@@ -116,7 +116,7 @@ def getTemporals_imgfilepath(splitkind='test'):
     videoname = res[1]
     ord = res[2]
 
-    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="flow" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+500)
+    sql2 = 'SELECT imgpath,first_label FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="flow" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+500)
     cursor.execute(sql2)
     res = cursor.fetchall()
 
@@ -137,7 +137,7 @@ def getMixs_imgfilepath(splitkind='test'):
     ordr = res[2]+10
 
 
-    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and imgkind="flow" and ord>{} and ord <{} ORDER BY ord;'.format(videoname,ordl,ordr)
+    sql2 = 'SELECT imgpath,first_label FROM ImgSets WHERE videoname="{}" and imgkind="flow" and ord>{} and ord <{} ORDER BY ord;'.format(videoname,ordl,ordr)
 
     cursor.execute(sql2)
     res = list(cursor.fetchall())

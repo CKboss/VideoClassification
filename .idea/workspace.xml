@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a612408b-cfe2-44b4-a47f-28ea9eb5761b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/VideoClassification.iml" afterPath="$PROJECT_DIR$/.idea/VideoClassification.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,15 +35,15 @@
       <file leaf-file-name="UCF101_DBtools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="95" column="26" lean-forward="false" selection-start-line="95" selection-start-column="26" selection-end-line="95" selection-end-column="26" />
+            <state relative-caret-position="162">
+              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
-                <marker date="1502450338318" expanded="true" signature="2531:2658" ph="SELECT imgna... ImgSets" />
-                <marker date="1502450338318" expanded="true" signature="2861:2984" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502450338318" expanded="true" signature="3196:3322" ph="SELECT imgna... ImgSets" />
-                <marker date="1502450338318" expanded="true" signature="3508:3630" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502450338318" expanded="true" signature="3799:3926" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502450338318" expanded="true" signature="4163:4266" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502454151838" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
               </folding>
             </state>
           </provider>
@@ -47,11 +52,21 @@
       <file leaf-file-name="PictureQueue.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3078">
-              <caret line="19" column="31" lean-forward="false" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
+            <state relative-caret-position="0">
+              <caret line="133" column="0" lean-forward="false" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PipeLine.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="169">
+              <caret line="221" column="21" lean-forward="true" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -111,8 +126,9 @@
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/25481c6e-a90e-40b0-838c-bb963454e0f6/console.sql" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DBTools/DB_SQL.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader_MYSQL/UCF101_DBtools.py" />
-        <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" />
       </list>
     </option>
   </component>
@@ -123,10 +139,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="98" />
-    <option name="y" value="439" />
-    <option name="width" value="1420" />
-    <option name="height" value="926" />
+    <option name="x" value="39" />
+    <option name="y" value="-4" />
+    <option name="width" value="1401" />
+    <option name="height" value="904" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -145,7 +161,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -201,6 +216,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -234,124 +250,6 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader_MYSQL" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/VideoClassification/Config/Config.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/VideoClassification/utils/DBTools/MySql/dbSQL.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/VideoClassification/utils/DBTools/MySql/dbcore.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/VideoClassification/utils/DBTools/MySql/dbtools.py</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/VideoClassification/utils/DataSetLoader_MYSQL/UCF101_DBtools.py</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/VideoClassification.iml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/misc.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/modules.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/vcs.xml</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -726,19 +624,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1920" height="1055" extended-state="6" />
+    <frame x="39" y="-4" width="1401" height="904" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32774192" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2524013" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32324722" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28787878" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28774193" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21024546" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14538746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19583778" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1614325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -747,9 +645,9 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32792208" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31385282" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -811,27 +709,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchvision-0.1.8-py3.6.egg!/torchvision/transforms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="104" column="8" lean-forward="false" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/test/test1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="25" column="33" lean-forward="false" selection-start-line="25" selection-start-column="33" selection-end-line="25" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/optim/asgd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="22" column="8" lean-forward="false" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/optim/sgd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -913,7 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="298">
           <caret line="205" column="0" lean-forward="false" selection-start-line="205" selection-start-column="0" selection-end-line="205" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -975,35 +851,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="701">
-          <caret line="334" column="0" lean-forward="false" selection-start-line="334" selection-start-column="0" selection-end-line="334" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pymysql/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="120" column="0" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="120" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pymysql/__init__.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/sqlalchemy/pool.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
           <caret line="1061" column="8" lean-forward="false" selection-start-line="1061" selection-start-column="8" selection-end-line="1061" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pymysql/cursors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="169" column="8" lean-forward="false" selection-start-line="169" selection-start-column="8" selection-end-line="169" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pymysql/cursors.py" />
     <entry file="file://$PROJECT_DIR$/VideoClassification/test/DB_Test/conn_db.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
@@ -1011,27 +867,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/05cac931-3f5c-4487-bf39-8722f6f19cbb/console.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
-          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchvision-0.1.8-py3.6.egg!/torchvision/models/inception.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="15" column="4" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchvision-0.1.8-py3.6.egg!/torchvision/models/resnet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="14" column="18" lean-forward="false" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/05cac931-3f5c-4487-bf39-8722f6f19cbb/console.sql" />
+    <entry file="jar://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchvision-0.1.8-py3.6.egg!/torchvision/models/inception.py" />
+    <entry file="jar://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torchvision-0.1.8-py3.6.egg!/torchvision/models/resnet.py" />
     <entry file="file://$PROJECT_DIR$/VideoClassification/model/FineTurnNetWork/FineTurn_VGG16.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1054,20 +892,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="das://table:/551e888/05cac931-3f5c-4487-bf39-8722f6f19cbb/mmflow.ImgSets">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/003ecc0a-6c4d-480d-addf-7b9d0ce34d37/console.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="das://table:/551e888/05cac931-3f5c-4487-bf39-8722f6f19cbb/mmflow.ImgSets" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/003ecc0a-6c4d-480d-addf-7b9d0ce34d37/console.sql" />
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/25481c6e-a90e-40b0-838c-bb963454e0f6/console.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -1087,7 +913,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="23" lean-forward="false" selection-start-line="0" selection-start-column="23" selection-end-line="0" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1108,31 +933,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/UCF101Loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3456">
-          <caret line="149" column="24" lean-forward="false" selection-start-line="149" selection-start-column="24" selection-end-line="149" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DBTools/MySqlTools/dbSQL.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding>
-            <marker date="1502442133818" expanded="true" signature="263:547" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502442133818" expanded="true" signature="263:654" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502442133818" expanded="true" signature="263:706" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502442133818" expanded="true" signature="263:749" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502442133818" expanded="true" signature="263:782" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502442133818" expanded="true" signature="861:1085" ph="CREATE TABLE... VideoLabels" />
-            <marker date="1502442133818" expanded="true" signature="861:1178" ph="CREATE TABLE... VIDEO_LABEL" />
-            <marker date="1502442133818" expanded="true" signature="1297:1736" ph="CREATE TABLE... VideoSets" />
-            <marker date="1502442133818" expanded="true" signature="1761:1950" ph="INSERT INTO ImgSets... " />
-            <marker date="1502442133818" expanded="true" signature="1977:2000" ph="INSERT INTO VideoLabels... " />
-            <marker date="1502442133818" expanded="true" signature="1977:2062" ph="INSERT INTO VideoLabels... " />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1140,7 +944,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="480">
           <caret line="20" column="8" lean-forward="false" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1148,11 +951,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1824">
           <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-          <folding>
-            <marker date="1502431967122" expanded="true" signature="320:854" ph="CREATE TABLE... ImgSets" />
-            <marker date="1502431967122" expanded="true" signature="881:1056" ph="INSERT INTO ImgSets... " />
-            <marker date="1502431967122" expanded="true" signature="1188:1636" ph="CREATE TABLE... VideoSets" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1160,9 +958,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1344">
           <caret line="16" column="4" lean-forward="false" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1170,29 +965,68 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-72">
           <caret line="18" column="4" lean-forward="false" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/UCF101Loader.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="712">
+          <caret line="149" column="24" lean-forward="false" selection-start-line="149" selection-start-column="24" selection-end-line="149" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="95" column="26" lean-forward="false" selection-start-line="95" selection-start-column="26" selection-end-line="95" selection-end-column="26" />
+        <state relative-caret-position="162">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <marker date="1502450338318" expanded="true" signature="2531:2658" ph="SELECT imgna... ImgSets" />
-            <marker date="1502450338318" expanded="true" signature="2861:2984" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502450338318" expanded="true" signature="3196:3322" ph="SELECT imgna... ImgSets" />
-            <marker date="1502450338318" expanded="true" signature="3508:3630" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502450338318" expanded="true" signature="3799:3926" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502450338318" expanded="true" signature="4163:4266" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502454151838" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="169">
+          <caret line="221" column="21" lean-forward="true" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3078">
-          <caret line="19" column="31" lean-forward="false" selection-start-line="19" selection-start-column="31" selection-end-line="19" selection-end-column="31" />
+        <state relative-caret-position="0">
+          <caret line="133" column="0" lean-forward="false" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
