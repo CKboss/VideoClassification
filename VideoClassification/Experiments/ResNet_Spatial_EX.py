@@ -9,11 +9,10 @@ except:
 
 import VideoClassification.Config.Config as Config
 from VideoClassification.model.resnet_twostream.resnet_twostream import resnet152_SpatialNet,resnet101_SpatialNet
-from VideoClassification.utils.Logger import Logger
-from VideoClassification.utils.DataSetLoader.UCF101Loader import train_UCF0101_Spatial,test_UCF0101_Spatial
-from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
-from VideoClassification.utils.DataSetLoader.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
-
+from VideoClassification.utils.Others.Logger import Logger
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Spatial,test_UCF0101_Spatial
+from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue,GenVariables_Spatial
 
 ############ Config
 

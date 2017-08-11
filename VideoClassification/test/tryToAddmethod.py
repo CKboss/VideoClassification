@@ -1,7 +1,7 @@
-from VideoClassification.model.vgg_twostream.VGG16 import vgg16
-from VideoClassification.utils.toolkits import try_to_load_state_dict
-
 import types
+
+from VideoClassification.model.vgg_twostream.VGG16 import vgg16
+from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
 module = vgg16()
 

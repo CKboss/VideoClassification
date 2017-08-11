@@ -3,12 +3,11 @@ import threading
 from queue import Queue
 
 import numpy as np
-
 import torch
 from torch.autograd import Variable
 
-from VideoClassification.utils.data_pretreatment.PipeLine import GenTensors,ImgAugPipes
-from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF0101_Spatial,test_UCF0101_Temporal,test_UCF101_C3D
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_C3D
+from VideoClassification.utils.DataPretreatment.PipeLine import GenTensors, ImgAugPipes
 
 try:
     from cv2 import cv2

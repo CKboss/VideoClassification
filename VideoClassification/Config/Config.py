@@ -42,6 +42,8 @@ elif WHERE=='SERVER':
     LOAD_SAVED_MODE_PATH = None
     LOAD_SAVED_MODE_PATH_2 = None
 
+    MySQL_Config = dict( host='10.1.1.202', user='root', password='123456', db='ucf101', charset='utf8', autocommit=True )
+
 elif WHERE=='DOCKER':
     raise NotImplementedError
 else:

@@ -1,5 +1,7 @@
-from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo,UCF101_TwoStream
-from VideoClassification.utils.DataSetLoader.PictureQueue import GenVariables_VideoSpatialAndTemporal
+from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream
+
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import \
+    GenVariables_VideoSpatialAndTemporal
 
 dsl = test_UCF101_ChooseOrderFromSameVideo(dsl=UCF101_TwoStream)
 def gen():
