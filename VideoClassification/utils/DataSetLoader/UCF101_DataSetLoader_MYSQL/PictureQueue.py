@@ -91,6 +91,8 @@ def GenVariables_Spatial(splitkind='test',batchsize=8,**kwargs):
 
 def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
+    # TODO Need To Change
+
     itemss = random.choices(dsl,k=batchsize)
 
     ret_imgs= []
