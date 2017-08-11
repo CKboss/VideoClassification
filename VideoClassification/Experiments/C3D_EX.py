@@ -8,9 +8,9 @@ except:
 
 import VideoClassification.Config.Config as Config
 from VideoClassification.model.C3D.C3D import C3D
-from VideoClassification.utils.Logger import Logger
+from VideoClassification.utils.Others.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_C3D,train_UCF101_C3D
-from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
+from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue,GenVariables_C3D
 
 

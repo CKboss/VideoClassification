@@ -1,14 +1,8 @@
+import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 
-from torchvision.models import densenet161
-from torchvision.models import inception_v3
-
-import numpy as np
-from VideoClassification.utils.toolkits import accuracy
-
+from VideoClassification.utils.Others.toolkits import accuracy
 
 out = np.array([[0.1,-0.1,0],[0.1,-0.2,0.3],[1,-0.1,9]])
 

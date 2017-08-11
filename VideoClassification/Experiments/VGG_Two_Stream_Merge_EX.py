@@ -1,14 +1,14 @@
 import numpy as np
 import torch
 from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream
+from VideoClassification.utils.Logger import Logger
 from torch.autograd import Variable
 
 from VideoClassification.Config import Config as Config
 from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Spatial_Net, VGG_Temporal_Net
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import \
     GenVariables_VideoSpatialAndTemporal
-from VideoClassification.utils.Logger import Logger
-from VideoClassification.utils.toolkits import accuracy
+from VideoClassification.utils.Others.toolkits import accuracy
 
 ############ Config
 

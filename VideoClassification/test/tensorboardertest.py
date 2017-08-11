@@ -1,6 +1,6 @@
-from VideoClassification.utils.Logger import Logger
-
 import math
+
+from VideoClassification.utils.Others.Logger import Logger
 
 log = Logger("/tmp/runs/r3")
 

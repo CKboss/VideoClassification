@@ -7,7 +7,7 @@ import torch
 from torch.autograd import Variable
 
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_C3D
-from VideoClassification.utils.data_pretreatment.PipeLine import GenTensors, ImgAugPipes
+from VideoClassification.utils.DataPretreatment.PipeLine import GenTensors, ImgAugPipes
 
 try:
     from cv2 import cv2

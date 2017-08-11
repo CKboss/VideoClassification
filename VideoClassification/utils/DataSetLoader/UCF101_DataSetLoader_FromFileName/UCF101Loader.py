@@ -296,7 +296,7 @@ if __name__=='__main__':
                 break
         break
 
-    from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes,Imread_lru
+    from VideoClassification.utils.DataPretreatment.PipeLine import ImgAugPipes,Imread_lru
     import matplotlib.pyplot as plt
 
 

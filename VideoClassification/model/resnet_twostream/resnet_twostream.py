@@ -2,13 +2,11 @@ import types
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 
+from VideoClassification.model.resnet_twostream.resnet import resnet101, resnet152
+from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
-import VideoClassification.Config.Config as Config
-from VideoClassification.model.resnet_twostream.resnet import resnet101,resnet152
-from VideoClassification.utils.toolkits import try_to_load_state_dict
 
 class resnet_TwoStreamNet(nn.Module):
 

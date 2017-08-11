@@ -10,9 +10,9 @@ except:
 
 import VideoClassification.Config.Config as Config
 from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_Net,VGG_Spatial_Net
-from VideoClassification.utils.Logger import Logger
+from VideoClassification.utils.Others.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal,train_UCF0101_Spatial,test_UCF0101_Spatial
-from VideoClassification.utils.toolkits import accuracy,try_to_load_state_dict
+from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
 
 

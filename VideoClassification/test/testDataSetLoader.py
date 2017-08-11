@@ -35,7 +35,7 @@ import random
 
 import numpy as np
 
-from VideoClassification.utils.data_pretreatment.PipeLine import ImgAugPipes
+from VideoClassification.utils.DataPretreatment.PipeLine import ImgAugPipes
 
 import matplotlib.pyplot as plt
 
