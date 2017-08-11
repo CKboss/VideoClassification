@@ -19,7 +19,7 @@ CREATE_TABLE_ImgSets_SQL = 'CREATE TABLE ImgSets' \
                            'ID INTEGER PRIMARY KEY AUTO_INCREMENT,' \
                            'splitkind VARCHAR(32),' \
                            'imgpath VARCHAR(512),' \
-                           'imgname VARCHAR(512) UNIQUE ,' \
+                           'imgname VARCHAR(512) ,' \
                            'imgkind VARCHAR(32),' \
                            'videoname VARCHAR(512),' \
                            'first_label INTEGER,' \

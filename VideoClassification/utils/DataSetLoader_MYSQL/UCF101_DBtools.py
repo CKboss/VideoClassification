@@ -4,7 +4,8 @@ import sys
 
 import VideoClassification.Config.Config as Config
 from VideoClassification.utils.DataSetLoader.UCF101Loader import GaoImageID,image_id
-from VideoClassification.utils.DBTools.MySql.dbSQL import INSERT_NEW_IMAGE
+from VideoClassification.utils.DBTools.MySql.dbSQL import INSERT_NEW_IMAGE,INSERT_VIDEO_LABELS
+from VideoClassification.utils.DBTools.MySql.dbcore import ConnPool
 
 testlst = []
 
@@ -41,16 +42,19 @@ def chuli(line):
     return splitkind,imgkind,videoname,label,pathprefix
 
 
-chuli(line)
+# chuli(line)
 
 
 # , splitkind [train/test/val] , imgfilepath [] , imgfilename [] \
-#     imgkind [frame/optial] , video_name , label
+#     imgkind [frame/optial] , video_name , label , ord
 
 def FindAndInsertImages():
 
     GaoImageID()
     getTrain_dict()
+
+    conn = ConnPool.connect()
+    cursor = conn.cursor()
 
     for root,dirs,files in os.walk(Config.UCF101_images_root):
         if len(files) > 0:
@@ -59,7 +63,17 @@ def FindAndInsertImages():
             for file in files:
                 splitkind,imgkind,videoname,label,prefixpath = chuli(root)
                 imgname = file
+                ord = int(imgname[:-4].split('_')[-1])*2
+                if imgkind=='flow' and imgname[:6]=='flow_y':
+                    ord = ord+1
                 imgpath = prefixpath + '/' + file
-                need_to_insert.append([splitkind,imgpath,imgname,imgkind,videoname,label])
-            InsertInToImages(need_to_insert)
+                need_to_insert.append([splitkind,imgpath,imgname,imgkind,videoname,label,ord])
+            for item in need_to_insert:
+                # sql = INSERT_NEW_IMAGE%(splitkind,imgpath,imgname,imgkind,videoname,label,ord)
+                try :
+                    cursor.execute(INSERT_NEW_IMAGE,item)
+                    cursor.execute(INSERT_VIDEO_LABELS,(videoname,label))
+                except Exception as E:
+                    pass
+
 
