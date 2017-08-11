@@ -1,6 +1,7 @@
 import pymysql
 import sqlalchemy.pool as DBPool
 
+import VideoClassification.Config.Config as Config
 
 # def getConnection():
 #     conn = pymysql.connect(
@@ -26,14 +27,7 @@ import sqlalchemy.pool as DBPool
 #     return conn
 
 def getConnection():
-    conn = pymysql.connect(
-        host='10.1.1.202',
-        user='root',
-        password='123456',
-        db='ucf101',
-        charset='utf8',
-        autocommit=True,
-    )
+    conn = pymysql.connect( **Config.MySQL_Config )
     return conn
 
 ConnPool = DBPool.QueuePool(getConnection, pool_size=1000, max_overflow=2000, timeout=25)
@@ -41,5 +35,5 @@ ConnPool = DBPool.QueuePool(getConnection, pool_size=1000, max_overflow=2000, ti
 if __name__=='__main__':
     conn = ConnPool.connect()
     cur = conn.cursor()
-    ans = cur.execute('')
+    ans = cur.execute('SELECT count(*) from ImgSets;')
     print(cur.fetchall())

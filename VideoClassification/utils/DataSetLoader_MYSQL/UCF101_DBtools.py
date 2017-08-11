@@ -77,3 +77,77 @@ def FindAndInsertImages():
                     pass
 
 
+def getFrames_imgfilepath(splitkind='test'):
+
+    '''
+    :param splitkind: test / val / train
+    :return:
+    '''
+    sql1 = 'SELECT imgname,videoname,ord FROM ImgSets WHERE splitkind="{}" and imgkind="frame" ORDER BY RAND(),videoname,RAND(),ord LIMIT 1;'.format(splitkind)
+
+    conn = ConnPool.connect()
+    cursor = conn.cursor()
+    cursor.execute(sql1)
+    res = cursor.fetchone()
+
+    # print(res)
+    videoname = res[1]
+    ord = res[2]
+
+    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="frame" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+50)
+
+    cursor.execute(sql2)
+    res = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return res
+
+
+def getTemporals_imgfilepath(splitkind='test'):
+
+    sql1 = 'SELECT imgname,videoname,ord FROM ImgSets WHERE splitkind="{}" and imgkind="flow" ORDER BY RAND(),videoname,RAND(),ord LIMIT 1;'.format(splitkind)
+
+    conn = ConnPool.connect()
+    cursor = conn.cursor()
+    cursor.execute(sql1)
+    res = cursor.fetchone()
+
+    videoname = res[1]
+    ord = res[2]
+
+    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and splitkind="{}" and imgkind="flow" and ord>={} and ord<{} ORDER BY ord;'.format(videoname,splitkind,ord,ord+500)
+    cursor.execute(sql2)
+    res = cursor.fetchall()
+
+    return res
+
+def getMixs_imgfilepath(splitkind='test'):
+
+    sql1 = 'SELECT imgpath,videoname,ord FROM ImgSets WHERE splitkind="{}" and imgkind="frame" ORDER BY RAND(),videoname,RAND(),ord LIMIT 1;'.format(splitkind)
+
+    conn = ConnPool.connect()
+    cursor = conn.cursor()
+    cursor.execute(sql1)
+    res = cursor.fetchone()
+
+    picturename = res[0]
+    videoname = res[1]
+    ordl = res[2]-10
+    ordr = res[2]+10
+
+
+    sql2 = 'SELECT imgpath FROM ImgSets WHERE videoname="{}" and imgkind="flow" and ord>{} and ord <{} ORDER BY ord;'.format(videoname,ordl,ordr)
+
+    cursor.execute(sql2)
+    res = list(cursor.fetchall())
+
+    return picturename,res
+
+def getAllImgPath_From_Video():
+    pass
+
+def getVideoPictures_imgfilepathss():
+    pass
+

@@ -110,7 +110,6 @@ def InsertIntoImageSets():
 
 
 
-
 if __name__=='__main__':
 
     line1 = 'test--1-lsvc000005.avi_frame_0_21.jpg	10483	FlRYhnjGBGX_Hfrb4HxfQT4BXG6o	15023249189263833	image/jpeg	0'
