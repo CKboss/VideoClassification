@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a612408b-cfe2-44b4-a47f-28ea9eb5761b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/VideoClassification.iml" afterPath="$PROJECT_DIR$/.idea/VideoClassification.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,30 +27,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="UCF101_DBtools.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UCF101_DBtools.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
+            <state relative-caret-position="-2088">
               <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
-                <marker date="1502454151838" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
-                <marker date="1502454151838" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502454151838" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
-                <marker date="1502454151838" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502454151838" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
-                <marker date="1502454151838" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PictureQueue.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="133" column="0" lean-forward="false" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#13#0" expanded="true" />
+                <marker date="1502455348847" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
+                <marker date="1502455348847" expanded="true" signature="4198:4287" ph="SELECT imgpa... ImgSets" />
               </folding>
             </state>
           </provider>
@@ -65,8 +49,22 @@
         <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="169">
-              <caret line="221" column="21" lean-forward="true" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
-              <folding />
+              <caret line="221" column="21" lean-forward="false" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+              <folding>
+                <marker date="1502455348847" expanded="true" signature="5501:6802" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="5690:6046" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="5714:6045" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6056:6362" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6080:6361" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6388:6520" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6412:6505" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6635:6669" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6706:6775" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6842:7162" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="6905:7098" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="7206:7481" ph="..." />
+                <marker date="1502455348847" expanded="true" signature="7677:7738" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -606,7 +604,14 @@
       <option name="project" value="LOCAL" />
       <updated>1502443099223</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="MYSQL_DataSetLoader">
+      <created>1502455187302</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1502455187302</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -625,15 +630,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="39" y="-4" width="1401" height="904" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32774192" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32774192" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32324722" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28774193" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.55741936" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14538746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19583778" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -642,13 +646,27 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870865" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32774192" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32324722" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28774193" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31385282" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14538746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19583778" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1614325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32870865" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -700,7 +718,8 @@
     <MESSAGE value="merge dataset SQL" />
     <MESSAGE value="...." />
     <MESSAGE value="代码重构" />
-    <option name="LAST_COMMIT_MESSAGE" value="代码重构" />
+    <MESSAGE value="MYSQL_DataSetLoader" />
+    <option name="LAST_COMMIT_MESSAGE" value="MYSQL_DataSetLoader" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -888,7 +907,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
           <caret line="37" column="0" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -905,7 +923,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="840">
           <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -972,7 +989,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -980,7 +996,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -996,21 +1011,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
+        <state relative-caret-position="-2088">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <marker date="1502454151838" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
-            <marker date="1502454151838" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502454151838" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
-            <marker date="1502454151838" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502454151838" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
-            <marker date="1502454151838" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="2498:2625" ph="SELECT imgna... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="2828:2963" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="3193:3319" ph="SELECT imgna... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="3505:3639" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="3808:3935" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="4172:4287" ph="SELECT imgpa... ImgSets" />
+            <marker date="1502455348847" expanded="true" signature="4198:4287" ph="SELECT imgpa... ImgSets" />
           </folding>
         </state>
       </provider>
@@ -1018,8 +1033,22 @@
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="169">
-          <caret line="221" column="21" lean-forward="true" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
-          <folding />
+          <caret line="221" column="21" lean-forward="false" selection-start-line="221" selection-start-column="21" selection-end-line="221" selection-end-column="21" />
+          <folding>
+            <marker date="1502455348847" expanded="true" signature="5501:6802" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="5690:6046" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="5714:6045" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6056:6362" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6080:6361" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6388:6520" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6412:6505" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6635:6669" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6706:6775" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6842:7162" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="6905:7098" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="7206:7481" ph="..." />
+            <marker date="1502455348847" expanded="true" signature="7677:7738" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
