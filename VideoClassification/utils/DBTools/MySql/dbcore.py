@@ -14,12 +14,23 @@ import sqlalchemy.pool as DBPool
 #     return conn
 
 
+# def getConnection():
+#     conn = pymysql.connect(
+#         host='115.231.182.84',
+#         user='root',
+#         password='ava123',
+#         db='mmflow',
+#         charset='utf8',
+#         autocommit=True,
+#     )
+#     return conn
+
 def getConnection():
     conn = pymysql.connect(
-        host='115.231.182.84',
+        host='10.1.1.202',
         user='root',
-        password='ava123',
-        db='mmflow',
+        password='123456',
+        db='ucf101',
         charset='utf8',
         autocommit=True,
     )
