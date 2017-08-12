@@ -105,10 +105,10 @@ def Resenet152_SpatialNet_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.2
-    attenuation = 0.5
+    learningrate = 0.001
+    attenuation = 0.1
 
-    model = resnet152_SpatialNet(pretrained=False,dropout=0.4).cuda()
+    model = resnet152_SpatialNet(pretrained=True,dropout=0.4).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -119,8 +119,8 @@ def Resenet152_SpatialNet_Run():
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial(),batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -132,7 +132,7 @@ def Resenet152_SpatialNet_Run():
             imgs,labels = pq_train.Get()
 
             model.zero_grad()
-            pred =  model(imgs)
+            pred = model(imgs)
             loss = lossfunc(pred,labels)
 
             logger.scalar_summary('ResNet152/Spatial/train_loss',loss.data[0],cnt)
@@ -143,7 +143,7 @@ def Resenet152_SpatialNet_Run():
 
             print('Spatial epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%20 == 0:
+            if cnt%25 == 0:
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
