@@ -30,7 +30,6 @@ elif WHERE=='SERVER':
     ExWorkSpace = Server_Root_Path+'EX/'
 
     LOGSpace = Server_Root_Path+'LOG/'
-
     Code_root = Server_Root_Path+'Code/VideoClassification/'
 
     UCF101_images_root = Server_Root_Path+'UCF101_images/'
