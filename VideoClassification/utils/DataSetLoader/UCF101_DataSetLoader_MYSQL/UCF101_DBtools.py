@@ -84,7 +84,6 @@ def getFrames_imgfilepath(splitkind='test'):
     conn = ConnPool.connect()
     cursor = conn.cursor()
     cursor.execute(sql1)
-    cursor.executemany()
     res = cursor.fetchone()
 
     # print(res)

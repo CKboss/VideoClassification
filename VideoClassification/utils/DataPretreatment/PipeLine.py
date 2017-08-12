@@ -247,7 +247,7 @@ def Normalize(img,Norm=True,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225
     return img
 
 
-def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
+# def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
 
     # Gen Paramer
     # p1 = random.choice([True,False])
@@ -287,9 +287,11 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
     #     rets.append(Img)
     # return np.array(rets)
 
+
+def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
     # 数据增强
     ParamerList = [
-        (RandFlipUD,None),
+        # (RandFlipUD,None),
         (RandFlipLR,None),
         # (RandAdd,None),
         (RandMultiply,None),
@@ -308,31 +310,31 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
     img = PipeLineRun(img,funcs,params)
     img = ReSize(img,outputshape)
 
+    # split img into imgs
+    imgs = []
+    for i in range(n):
+        part = img[:,:,i*3:i*3+3]
+        imgs.append(part.copy())
+
+
+    # if isTemporal == True:
+    #     for i in range(n):
+    #         imgs[i] = ToBlackAndWhite(imgs[i])
+
     if isNormal == True:
         for i in range(n):
-            part = img[:,:,i*3:i*3+3]
-            part = part.copy()
-            part = Normalize(part,Norm=True)
-            img[:,:,i*3:i*3+3] = part
-
-    ret = img
+            imgs[i] = Normalize(imgs[i])
 
     if isTemporal == True:
-        ret = None
         for i in range(n):
-            part = img[:,:,i*3:i*3+3]
-            part = part.copy()
-            part = ToBlackAndWhite(part)
-            part = part[:,:,np.newaxis]
-            if ret is None:
-                ret = part
-            else :
-                ret = np.concatenate((ret,part),level-1)
-
-    # fit to torch
-    ret = fitToPytorch(ret)
-
-    assert ret is not None
+            imgs[i] = imgs[i][:,:,0]
+        imgs = np.array(imgs)
+        return imgs
+    else :
+        # fit to torch
+        ret = np.array(imgs)
+        # ret = fitToPytorch(ret)
+        ret = np.transpose(ret,(0,3,2,1))
 
     return ret
 
@@ -355,7 +357,7 @@ def GenTensors(imgpathss,**kwargs) :
         imgss.append(imgs)
 
     imgss = np.array(imgss)
-    return torch.from_numpy(imgss)
+    return torch.from_numpy(imgss).float()
 
 if __name__=='__main__':
 

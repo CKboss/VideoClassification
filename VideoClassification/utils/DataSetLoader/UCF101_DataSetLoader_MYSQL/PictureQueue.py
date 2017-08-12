@@ -18,8 +18,6 @@ except:
 
 def GenVariables_C3D(splitkind='test',batchsize=8,**kwargs):
 
-    # TODO add requires_grad params
-
     imgpathss = []
     labels = []
 
@@ -33,6 +31,8 @@ def GenVariables_C3D(splitkind='test',batchsize=8,**kwargs):
 
     imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112),isNormal=False)
     imgs = torch.transpose(imgs,1,2)
+
+    # TODO check bug
 
     imgs = Variable(imgs,**kwargs).float()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
@@ -57,6 +57,8 @@ def GenVariables_Temporal(splitkind='test',batchsize=8,**kwargs):
     # TODO add requires_grad params
 
     imgs = GenTensors(imgpathss,isTemporal=True)
+
+    # imgs.size() => (8x20x224x224)
 
     imgs = Variable(imgs,**kwargs).float()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
@@ -84,71 +86,17 @@ def GenVariables_Spatial(splitkind='test',batchsize=8,**kwargs):
         imgs.append(cv2.imread(path[0]))
 
     imgs = np.array(ImgAugPipes(imgs))
+    # imgs.size() => (8x3x224x224)
+
     imgs = Variable(torch.from_numpy(imgs),**kwargs).float()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
 
     return imgs,labels
 
 def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
-
     # TODO Need To Change
+    raise NotImplementedError
 
-    itemss = random.choices(dsl,k=batchsize)
-
-    ret_imgs= []
-    ret_labels = []
-
-    for b in range(batchsize):
-
-        # 8x21 picture paths and 8 same labels
-        imgpathss,labels = itemss[b]
-
-        n = len(labels)
-        m = len(imgpathss[0])
-
-        tmp_ret_imgs= []
-        tmp_ret_labels = []
-
-        for i in range(n):
-            # every batch has 8~10 pictures
-
-            imgpaths = imgpathss[i]
-            # first img is origin image
-            origin_img = cv2.imread(imgpaths[0])
-
-            # the other is temporal image
-            temporal_imgs = []
-            for j in range(1,m):
-                temporal_imgs.append(cv2.imread(imgpaths[j]))
-
-            # OK now concate them
-            imgs = [origin_img] + temporal_imgs
-            imgs = np.array(imgs)
-
-            # use img Aug on them
-            # imgs.shape is (21,3,224,224)
-
-            imgs = ImgAugPipes(imgs)
-
-            # now just change it to the tensor and add to ret_imgs
-
-            temp_array = imgs[0,:,:,:]
-
-            for j in range(1,m):
-                t = imgs[j,0,:,:]
-                t = np.reshape(t,(1,224,224))
-                temp_array = np.vstack((temp_array,t))
-
-            tmp_ret_imgs.append(temp_array)
-            tmp_ret_labels.append(labels[0])
-
-        ret_imgs.append(tmp_ret_imgs)
-        ret_labels.append(tmp_ret_labels)
-
-    ret_imgs = np.array(ret_imgs)
-    ret_labels = np.array(ret_labels)
-
-    return ret_imgs,ret_labels
 
 
 class PictureQueue(object):
