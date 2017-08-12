@@ -31,10 +31,10 @@ def Resenet101_SpatialNet_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.2
-    attenuation = 0.5
+    learningrate = 0.001
+    attenuation = 0.1
 
-    model = resnet101_SpatialNet(pretrained=False,dropout=0.95).cuda()
+    model = resnet101_SpatialNet(pretrained=True,dropout=0.95).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -108,7 +108,7 @@ def Resenet152_SpatialNet_Run():
     learningrate = 0.001
     attenuation = 0.1
 
-    model = resnet152_SpatialNet(pretrained=True,dropout=0.4).cuda()
+    model = resnet152_SpatialNet(pretrained=True).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types

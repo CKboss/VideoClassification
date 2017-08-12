@@ -25,16 +25,16 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 86
+batchsize = 88
 
 ############
 
 def ResNet101_Temporal_Net_Run():
 
-    epochs = 80
-    loops = 2000
-    learningrate = 0.1
-    attenuation = 0.5
+    epochs = 121
+    loops = 2001
+    learningrate = 0.001
+    attenuation = 0.1
 
     model = resnet101_TemporalNet(pretrained=False,dropout=0.4).cuda()
 
@@ -105,12 +105,12 @@ def ResNet101_Temporal_Net_Run():
 
 def ResNet152_Temporal_Net_Run():
 
-    epochs = 80
-    loops = 2000
-    learningrate = 0.2
-    attenuation = 0.5
+    epochs = 121
+    loops = 2001
+    learningrate = 0.001
+    attenuation = 0.1
 
-    model = resnet152_TemporalNet(pretrained=False,dropout=0.4).cuda()
+    model = resnet152_TemporalNet(pretrained=True,dropout=0.4).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types

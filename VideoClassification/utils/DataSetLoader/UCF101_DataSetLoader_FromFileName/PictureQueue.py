@@ -1,5 +1,6 @@
 import random
 import threading
+from multiprocessing import Process
 from queue import Queue
 
 import numpy as np
@@ -147,11 +148,17 @@ class PictureQueue(object):
         self.worker = worker
         self.q = Queue(mxsize)
         self.batchsize = batchsize
-        self.ts = []
+        # self.ts = []
+        # for i in range(worker):
+        #     self.ts.append(threading.Thread(target=self.pr,name='Producter_{}'.format(i)))
+        # for i in range(worker):
+        #     self.ts[i].start()
+
+        self.ps = []
         for i in range(worker):
-            self.ts.append(threading.Thread(target=self.pr,name='Producter_{}'.format(i)))
+            self.ps.append(Process(target=self.pr,name='Producter_{}'.format(i)))
         for i in range(worker):
-            self.ts[i].start()
+            self.ps[i].start()
 
     def pr(self):
         while True:

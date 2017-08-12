@@ -302,10 +302,9 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
     params = [ x[1] for x in ParamerList ]
     img = imgs[0]
 
-    level = len(img.shape)
     n = len(imgs)
     for i in range(1,n):
-        img = np.concatenate((img,imgs[i]),level-1)
+        img = np.concatenate((img,imgs[i]),axis=2)
 
     img = PipeLineRun(img,funcs,params)
     img = ReSize(img,outputshape)
