@@ -67,13 +67,11 @@ def FindAndInsertImages():
                     ord = ord+1
                 imgpath = prefixpath + '/' + file
                 need_to_insert.append([splitkind,imgpath,imgname,imgkind,videoname,label,ord])
-            for item in need_to_insert:
-                # sql = INSERT_NEW_IMAGE%(splitkind,imgpath,imgname,imgkind,videoname,label,ord)
-                try :
-                    cursor.execute(INSERT_NEW_IMAGE,item)
-                    cursor.execute(INSERT_VIDEO_LABELS,(videoname,label))
-                except Exception as E:
-                    pass
+            try :
+                cursor.executemany(INSERT_NEW_IMAGE,need_to_insert)
+                cursor.execute(INSERT_VIDEO_LABELS,(videoname,label))
+            except Exception as E:
+                print('ERROR!',E)
 
 
 def getFrames_imgfilepath(splitkind='test'):
@@ -86,6 +84,7 @@ def getFrames_imgfilepath(splitkind='test'):
     conn = ConnPool.connect()
     cursor = conn.cursor()
     cursor.execute(sql1)
+    cursor.executemany()
     res = cursor.fetchone()
 
     # print(res)

@@ -16,7 +16,7 @@ import imgaug as ia
 各个部分通过img连接
 """
 
-@lru_cache(maxsize=8096)
+@lru_cache(maxsize=8192)
 def Imread_lru(imgfilepath):
     return cv2.imread(imgfilepath)
 
@@ -250,33 +250,43 @@ def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.22
 def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
 
     # Gen Paramer
-    p1 = random.choice([True,False])
+    # p1 = random.choice([True,False])
     # p2 = random.choice([True,False])
-    p3 = random.choice([0,1,2,3,4])
-    p4 = random.choice([0,1,2,3])
+    # p3 = random.choice([0,1,2,3,4])
+    # p4 = random.choice([0,1,2,3])
 
-    if isNormal==True:
-        ParamerList = [(ReSize,{'outshape':(256,256)}),
-                       (FlipLR,{'flag':p1}),
-                       # (FlipUD,{'flag':p2}),
-                       (CutImg,{'kind':p3,'kindw':p4}),
-                       (ReSize,{'outshape':outputshape}),
-                       (Normalize,{'Norm':True}),
-                       (fitToPytorch,None)]
-    else:
-        ParamerList = [(ReSize,{'outshape':(256,256)}),
-                       (FlipLR,{'flag':p1}),
-                       # (FlipUD,{'flag':p2}),
-                       (CutImg,{'kind':p3,'kindw':p4}),
-                       (ReSize,{'outshape':outputshape}),
-                       (fitToPytorch,None)]
-
-    if isTemporal==True:
-        ParamerList = [(ToBlackAndWhite,None),
-                       # (hisEqulColor,None),
-                       ] + ParamerList
+    # if isNormal==True:
+    #     ParamerList = [(ReSize,{'outshape':(256,256)}),
+    #                    (FlipLR,{'flag':p1}),
+    #                    # (FlipUD,{'flag':p2}),
+    #                    (CutImg,{'kind':p3,'kindw':p4}),
+    #                    (ReSize,{'outshape':outputshape}),
+    #                    (Normalize,{'Norm':True}),
+    #                    (fitToPytorch,None)]
+    # else:
+    #     ParamerList = [(ReSize,{'outshape':(256,256)}),
+    #                    (FlipLR,{'flag':p1}),
+    #                    # (FlipUD,{'flag':p2}),
+    #                    (CutImg,{'kind':p3,'kindw':p4}),
+    #                    (ReSize,{'outshape':outputshape}),
+    #                    (fitToPytorch,None)]
+    #
+    #
+    # if isTemporal==True:
+    #     ParamerList = [(ToBlackAndWhite,None),
+    #                    # (hisEqulColor,None),
+    #                    ] + ParamerList
 
     # Run in PipeLine
+
+
+    ParamerList = []
+
+    if isNormal == True:
+        ParamerList = [ (Normalize,{'Norm':True}), ] + ParamerList
+
+    if isTemporal==True:
+        pass
 
     funcs = [ x[0] for x in ParamerList ]
     params = [ x[1] for x in ParamerList ]
@@ -286,11 +296,24 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
 
     rets = []
 
-    for img in imgs:
-        Img = PipeLineRun(img,funcs,params)
-        rets.append(Img)
 
-    return np.array(rets)
+    # for img in imgs:
+    #     Img = PipeLineRun(img,funcs,params)
+    #     rets.append(Img)
+    # return np.array(rets)
+
+    img = imgs[0]
+    level = len(img.shape)
+
+    for i in range(1,len(imgs)):
+        img = np.concatenate((img,imgs[i]),level-1)
+
+    img = PipeLineRun(img,funcs,params)
+
+    # fit to torch
+
+    return img
+
 
 
 
@@ -333,6 +356,5 @@ if __name__=='__main__':
 
     imgpathss = [imgpaths,imgpaths,imgpaths]
     timgs = GenTensors(imgpathss,isTemporal=True)
-
 
 
