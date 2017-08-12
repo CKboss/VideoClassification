@@ -226,7 +226,7 @@ def hisEqulColor(img):
     return img
 
 @jit
-def Normalize(img,Norm=False,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+def Normalize(img,Norm=True,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
 
     cv2.normalize(img,img,0,255,cv2.NORM_MINMAX)
     img = img / 255.
@@ -279,40 +279,62 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
 
     # Run in PipeLine
 
-
-    ParamerList = []
-
-    if isNormal == True:
-        ParamerList = [ (Normalize,{'Norm':True}), ] + ParamerList
-
-    if isTemporal==True:
-        pass
-
-    funcs = [ x[0] for x in ParamerList ]
-    params = [ x[1] for x in ParamerList ]
-
     # print(funcs)
     # print(params)
-
-    rets = []
-
-
+    # rets = []
     # for img in imgs:
     #     Img = PipeLineRun(img,funcs,params)
     #     rets.append(Img)
     # return np.array(rets)
 
+    # 数据增强
+    ParamerList = [
+        (RandFlipUD,None),
+        (RandFlipLR,None),
+        # (RandAdd,None),
+        (RandMultiply,None),
+        (RandCut,None),
+        (RandElastic,None),
+    ]
+    funcs = [ x[0] for x in ParamerList ]
+    params = [ x[1] for x in ParamerList ]
     img = imgs[0]
-    level = len(img.shape)
 
-    for i in range(1,len(imgs)):
+    level = len(img.shape)
+    n = len(imgs)
+    for i in range(1,n):
         img = np.concatenate((img,imgs[i]),level-1)
 
     img = PipeLineRun(img,funcs,params)
+    img = ReSize(img,outputshape)
+
+    if isNormal == True:
+        for i in range(n):
+            part = img[:,:,i*3:i*3+3]
+            part = part.copy()
+            part = Normalize(part,Norm=True)
+            img[:,:,i*3:i*3+3] = part
+
+    ret = img
+
+    if isTemporal == True:
+        ret = None
+        for i in range(n):
+            part = img[:,:,i*3:i*3+3]
+            part = part.copy()
+            part = ToBlackAndWhite(part)
+            part = part[:,:,np.newaxis]
+            if ret is None:
+                ret = part
+            else :
+                ret = np.concatenate((ret,part),level-1)
 
     # fit to torch
+    ret = fitToPytorch(ret)
 
-    return img
+    assert ret is not None
+
+    return ret
 
 
 
