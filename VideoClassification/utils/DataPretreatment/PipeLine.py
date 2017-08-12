@@ -316,11 +316,6 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
         part = img[:,:,i*3:i*3+3]
         imgs.append(part.copy())
 
-
-    # if isTemporal == True:
-    #     for i in range(n):
-    #         imgs[i] = ToBlackAndWhite(imgs[i])
-
     if isNormal == True:
         for i in range(n):
             imgs[i] = Normalize(imgs[i])

@@ -24,6 +24,8 @@ elif WHERE=='SERVER':
     Server_Root_Path = '/datacenter/1/UCF_Data/'
 
     vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
+    resnet101_pretrainfile = Server_Root_Path+'pretrainedmodel/resnet101-5d3b4d8f.pth'
+    resnet152_pretrainfile = Server_Root_Path+'pretrainedmodel/resnet152-b121ed2d.pth'
 
     ExWorkSpace = Server_Root_Path+'EX/'
 
