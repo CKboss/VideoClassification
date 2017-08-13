@@ -43,6 +43,7 @@ class dense_twostram(nn.Module):
 
             self.dense.state_dict().update(load_data)
 
+        self.dense = nn.DataParallel(self.dense)
 
         # self.fc1 = nn.Linear(nn1,1024)
         # self.relu = nn.ReLU()

@@ -6,9 +6,11 @@ from torch.autograd import Variable
 
 class C3D(nn.Module):
 
-    def __init__(self,drop=0.8):
+    def __init__(self,drop=0.8,num_classes=101):
 
         super(C3D,self).__init__()
+
+        self.num_classes=101
 
         self.conv1 = nn.Conv3d(3,64,kernel_size=3,padding=1)
         self.relu1 = nn.ReLU()
@@ -36,14 +38,14 @@ class C3D(nn.Module):
         self.relu8 = nn.ReLU()
         self.bn5 = nn.BatchNorm3d(512)
         self.mxpool5 = nn.MaxPool3d(2)
-        self.fc1 = nn.Linear(512*9*1,2048)
-        self.relu_fc1 = nn.ReLU()
-        self.fc2 = nn.Linear(2048,2048)
-        self.relu_fc2 = nn.ReLU()
-        self.fc3 = nn.Linear(2048,101)
+        self.fc1 = nn.Linear(512*9*1,self.num_classes)
+        # self.relu_fc1 = nn.ReLU()
+        # self.fc2 = nn.Linear(2048,2048)
+        # self.relu_fc2 = nn.ReLU()
+        # self.fc3 = nn.Linear(2048,101)
 
-        self.drop1 = nn.Dropout(drop)
-        self.drop2 = nn.Dropout(drop)
+        # self.drop1 = nn.Dropout(drop)
+        # self.drop2 = nn.Dropout(drop)
 
         self.Flow = nn.Sequential (
             self.conv1,
@@ -76,8 +78,8 @@ class C3D(nn.Module):
 
 
         self.Flow = nn.DataParallel(self.Flow)
-        self.fc1 = nn.DataParallel(self.fc1)
-        self.fc2 = nn.DataParallel(self.fc2)
+        # self.fc1 = nn.DataParallel(self.fc1)
+        # self.fc2 = nn.DataParallel(self.fc2)
 
         self._initialize_weights()
 
@@ -87,27 +89,29 @@ class C3D(nn.Module):
         x = self.Flow(x)
         x = x.view(-1,512*9*1)
         x = self.fc1(x)
-        x = self.relu_fc1(x)
-        x = self.drop1(x)
-        x = self.fc2(x)
-        x = self.relu_fc2(x)
-        x = self.drop2(x)
-        x = self.fc3(x)
+        # x = self.relu_fc1(x)
+        # x = self.drop1(x)
+        # x = self.fc2(x)
+        # x = self.relu_fc2(x)
+        # x = self.drop2(x)
+        # x = self.fc3(x)
 
         return x
 
     def inference(self,x):
 
-        x = self.Flow(x)
-        x = x.view(-1,512*9*1)
-        x = self.fc1(x)
-        x = self.relu_fc1(x)
-        x = self.fc2(x)
-        x = self.relu_fc2(x)
-        self.midfeatures = x
-        x = self.fc3(x)
+        return self.forward(x)
 
-        return x
+        # x = self.Flow(x)
+        # x = x.view(-1,512*9*1)
+        # x = self.fc1(x)
+        # x = self.relu_fc1(x)
+        # x = self.fc2(x)
+        # x = self.relu_fc2(x)
+        # self.midfeatures = x
+        # x = self.fc3(x)
+
+        # return x
 
 
     def _initialize_weights(self):

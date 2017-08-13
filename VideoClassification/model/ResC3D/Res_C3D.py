@@ -85,12 +85,14 @@ class Res_C3D(nn.Module):
 
         self.Flow = nn.DataParallel(self.Flow)
 
-        self.fc1 = nn.Linear(2048*1*8*8,2048)
-        self.drop = nn.Dropout()
-        self.fc2 = nn.Linear(2048,self.num_classes)
+        self.fc1 = nn.Linear(2048*1*8*8,self.num_classes)
 
+        # self.fc1 = nn.Linear(2048*1*8*8,2048)
+        # self.drop = nn.Dropout()
+        # self.fc2 = nn.Linear(2048,self.num_classes)
+        #
         self.fc1 = nn.DataParallel(self.fc1)
-        self.fc2 = nn.DataParallel(self.fc2)
+        # self.fc2 = nn.DataParallel(self.fc2)
 
         self._initialize_weights()
 
@@ -101,18 +103,19 @@ class Res_C3D(nn.Module):
         # 2048*1*8*8
         x = x.view(x.size(0),-1)
         x = self.fc1(x)
-        x = self.drop(x)
-        x = self.fc2(x)
+        # x = self.drop(x)
+        # x = self.fc2(x)
         return x
 
     def inference(self,x):
-        x = self.Flow(x)
-        x = x.view(x.size(0),-1)
-        x = self.fc1(x)
-        x = self.fc2(x)
-        return x
+        return self.forward(x)
+        # x = self.Flow(x)
+        # x = x.view(x.size(0),-1)
+        # x = self.fc1(x)
+        # x = self.fc2(x)
+        # return x
 
-    def _make_layer(self,block,planes,blocks):
+    def _make_layer(self,block,planes,blocks,**kwargs):
 
         downsample = None
 
@@ -163,6 +166,8 @@ if __name__=='__main__':
     model = Bottleneck(3,64,downsample).cuda()
 
     c3d = Res_C3D(Bottleneck,[1,1,1,1]).cuda()
+
+    c3d = Res_C3D_1()
 
     y = c3d(x)
 

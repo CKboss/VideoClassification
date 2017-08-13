@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a612408b-cfe2-44b4-a47f-28ea9eb5761b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/Config/Config.py" afterPath="$PROJECT_DIR$/VideoClassification/Config/Config.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Temporal_EX.py" afterPath="$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Temporal_EX.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py" afterPath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" afterPath="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" afterPath="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" afterPath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -37,61 +35,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="densenet_twostream.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py">
+      <file leaf-file-name="Res_C3D.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-533">
-              <caret line="5" column="27" lean-forward="false" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="resnet_twostream.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/model/resnet_twostream/resnet_twostream.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="43" column="31" lean-forward="false" selection-start-line="43" selection-start-column="31" selection-end-line="43" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="toolkits.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/utils/Others/toolkits.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DenseNet_Spatial_EX.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/DenseNet_Spatial_EX.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-90">
-              <caret line="5" column="7" lean-forward="true" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Config.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/Config/Config.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="densenet.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="367">
-              <caret line="37" column="95" lean-forward="false" selection-start-line="37" selection-start-column="95" selection-end-line="37" selection-end-column="95" />
+            <state relative-caret-position="540">
+              <caret line="171" column="13" lean-forward="false" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -127,8 +75,6 @@
         <option value="$PROJECT_DIR$/VideoClassification/Experiments/DenseNet_Spatial_EX.py" />
         <option value="$PROJECT_DIR$/VideoClassification/Experiments/C3D_EX.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101Loader.py" />
-        <option value="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" />
-        <option value="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/data_pretreatment/PipeLine.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DBTools/BuildDB.py" />
         <option value="$PROJECT_DIR$/VideoClassification/utils/DBTools/DB_Utils.py" />
@@ -156,7 +102,9 @@
         <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
         <option value="$PROJECT_DIR$/VideoClassification/Config/Config.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" />
       </list>
     </option>
   </component>
@@ -710,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1502529462290</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="remove fc from densenet">
+      <created>1502592666883</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1502592666883</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -729,17 +684,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="38" y="-11" width="1403" height="912" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3264516" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31734318" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3084871" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28774193" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14760147" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19483395" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19583778" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1614325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -809,7 +763,8 @@
     <MESSAGE value="add new pipeline and PictureQueue Thought MySQL" />
     <MESSAGE value="remove fc layers from resnet" />
     <MESSAGE value="..." />
-    <option name="LAST_COMMIT_MESSAGE" value="..." />
+    <MESSAGE value="remove fc from densenet" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove fc from densenet" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -818,13 +773,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/nn/modules/activation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-62">
-          <caret line="68" column="8" lean-forward="false" selection-start-line="68" selection-start-column="8" selection-end-line="68" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/nn/modules/conv.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="298">
@@ -981,20 +929,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1689">
-          <caret line="8" column="8" lean-forward="false" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="93" column="0" lean-forward="true" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/UCF101_DBtools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
@@ -1076,42 +1010,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/Config/Config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharm2017.2/system/remote_sources/130189752/-1864050757/types.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="594">
           <caret line="33" column="0" lean-forward="false" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/DenseNet_Spatial_EX.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-90">
-          <caret line="5" column="7" lean-forward="true" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/Others/toolkits.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="37" column="95" lean-forward="false" selection-start-line="37" selection-start-column="95" selection-end-line="37" selection-end-column="95" />
           <folding />
         </state>
       </provider>
@@ -1132,10 +1034,72 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/Others/toolkits.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="36" column="4" lean-forward="false" selection-start-line="36" selection-start-column="4" selection-end-line="36" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/DenseNet_Spatial_EX.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-90">
+          <caret line="5" column="7" lean-forward="true" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/Config/Config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="24" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="37" column="95" lean-forward="false" selection-start-line="37" selection-start-column="95" selection-end-line="37" selection-end-column="95" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1077">
+          <caret line="46" column="38" lean-forward="false" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/model/DesC3D/Des_C3D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-533">
-          <caret line="5" column="27" lean-forward="false" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="171" column="13" lean-forward="false" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
           <folding />
         </state>
       </provider>
