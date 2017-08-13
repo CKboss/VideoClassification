@@ -17,7 +17,7 @@ from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.P
 
 
 
-batchsize = 32
+batchsize = 86
 
 
 epochs = 80
@@ -37,7 +37,7 @@ elif TEST=='C3D':
 
 
 print('before:',time.asctime())
-a,b = GenVariables_C3D(train_UCF101_C3D(),batchsize=batchsize)
+a,b = GenVariables_Temporal(train_UCF0101_Temporal(),batchsize=batchsize)
 print('after:',time.asctime())
 
 cnt = 0

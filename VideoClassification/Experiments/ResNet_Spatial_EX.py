@@ -23,7 +23,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 86
+batchsize = 32
 
 ############
 
@@ -103,8 +103,8 @@ def Resenet101_SpatialNet_Run():
 
 def Resenet152_SpatialNet_Run():
 
-    epochs = 80
-    loops = 2000
+    epochs = 81
+    loops = 2001
     learningrate = 0.001
     attenuation = 0.1
 

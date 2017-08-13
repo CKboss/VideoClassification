@@ -8,7 +8,7 @@ except:
     import cv2
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.model.densenet_twostream.densenet_twostream import dense161_temporalNet,dense201_temporalNet
+from VideoClassification.model.densenet_twostream.densenet_twostream import dense169_temporalNet,dense201_temporalNet
 from VideoClassification.utils.Others.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal
 from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
@@ -25,7 +25,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 86
+batchsize = 32
 
 ############
 
@@ -108,8 +108,8 @@ def DenseNet201_temporal_Run():
 
     epochs = 81
     loops = 2001
-    learningrate = 0.1
-    attenuation = 0.5
+    learningrate = 0.001
+    attenuation = 0.1
 
     model = dense201_temporalNet(pretrained=False,dropout=0.9).cuda()
 
@@ -146,7 +146,7 @@ def DenseNet201_temporal_Run():
 
             print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%20 == 0:
+            if cnt%25 == 0:
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
