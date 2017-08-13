@@ -142,23 +142,23 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
 class PictureQueue(object):
 
-    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=32):
+    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=64):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
         self.q = Queue(mxsize)
         self.batchsize = batchsize
-        # self.ts = []
-        # for i in range(worker):
-        #     self.ts.append(threading.Thread(target=self.pr,name='Producter_{}'.format(i)))
-        # for i in range(worker):
-        #     self.ts[i].start()
-
-        self.ps = []
+        self.ts = []
         for i in range(worker):
-            self.ps.append(Process(target=self.pr,name='Producter_{}'.format(i)))
+            self.ts.append(threading.Thread(target=self.pr,name='Producter_{}'.format(i)))
         for i in range(worker):
-            self.ps[i].start()
+            self.ts[i].start()
+        #
+        # self.ps = []
+        # for i in range(worker):
+        #     self.ps.append(Process(target=self.pr,name='Producter_{}'.format(i)))
+        # for i in range(worker):
+        #     self.ps[i].start()
 
     def pr(self):
         while True:

@@ -35,7 +35,7 @@ def densenet169(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 32, 32))
+    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 32, 32),**kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['densenet169']))
     return model
@@ -147,12 +147,12 @@ class DenseNet(nn.Module):
         self.features.add_module('norm5', nn.BatchNorm2d(num_features))
 
         # Linear layer
-        # self.classifier = nn.Linear(num_features, num_classes)
+        self.classifier = nn.Linear(num_features, num_classes)
 
     def forward(self, x):
         features = self.features(x)
         out = F.relu(features, inplace=True)
         out = F.avg_pool2d(out, kernel_size=7).view(features.size(0), -1)
-        # out = self.classifier(out)
+        out = self.classifier(out)
         return out
 
