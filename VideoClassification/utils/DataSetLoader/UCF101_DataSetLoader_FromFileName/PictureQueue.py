@@ -1,4 +1,6 @@
 import random
+import time
+import random
 import threading
 import multiprocessing
 from multiprocessing import Process
@@ -143,14 +145,13 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
 class PictureQueue(object):
 
-    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=8):
+    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=5):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
 
         # use manager to share queue between process
         self.manager = multiprocessing.Manager()
-        self.q = self.manager.Queue(mxsize)
 
         self.batchsize = batchsize
         # self.ts = []
@@ -160,23 +161,50 @@ class PictureQueue(object):
         #     self.ts[i].start()
         #
 
+        self.mainQ = self.manager.Queue(maxsize=mxsize*worker)
+
+        self.q = [ self.manager.Queue(maxsize=mxsize) for i in range(worker)]
         self.ps = []
-        for i in range(worker):
-            self.ps.append(Process(target=self.pr,name='Producter_{}'.format(i)))
 
         for i in range(worker):
+            self.ps.append(Process(target=self.pr,args=(self.q[i],),name='Producter_{}'.format(i)))
+
+        self.ps.append(Process(target=self.collectorPr,name='CollectorPR'))
+
+        for i in range(worker+1):
             self.ps[i].deamon = True
             self.ps[i].start()
 
-    def pr(self):
+    def pr(self,que):
         while True:
-            # print(Process.pid,'q.size:',self.q.qsize())
-            self.q.put(self.Gen(self.dsl,self.batchsize))
+            # processname  = multiprocessing.current_process().name
+            # print('{} q.size:{}'.format(processname,que.qsize()))
+            if que.full():
+                continue
+            # print('process:{} put into que.'.format(processname))
+            que.put(self.Gen(self.dsl,self.batchsize))
+
+    def collectorPr(self):
+        # processname  = multiprocessing.current_process().name
+        while True:
+            time.sleep(0.22)
+            # print('{} begin to search.'.format(processname))
+            for i in range(self.worker):
+                # if self.q[i].full() == False:
+                #     continue
+                try:
+                    while True:
+                        imgs,labels = self.q[i].get_nowait()
+                        # print('{} try to take item from {}\'s queue'.format(processname,i))
+                        self.mainQ.put_nowait((imgs,labels))
+                except Exception as E:
+                    continue
 
     def Get(self):
-        # print(Process.pid,'Try To Get q.size:',self.q.qsize())
-        imgs,labels = self.q.get()
+        # print('Try To Get mainQ.size:',self.mainQ.qsize())
+        imgs,labels = self.mainQ.get()
         return imgs.cuda(),labels.cuda()
+
 
     def Close(self):
         '''
