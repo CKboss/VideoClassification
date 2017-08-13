@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a612408b-cfe2-44b4-a47f-28ea9eb5761b" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoClassification/test/ImgAugTest/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/VideoClassification/test/ImgAugTest/test1.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" afterPath="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" afterPath="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" afterPath="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" afterPath="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,6 +17,8 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/VideoClassification$Nosetests_in_DataSetLoader.coverage" NAME="Nosetests in DataSetLoader Coverage Results" MODIFIED="1502442616480" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader" />
+    <SUITE FILE_PATH="coverage/VideoClassification$test1.coverage" NAME="test1 Coverage Results" MODIFIED="1502601002909" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/VideoClassification/test/ImgAugTest" />
+    <SUITE FILE_PATH="coverage/VideoClassification$PictureQueue.coverage" NAME="PictureQueue Coverage Results" MODIFIED="1502597826431" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -35,11 +38,45 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Res_C3D.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py">
+      <file leaf-file-name="test1.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/test/ImgAugTest/test1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
-              <caret line="171" column="13" lean-forward="false" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
+            <state relative-caret-position="180">
+              <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PipeLine.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="650">
+              <caret line="379" column="0" lean-forward="true" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PictureQueue.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ResNet_Spatial_EX.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Spatial_EX.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -97,14 +134,15 @@
         <option value="$PROJECT_DIR$/VideoClassification/model/resnet_twostream/resnet.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/resnet_twostream/resnet_twostream.py" />
         <option value="$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Spatial_EX.py" />
-        <option value="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
         <option value="$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Temporal_EX.py" />
-        <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
         <option value="$PROJECT_DIR$/VideoClassification/Config/Config.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/C3D/C3D.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/densenet_twostream/densenet_twostream.py" />
         <option value="$PROJECT_DIR$/VideoClassification/model/ResC3D/Res_C3D.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
+        <option value="$PROJECT_DIR$/VideoClassification/test/ImgAugTest/test1.py" />
       </list>
     </option>
   </component>
@@ -173,6 +211,13 @@
               <item name="VideoClassification" type="462c0819:PsiDirectoryNode" />
               <item name="VideoClassification" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="VideoClassification" type="b2602c69:ProjectViewProjectNode" />
+              <item name="VideoClassification" type="462c0819:PsiDirectoryNode" />
+              <item name="VideoClassification" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="ImgAugTest" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="VideoClassification" type="b2602c69:ProjectViewProjectNode" />
@@ -259,7 +304,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Nosetests in DataSetLoader">
+  <component name="RunManager" selected="Python.test1">
     <configuration name="Nosetests in DataSetLoader" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -275,6 +320,24 @@
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/VideoClassification/utils/DataSetLoader&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration name="PictureQueue" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="VideoClassification" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <configuration default="true" type="tests" factoryName="Nosetests">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -323,9 +386,34 @@
       <option name="_new_target" value="&quot;&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
     </configuration>
+    <configuration name="test1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/VideoClassification/test/ImgAugTest" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="VideoClassification" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/VideoClassification/test/ImgAugTest/test1.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <list size="3">
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in DataSetLoader" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test1" />
+      <item index="2" class="java.lang.String" itemvalue="Python.PictureQueue" />
+    </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in DataSetLoader" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Python.test1" />
+        <item index="1" class="java.lang.String" itemvalue="Python.PictureQueue" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in DataSetLoader" />
       </list>
     </recent_temporary>
   </component>
@@ -665,7 +753,14 @@
       <option name="project" value="LOCAL" />
       <updated>1502592666883</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="remove fc from c3d">
+      <created>1502593301022</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1502593301022</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -684,16 +779,17 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="38" y="-11" width="1403" height="912" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3264516" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3084871" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18081181" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3548387" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28774193" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19483395" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12177122" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19583778" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1614325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -764,7 +860,8 @@
     <MESSAGE value="remove fc layers from resnet" />
     <MESSAGE value="..." />
     <MESSAGE value="remove fc from densenet" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove fc from densenet" />
+    <MESSAGE value="remove fc from c3d" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove fc from c3d" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -773,13 +870,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/nn/modules/conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="317" column="8" lean-forward="false" selection-start-line="317" selection-start-column="8" selection-end-line="317" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/torch/nn/modules/module.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="298">
@@ -950,21 +1040,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Spatial_EX.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="114" column="32" lean-forward="true" selection-start-line="114" selection-start-column="32" selection-end-line="114" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="292" column="18" lean-forward="false" selection-start-line="292" selection-start-column="18" selection-end-line="292" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_MYSQL/PictureQueue.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="666">
@@ -978,16 +1053,6 @@
           <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="163" column="18" lean-forward="false" selection-start-line="163" selection-start-column="18" selection-end-line="163" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#13#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1071,7 +1136,7 @@
         <state relative-caret-position="-1077">
           <caret line="46" column="38" lean-forward="false" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1081,7 +1146,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1091,7 +1156,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#12#0" expanded="true" />
+            <element signature="e#0#12#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1101,6 +1166,42 @@
         <state relative-caret-position="540">
           <caret line="171" column="13" lean-forward="false" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/Experiments/ResNet_Spatial_EX.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="105" column="0" lean-forward="false" selection-start-line="105" selection-start-column="0" selection-end-line="105" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataPretreatment/PipeLine.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="650">
+          <caret line="379" column="0" lean-forward="true" selection-start-line="379" selection-start-column="0" selection-end-line="379" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/utils/DataSetLoader/UCF101_DataSetLoader_FromFileName/PictureQueue.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="125" column="0" lean-forward="false" selection-start-line="125" selection-start-column="0" selection-end-line="125" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/VideoClassification/test/ImgAugTest/test1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

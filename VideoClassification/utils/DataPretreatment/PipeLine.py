@@ -300,11 +300,21 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
     ]
     funcs = [ x[0] for x in ParamerList ]
     params = [ x[1] for x in ParamerList ]
-    img = imgs[0]
+    img = imgs[0].copy()
 
     n = len(imgs)
-    for i in range(1,n):
-        img = np.concatenate((img,imgs[i]),axis=2)
+    img = np.concatenate([ ReSize(imgs[i],outshape=(256,256)) for i in range(n)],axis=2)
+
+    #
+    # for i in range(1,n):
+    #     try:
+    #         img = np.concatenate((img,imgs[i]),axis=2)
+    #     except Exception as E:
+    #         print(E)
+    #         print('img_shape:',img.shape)
+    #         for j in range(n):
+    #             print(j,'->',imgs[j].shape)
+    #         raise RuntimeError
 
     img = PipeLineRun(img,funcs,params)
     img = ReSize(img,outputshape)
