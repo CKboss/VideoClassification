@@ -30,7 +30,6 @@ elif WHERE=='SERVER':
     densenet201_pretrainfile = Server_Root_Path+'pretrainedmodel/densenet201-4c113574.pth'
 
     ExWorkSpace = Server_Root_Path+'EX/'
-
     LOGSpace = Server_Root_Path+'LOG/'
     Code_root = Server_Root_Path+'Code/VideoClassification/'
 
