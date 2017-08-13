@@ -1,5 +1,6 @@
 import random
 import threading
+import multiprocessing
 from multiprocessing import Process
 from queue import Queue
 
@@ -142,29 +143,38 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
 class PictureQueue(object):
 
-    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=32):
+    def __init__(self,dsl,Gen,batchsize=8,worker=20,mxsize=8):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
-        self.q = Queue(mxsize)
+
+        # use manager to share queue between process
+        self.manager = multiprocessing.Manager()
+        self.q = self.manager.Queue(mxsize)
+
         self.batchsize = batchsize
         # self.ts = []
         # for i in range(worker):
         #     self.ts.append(threading.Thread(target=self.pr,name='Producter_{}'.format(i)))
         # for i in range(worker):
         #     self.ts[i].start()
+        #
 
         self.ps = []
         for i in range(worker):
             self.ps.append(Process(target=self.pr,name='Producter_{}'.format(i)))
+
         for i in range(worker):
+            self.ps[i].deamon = True
             self.ps[i].start()
 
     def pr(self):
         while True:
+            # print(Process.pid,'q.size:',self.q.qsize())
             self.q.put(self.Gen(self.dsl,self.batchsize))
 
     def Get(self):
+        # print(Process.pid,'Try To Get q.size:',self.q.qsize())
         imgs,labels = self.q.get()
         return imgs.cuda(),labels.cuda()
 
