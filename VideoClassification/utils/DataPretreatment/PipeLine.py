@@ -288,7 +288,7 @@ def Normalize(img,Norm=True,mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225
     # return np.array(rets)
 
 
-def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwargs):
+def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,NoAug=False,**kwargs):
     # 数据增强
     ParamerList = [
         # (RandFlipUD,None),
@@ -316,7 +316,8 @@ def ImgAugPipes(imgs,isTemporal=False,outputshape=(224,224),isNormal=True,**kwar
     #             print(j,'->',imgs[j].shape)
     #         raise RuntimeError
 
-    img = PipeLineRun(img,funcs,params)
+    if NoAug==False:
+        img = PipeLineRun(img,funcs,params)
     img = ReSize(img,outputshape)
 
     # split img into imgs

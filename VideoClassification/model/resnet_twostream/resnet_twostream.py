@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.model.resnet_twostream.resnet import resnet101, resnet152
+from VideoClassification.model.resnet_twostream.resnet import resnet101, resnet152, resnet50
 from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
 
@@ -22,6 +22,9 @@ class resnet_TwoStreamNet(nn.Module):
         elif level==101:
             resnet = resnet101
             savefile = Config.resnet101_pretrainfile
+        elif level==50:
+            resnet = resnet50
+            savefile = None
         else :
             raise 'level showld be 101 or 152'
 
@@ -107,10 +110,13 @@ def resnet152_SpatialNet(pretrained=False,**kwargs):
 def resnet152_TemporalNet(pretrained=False,**kwargs):
     return resnet_TemporalNet(pretrained=pretrained,level=152,**kwargs)
 
+def resnet50_TemporalNet(pretrained=False,**kwargs):
+    return resnet_TemporalNet(pretrained=pretrained,level=50,**kwargs)
+
 
 if __name__=='__main__':
 
-    model = resnet152_TemporalNet(True).cuda()
+    model = resnet50_TemporalNet(False).cuda()
     x = torch.randn(2,20,224,224)
     x = Variable(x).cuda()
 

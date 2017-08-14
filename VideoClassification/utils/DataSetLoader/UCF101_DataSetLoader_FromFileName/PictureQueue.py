@@ -59,7 +59,7 @@ def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
 
     return imgs,labels
 
-def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
+def GenVariables_Spatial(dsl,batchsize=8,NoAug=False,**kwargs):
 
     # TODO add requires_grad params
 
@@ -77,7 +77,8 @@ def GenVariables_Spatial(dsl,batchsize=8,**kwargs):
     for path in imgpaths:
         imgs.append(cv2.imread(path))
 
-    imgs = np.array(ImgAugPipes(imgs))
+    imgs = np.array(ImgAugPipes(imgs,NoAug=NoAug))
+
     imgs = Variable(torch.from_numpy(imgs),**kwargs).float()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
 

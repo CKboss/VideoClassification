@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from VideoClassification.utils.DataSetLoader.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream
+from VideoClassification.utils.DataSetLoader.UCF101Loader. import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream
 from VideoClassification.utils.Logger import Logger
 from torch.autograd import Variable
 
