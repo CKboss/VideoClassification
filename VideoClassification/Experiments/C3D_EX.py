@@ -28,7 +28,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 20
+batchsize = 22
 
 ############
 
@@ -37,7 +37,7 @@ def C3D_Net_Run():
 
     epochs = 81
     loops = 2001
-    learningrate = 0.00001
+    learningrate = 0.0001
     attenuation = 0.1
 
     model = C3D(drop=0.9).cuda()
@@ -51,8 +51,8 @@ def C3D_Net_Run():
     lossfunc = nn.CrossEntropyLoss()
     optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
-    pq_train = PictureQueue(dsl=train_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize,worker=10)
-    pq_test = PictureQueue(dsl=test_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize,worker=5)
+    pq_train = PictureQueue(dsl=train_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize,worker=5)
+    pq_test = PictureQueue(dsl=test_UCF101_C3D(),Gen=GenVariables_C3D,batchsize=batchsize,worker=2)
 
     cnt = 0
     for epoch in range(epochs) :
