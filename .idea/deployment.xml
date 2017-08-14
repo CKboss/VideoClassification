@@ -24,6 +24,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="server_211">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/ssd/1/UCF_Data/Code/VideoClassification" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
   </component>
 </project>

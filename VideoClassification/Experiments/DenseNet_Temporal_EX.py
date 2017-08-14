@@ -31,10 +31,10 @@ batchsize = 64
 
 def DenseNet161_temporal_Run():
 
-    epochs = 80
-    loops = 2000
-    learningrate = 0.1
-    attenuation = 0.5
+    epochs = 81
+    loops = 2001
+    learningrate = 0.01
+    attenuation = 0.1
 
     model = dense169_temporalNet(pretrained=False,dropout=0.4).cuda()
 
@@ -45,7 +45,7 @@ def DenseNet161_temporal_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
     pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
@@ -71,7 +71,7 @@ def DenseNet161_temporal_Run():
 
             print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%20 == 0:
+            if cnt%25 == 0:
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
@@ -99,9 +99,9 @@ def DenseNet161_temporal_Run():
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
-        if epoch in [10,20,50,60]:
+        if epoch in [5,10,20,50,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+            optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
 
 def DenseNet201_temporal_Run():

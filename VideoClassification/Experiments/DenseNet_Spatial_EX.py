@@ -7,7 +7,7 @@ except:
     import cv2
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.model.densenet_twostream.densenet_twostream import dense161_spatialNet,dense201_spatialNet
+from VideoClassification.model.densenet_twostream.densenet_twostream import dense169_spatialNet,dense201_spatialNet
 from VideoClassification.utils.Others.Logger import Logger
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Spatial,test_UCF0101_Spatial
 from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
@@ -26,14 +26,14 @@ batchsize = 40
 
 ############
 
-def DenseNet161_SpatialNet_Run():
+def DenseNet169_SpatialNet_Run():
 
     epochs = 121
     loops = 2001
-    learningrate = 0.0002
+    learningrate = 0.01
     attenuation = 0.1
 
-    model = dense161_spatialNet(pretrained=False,dropout=0.90).cuda()
+    model = dense169_spatialNet(pretrained=True,dropout=0.90).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -42,7 +42,7 @@ def DenseNet161_SpatialNet_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
     pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
@@ -91,12 +91,12 @@ def DenseNet161_SpatialNet_Run():
                 logger.scalar_summary('DenseNet161/Spatial/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('DenseNet161/Spatial/train_acc@10',acc[2],cnt)
 
-            if cnt%1000 == 0:
+            if cnt%2000 == 0:
                 savefile = savepath + 'DenseNet161_Spatial_{:02d}.pt'.format(epoch%50)
                 print('Spatial save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
-        if epoch in [10,20,50,60]:
+        if epoch in [5,10,20,50,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
 
