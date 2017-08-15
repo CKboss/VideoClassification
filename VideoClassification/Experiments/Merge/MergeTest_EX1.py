@@ -1,15 +1,23 @@
+
+try:
+    from cv2 import cv2
+except:
+    import cv2
+
+import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream,test_UCF0101_Spatial,test_UCF0101_Temporal
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import test_UCF101_ChooseOrderFromSameVideo, UCF101_TwoStream,UCF101_Spatial,test_UCF0101_Spatial,test_UCF0101_Temporal,test_UCF101_ChooseRandomFromSameVideo
 from VideoClassification.utils.Others.Logger import Logger
 from torch.autograd import Variable
 
 from VideoClassification.Config import Config as Config
 from VideoClassification.model.resnet_twostream.resnet_twostream import resnet152_SpatialNet,resnet50_TemporalNet
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import \
-    GenVariables_VideoSpatialAndTemporal,GenVariables_Spatial,GenVariables_Temporal
+    GenVariables_VideoSpatialAndTemporal,GenVariables_Spatial,GenVariables_Temporal,GenTensors
 from VideoClassification.utils.Others.toolkits import accuracy
+from VideoClassification.utils.DataPretreatment.PipeLine import ImgAugPipes
 
 ############ Config
 
@@ -30,7 +38,7 @@ tem_model_save_file = Config.Server_Root_Path+'pretrainedmodel/ResNet50_Temporal
 
 def TestOnlySpatialNet():
 
-    spa_model = resnet152_SpatialNet().cuda()
+    spa_model = resnet152_SpatialNet().cuda().eval()
     if spa_model_save_file is not None:
         spa_model.load_state_dict(torch.load(spa_model_save_file))
         print('load spa_model success!')
@@ -39,7 +47,7 @@ def TestOnlySpatialNet():
     def gen():
         return GenVariables_Spatial(dsl,batchsize=16)
 
-    loops = 100
+    loops = 50
     correct_1 = 0
     correct_5 = 0
     correct_10 = 0
@@ -48,7 +56,7 @@ def TestOnlySpatialNet():
         images,labels = gen()
         pred = spa_model(images)
 
-        pred = F.softmax(pred)
+        # pred = F.softmax(pred)
 
         labels = labels.cpu()
         pred = pred.cpu()
@@ -83,7 +91,7 @@ def TestOnlySpatialNet():
 
 def TestOnlyTemporalNet():
 
-    tem_model = resnet50_TemporalNet().cuda()
+    tem_model = resnet50_TemporalNet().cuda().eval()
     if tem_model_save_file is not None:
         tem_model.load_state_dict(torch.load(tem_model_save_file))
         print('load tem_model success!')
@@ -97,7 +105,7 @@ def TestOnlyTemporalNet():
     correct_5 = 0
     correct_10 = 0
 
-    for i in range(loops):
+    for l in range(loops):
         images,labels = gen()
         pred = tem_model(images)
 
@@ -112,13 +120,74 @@ def TestOnlyTemporalNet():
         correct_5 += acc[1]
         correct_10 += acc[2]
 
-        print(acc)
+        print(l,':',acc)
 
     print('acc@1: ',correct_1/loops)
     print('acc@5: ',correct_5/loops)
     print('acc@10: ',correct_10/loops)
 
+    '''
+    acc@1:  38.625
+    acc@5:  67.375
+    acc@10:  78.375
+    
+    '''
 
+def Only_Merge_Spatial_Net_Test():
+
+
+    spa_model = resnet152_SpatialNet().cuda().eval()
+    if spa_model_save_file is not None:
+        spa_model.load_state_dict(torch.load(spa_model_save_file))
+        print('load spa_model success!')
+
+    dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_Spatial)
+
+    # dsl = test_UCF0101_Spatial()
+    # def gen():
+    #     return GenVariables_Spatial(dsl,batchsize=16)
+
+    loops = 500
+    correct_1 = 0
+    correct_5 = 0
+    correct_10 = 0
+
+    for l in range(loops):
+        imgpaths,Lables = random.choice(dsl)
+
+        imgs = []
+        for path in imgpaths:
+            imgs.append(cv2.imread(path))
+        imgs = np.array(imgs)
+        imgs = ImgAugPipes(imgs,NoAug=True,isNormal=True)
+
+        imgs = Variable(torch.from_numpy(imgs)).cuda().float()
+        lable = Variable(torch.from_numpy(np.array(Lables))).cuda().long()
+
+        pred = spa_model(imgs[:3])
+
+        lable = Variable(torch.from_numpy(np.array([Lables[0]]))).cuda().long()
+        pred = pred.sum(0)/3
+
+        # acc = accuracy(pred.cpu(),lable.cpu(),(1,5,10))
+        acc = accuracy(pred.cpu(),lable.cpu(),(1,5,10))
+
+
+        correct_1 += acc[0]
+        correct_5 += acc[1]
+        correct_10 += acc[2]
+
+        print(l,':',acc)
+
+    print('acc@1:',correct_1/loops)
+    print('acc@5:',correct_5/loops)
+    print('acc@10:',correct_10/loops)
+
+    '''
+    acc@1: 72.25
+    acc@5: 91.0
+    acc@10: 95.625
+    '''
 
 def Merge_Test():
     '''
@@ -178,8 +247,8 @@ def Merge_Test():
             # pred_spa = F.softmax(pred_spa)
             # pred_tem = F.softmax(pred_tem)
 
-            t1_spa = F.softmax(pred_spa.sum(0)/b)
-            t1_tem = F.softmax(pred_tem.sum(0)/b)
+            t1_spa = pred_spa.sum(0)/b
+            t1_tem = pred_tem.sum(0)/b
 
             acc_spa = accuracy(t1_spa,label,topk=(1,5,10))
             for j in range(3):

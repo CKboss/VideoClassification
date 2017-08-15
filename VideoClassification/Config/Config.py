@@ -45,7 +45,7 @@ elif WHERE=='SERVER':
 
     # EX_ID = '/ResNet101_Spatial_EX2'
     # EX_ID = '/ResNet101_Temporal_EX2'
-    EX_ID = '/ResNet152_Temporal_WITHOUT_FC_EX1'
+    EX_ID = '/ResNet152_Temporal_WITHOUT_FC_EX2'
     # EX_ID = '/ResNet152_Spatial_WITHOUT_FC_EX2'
     # EX_ID = '/C3D_Without_FC'
     # EX_ID = '/DenseNet169_Temporal_WITHOUT_FC_EX1'
