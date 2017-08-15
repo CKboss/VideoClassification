@@ -244,10 +244,6 @@ def Only_Merge_Temporal_Net():
 
 def Merge_Test_2():
 
-    dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
-
-    def gen():
-        return GenVariables_VideoSpatialAndTemporal(dsl=dsl,batchsize=4)
 
     spa_model = resnet152_SpatialNet().cuda()
     tem_model = resnet50_TemporalNet().cuda()
@@ -265,30 +261,60 @@ def Merge_Test_2():
 
     dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
 
-    loops = 20
+    loops = 220
+    loops = len(dsl)
     correct_1 = 0
     correct_5 = 0
     correct_10 = 0
 
-    for l in range(loops):
-        imgpathss,labels = random.choice(dsl)
-        imgpaths_1 = [imgpaths[0] for imgpaths in imgpathss]
-        imgpaths_2 = [imgpaths[1:] for imgpaths in imgpathss]
-        imgs = GenTensors(imgpaths_2,isTemporal=True)
+    for l in range(len(dsl)):
 
-        imgs = Variable(imgs).cuda()
+        # imgpathss,labels = random.choice(dsl)
+        imgpathss,labels = dsl[l]
+
+        imgpaths_s = [imgpaths[0] for imgpaths in imgpathss]
+        imgpaths_t = [imgpaths[1:] for imgpaths in imgpathss]
+
+        imgs_t = GenTensors(imgpaths_t,isTemporal=True)
+
+        imgs_t = Variable(imgs_t).cuda()
         labels = Variable(torch.from_numpy(np.array(labels))).cuda().long()
 
-        pred = tem_model(imgs)
+        pred_t = tem_model(imgs_t)
 
         # acc = accuracy(pred,labels,topk=(1,5,10))
 
-        pred = pred.sum(0)/8
+        pred_t = pred_t.sum(0)/8
         lable = labels[0].cuda().long()
 
-        acc = accuracy(pred,lable,topk=(1,5,10))
+        acc = accuracy(pred_t,lable,topk=(1,5,10))
 
-        print(l,':',acc)
+        print('l:',l)
+        print('temp :',acc)
+
+
+        imgs_s = []
+        for path in imgpaths_s:
+            imgs_s.append(cv2.imread(path))
+        imgs_s = np.array(imgs_s)
+        imgs_s = ImgAugPipes(imgs_s,NoAug=True,isNormal=True)
+
+        imgs_s = Variable(torch.from_numpy(imgs_s)).cuda().float()
+
+        pred_s = spa_model(imgs_s)
+        pred_s = pred_s.sum(0)/8
+
+        acc = accuracy(pred_s,lable,topk=(1,5,10))
+
+        print('spa:',acc)
+
+        pred_a = (pred_s+pred_t)/2
+
+
+        acc = accuracy(pred_a,lable,topk=(1,5,10))
+
+        print('all:',acc)
+
 
         correct_1 += acc[0]
         correct_5 += acc[1]
