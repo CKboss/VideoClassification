@@ -41,12 +41,12 @@ batchsize = 86
 
 def VGG_Temporal_Net_Run():
 
-    epochs = 80
-    loops = 2000
-    learningrate = 0.2
-    attenuation = 0.5
+    epochs = 81
+    loops = 2001
+    learningrate = 0.001
+    attenuation = 0.1
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.4,dropout2=0.3).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -55,7 +55,7 @@ def VGG_Temporal_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
     pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
     pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
@@ -70,7 +70,7 @@ def VGG_Temporal_Net_Run():
             imgs,labels = pq_train.Get()
 
             model.zero_grad()
-            pred =  model(imgs)
+            pred = model(imgs)
             loss = lossfunc(pred,labels)
 
             logger.scalar_summary('Temporal/train_loss',loss.data[0],cnt)
@@ -81,7 +81,9 @@ def VGG_Temporal_Net_Run():
 
             print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
 
-            if cnt%20 == 0:
+            if cnt%25 == 0:
+
+                model.eval()
 
                 imgs,labels = pq_test.Get()
                 pred = model.inference(imgs)
@@ -104,14 +106,16 @@ def VGG_Temporal_Net_Run():
                 logger.scalar_summary('Temporal/train_acc@5',acc[1],cnt)
                 logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
 
+                model.train()
+
             if cnt%2000 == 0:
                 savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%50)
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
-        if epoch in [10,20,50,60]:
+        if epoch in [10,20,40,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+            optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
 
 
@@ -119,10 +123,10 @@ def VGG_Spatial_Net_Run():
 
     epochs = 80
     loops = 2000
-    learningrate = 0.1
-    attenuation = 0.5
+    learningrate = 0.001
+    attenuation = 0.1
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.2,dropout2=0.1).cuda()
+    model = VGG_Spatial_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types

@@ -109,7 +109,7 @@ def vgg16(pretrained=False,in_channels=3, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['D'],batch_norm=True,in_channels=in_channels), **kwargs)
+    model = VGG(make_layers(cfg['D'],batch_norm=False,in_channels=in_channels), **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['vgg16']))
     return model
