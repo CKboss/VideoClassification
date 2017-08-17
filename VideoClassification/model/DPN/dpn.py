@@ -142,6 +142,8 @@ class DPN(nn.Module):
         self.features = nn.Sequential(blocks)
         self.classifier = nn.Linear(in_chs, num_classes)
 
+        self.features = nn.DataParallel(self.features)
+        self.classifier = nn.DataParallel(self.features)
 
     def forward(self, x):
         features = torch.cat(self.features(x), dim=1)

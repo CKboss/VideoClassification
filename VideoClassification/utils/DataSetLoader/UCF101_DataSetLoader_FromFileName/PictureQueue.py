@@ -146,7 +146,7 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
 class PictureQueue(object):
 
-    def __init__(self,dsl,Gen,batchsize=8,worker=10,mxsize=4):
+    def __init__(self,dsl,Gen,batchsize=8,worker=8,mxsize=4):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
