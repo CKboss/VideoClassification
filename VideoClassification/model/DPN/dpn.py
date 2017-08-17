@@ -1,30 +1,32 @@
-'''
-https://github.com/oyam/pytorch-DPNs/blob/master/dpn.py
-'''
+
+
+#https://github.com/oyam/pytorch-DPNs/blob/master/dpn.py
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from torch.autograd import Variable
+
 from collections import OrderedDict
 
 __all__ = ['DPN', 'dpn92', 'dpn98', 'dpn131', 'dpn107', 'dpns']
 
 
-def dpn92(num_classes=1000,**kwargs):
-    return DPN(num_init_features=64, k_R=96, G=32, k_sec=(3,4,20,3), inc_sec=(16,32,24,128), num_classes=num_classes,**kwargs)
+def dpn92(num_classes=101,in_channel=3):
+    return DPN(num_init_features=64, k_R=96, G=32, k_sec=(3,4,20,3), inc_sec=(16,32,24,128), num_classes=num_classes,in_channel=in_channel)
 
 
-def dpn98(num_classes=1000,**kwargs):
-    return DPN(num_init_features=96, k_R=160, G=40, k_sec=(3,6,20,3), inc_sec=(16,32,32,128), num_classes=num_classes,**kwargs)
+def dpn98(num_classes=101,in_channel=3):
+    return DPN(num_init_features=96, k_R=160, G=40, k_sec=(3,6,20,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
 
 
-def dpn107(num_classes=1000,**kwargs):
-    return DPN(num_init_features=128, k_R=160, G=40, k_sec=(4,8,28,3), inc_sec=(16,32,32,128), num_classes=num_classes,**kwargs)
+def dpn107(num_classes=101,in_channel=3):
+    return DPN(num_init_features=128, k_R=160, G=40, k_sec=(4,8,28,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
 
 
-def dpn131(num_classes=1000,**kwargs):
-    return DPN(num_init_features=128, k_R=200, G=50, k_sec=(4,8,20,3), inc_sec=(20,64,64,128), num_classes=num_classes,**kwargs)
+def dpn131(num_classes=101,in_channel=3):
+    return DPN(num_init_features=128, k_R=200, G=50, k_sec=(4,8,20,3), inc_sec=(20,64,64,128), num_classes=num_classes,in_channel=in_channel)
 
 
 dpns = {
@@ -142,16 +144,20 @@ class DPN(nn.Module):
         self.features = nn.Sequential(blocks)
         self.classifier = nn.Linear(in_chs, num_classes)
 
-        self.features = nn.DataParallel(self.features)
-        self.classifier = nn.DataParallel(self.features)
 
     def forward(self, x):
         features = torch.cat(self.features(x), dim=1)
         out = F.avg_pool2d(features, kernel_size=7).view(features.size(0), -1)
         out = self.classifier(out)
         return out
+
 if __name__=='__main__':
 
-    model = dpn92(101,in_channel=20).cuda()
-    x = Variable(torch.randn(2,20,224,224)).cuda()
+    x = torch.randn(3,20,224,224)
+    x = Variable(x).cuda()
+
+    model = dpn131(101,20).cuda()
+
     y = model(x)
+
+    y.size()
