@@ -25,7 +25,7 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 86
+batchsize = 72
 
 ############
 
@@ -107,7 +107,7 @@ def ResNet152_Temporal_Net_Run():
 
     epochs = 121
     loops = 2001
-    learningrate = 0.001
+    learningrate = 0.000005
     attenuation = 0.1
 
     model = resnet152_TemporalNet(pretrained=True,dropout=0.4).cuda()
@@ -119,10 +119,10 @@ def ResNet152_Temporal_Net_Run():
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.1)
+    optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize,worker=10)
+    pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize,worker=3)
 
     cnt = 0
     for epoch in range(epochs) :
@@ -175,7 +175,7 @@ def ResNet152_Temporal_Net_Run():
 
         if epoch in [10,20,50,60]:
             learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+            optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
 if __name__=='__main__':
 

@@ -52,7 +52,7 @@ def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
         imgpathss.append(item[0])
         labels.append(item[1])
 
-    imgs = GenTensors(imgpathss,isTemporal=True)
+    imgs = GenTensors(imgpathss,isTemporal=True,NoAug=True)
 
     imgs = Variable(imgs,**kwargs).float()
     labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()

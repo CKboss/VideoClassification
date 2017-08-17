@@ -13,7 +13,7 @@ from VideoClassification.utils.Others.Logger import Logger
 from torch.autograd import Variable
 
 from VideoClassification.Config import Config as Config
-from VideoClassification.model.resnet_twostream.resnet_twostream import resnet152_SpatialNet,resnet50_TemporalNet
+from VideoClassification.model.resnet_twostream.resnet_twostream import resnet152_SpatialNet,resnet50_TemporalNet,resnet152_TemporalNet
 from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import \
     GenVariables_VideoSpatialAndTemporal,GenVariables_Spatial,GenVariables_Temporal,GenTensors
 from VideoClassification.utils.Others.toolkits import accuracy
@@ -33,7 +33,7 @@ batchsize = 10
 ############
 
 spa_model_save_file = Config.Server_Root_Path+'pretrainedmodel/ResNet152_Spatial.pt'
-tem_model_save_file = Config.Server_Root_Path+'pretrainedmodel/ResNet50_Temporal.pt'
+tem_model_save_file = Config.Server_Root_Path+'pretrainedmodel/ResNet152_Temporal.pt'
 
 
 def TestOnlySpatialNet():
@@ -42,6 +42,8 @@ def TestOnlySpatialNet():
     if spa_model_save_file is not None:
         spa_model.load_state_dict(torch.load(spa_model_save_file))
         print('load spa_model success!')
+
+    spa_model.eval()
 
     dsl = test_UCF0101_Spatial()
     def gen():
@@ -91,18 +93,18 @@ def TestOnlySpatialNet():
 
 def TestOnlyTemporalNet():
 
-    tem_model = resnet50_TemporalNet().cuda()
+    tem_model = resnet152_TemporalNet().cuda()
     if tem_model_save_file is not None:
         tem_model.load_state_dict(torch.load(tem_model_save_file))
         print('load tem_model success!')
 
-    # tem_model.eval()
+    tem_model.eval()
 
     dsl = test_UCF0101_Temporal()
     def gen():
         return GenVariables_Temporal(dsl,batchsize=16)
 
-    loops = 100
+    loops = 10
     correct_1 = 0
     correct_5 = 0
     correct_10 = 0
@@ -202,14 +204,14 @@ def Only_Merge_Temporal_Net():
 
     dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
 
-    tem_model = resnet50_TemporalNet().cuda()
+    tem_model = resnet152_TemporalNet().cuda()
     if tem_model_save_file is not None:
         tem_model.load_state_dict(torch.load(tem_model_save_file))
         print('load tem_model success!')
 
     tem_model.eval()
 
-    loops = 20
+    loops = 100
     correct_1 = 0
     correct_5 = 0
     correct_10 = 0
@@ -217,7 +219,7 @@ def Only_Merge_Temporal_Net():
     for l in range(loops):
         imgpathss,labels = random.choice(dsl)
         imgpathss = [imgpaths[1:] for imgpaths in imgpathss]
-        imgs = GenTensors(imgpathss,isTemporal=True)
+        imgs = GenTensors(imgpathss,isTemporal=True,NoAug=True)
 
         imgs = Variable(imgs).cuda()
         labels = Variable(torch.from_numpy(np.array(labels))).cuda().long()
@@ -225,7 +227,6 @@ def Only_Merge_Temporal_Net():
         pred = tem_model(imgs)
 
         # acc = accuracy(pred,labels,topk=(1,5,10))
-
         pred = pred.sum(0)/8
         lable = labels[0].cuda().long()
 
@@ -246,7 +247,7 @@ def Merge_Test_2():
 
 
     spa_model = resnet152_SpatialNet().cuda()
-    tem_model = resnet50_TemporalNet().cuda()
+    tem_model = resnet152_TemporalNet().cuda()
 
 
     if spa_model_save_file is not None:
@@ -261,13 +262,14 @@ def Merge_Test_2():
 
     dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
 
-    loops = 220
     loops = len(dsl)
     correct_1 = 0
     correct_5 = 0
     correct_10 = 0
 
-    for l in range(len(dsl)):
+    f = open('/tmp/test_log.txt','w')
+
+    for l in range(loops):
 
         # imgpathss,labels = random.choice(dsl)
         imgpathss,labels = dsl[l]
@@ -275,19 +277,21 @@ def Merge_Test_2():
         imgpaths_s = [imgpaths[0] for imgpaths in imgpathss]
         imgpaths_t = [imgpaths[1:] for imgpaths in imgpathss]
 
-        imgs_t = GenTensors(imgpaths_t,isTemporal=True)
+        imgs_t = GenTensors(imgpaths_t,isTemporal=True,NoAug=True)
 
         imgs_t = Variable(imgs_t).cuda()
         labels = Variable(torch.from_numpy(np.array(labels))).cuda().long()
 
+        line = '{},{},'.format(l,labels[0].cpu().data.numpy()[0])
         pred_t = tem_model(imgs_t)
 
         # acc = accuracy(pred,labels,topk=(1,5,10))
 
         pred_t = pred_t.sum(0)/8
         lable = labels[0].cuda().long()
-
         acc = accuracy(pred_t,lable,topk=(1,5,10))
+
+        line += str(pred_t.cpu().data.numpy().tolist()[0])[1:-1]+","
 
         print('l:',l)
         print('temp :',acc)
@@ -303,6 +307,9 @@ def Merge_Test_2():
 
         pred_s = spa_model(imgs_s)
         pred_s = pred_s.sum(0)/8
+
+
+        line += str(pred_s.cpu().data.numpy().tolist()[0])[1:-1]
 
         acc = accuracy(pred_s,lable,topk=(1,5,10))
 
@@ -320,93 +327,101 @@ def Merge_Test_2():
         correct_5 += acc[1]
         correct_10 += acc[2]
 
+        if l%50 == 0:
+            print('acc@1:',correct_1/(l+1))
+            print('acc@5:',correct_5/(l+1))
+            print('acc@10:',correct_10/(l+1))
+
+        f.write(line+'\n')
+        f.flush()
+
 
     print('acc@1:',correct_1/loops)
     print('acc@5:',correct_5/loops)
     print('acc@10:',correct_10/loops)
 
 
-def Merge_Test():
-    '''
-    Video Level VGG TwoStream AVG merge evalution
-    '''
-
-    dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
-
-    def gen():
-        return GenVariables_VideoSpatialAndTemporal(dsl=dsl,batchsize=4)
-
-    spa_model = resnet152_SpatialNet().cuda()
-    tem_model = resnet50_TemporalNet().cuda()
-
-
-    if spa_model_save_file is not None:
-        spa_model.load_state_dict(torch.load(spa_model_save_file))
-        print('load spa_model success!')
-    if tem_model_save_file is not None:
-        tem_model.load_state_dict(torch.load(tem_model_save_file))
-        print('load tem_model success!')
-
-    spa_model.eval()
-    # tem_model.eval()
-
-    imgs,labels = gen()
-
-    labels = Variable(torch.from_numpy(labels)).cuda().long()
-
-    n,b,c,w,h = imgs.shape
-
-    correct_d = [0,0,0]
-    correct_spa = [0,0,0]
-    correct_tmp = [0,0,0]
-
-
-    loops = 30
-    for l in range(loops):
-
-        imgs,labels = gen()
-
-        labels = Variable(torch.from_numpy(labels)).cuda().long()
-
-        print('\n')
-        print('loop:',l)
-        print('test num: ',l*n)
-        print('correct_d',correct_d)
-        print('correct_spa',correct_spa)
-        print('correct_tmp',correct_tmp)
-
-        for i in range(n):
-
-            label = labels[i][0]
-
-            spatial_input = Variable(torch.from_numpy(imgs[i,:,0:3,:,:])).cuda().float()
-            temporal_input = Variable(torch.from_numpy(imgs[i,:,3:,:,:])).cuda().float()
-
-            pred_spa = spa_model.inference(spatial_input)
-            pred_tem = tem_model.inference(temporal_input)
-
-            # pred_spa = F.softmax(pred_spa)
-            # pred_tem = F.softmax(pred_tem)
-
-            t1_spa = pred_spa.sum(0)/b
-            t1_tem = pred_tem.sum(0)/b
-
-            acc_spa = accuracy(t1_spa,label,topk=(1,5,10))
-            for j in range(3):
-                if acc_spa[j] > 0:
-                    correct_spa[j]+=1
-
-            acc_tmp = accuracy(t1_tem,label,topk=(1,5,10))
-            for j in range(3):
-                if acc_tmp[j] > 0:
-                    correct_tmp[j]+=1
-
-            pred_merge = F.softmax((pred_spa.sum(0)/b+pred_tem.sum(0)/b)/ 2)
-
-            acc_merge = accuracy(pred_merge,label,topk=(1,5,10))
-            for j in range(3):
-                if acc_merge[j] > 0:
-                    correct_d[j]+=1
+# def Merge_Test():
+#     '''
+#     Video Level VGG TwoStream AVG merge evalution
+#     '''
+#
+#     dsl = test_UCF101_ChooseRandomFromSameVideo(dsl=UCF101_TwoStream)
+#
+#     def gen():
+#         return GenVariables_VideoSpatialAndTemporal(dsl=dsl,batchsize=4)
+#
+#     spa_model = resnet152_SpatialNet().cuda()
+#     tem_model = resnet50_TemporalNet().cuda()
+#
+#
+#     if spa_model_save_file is not None:
+#         spa_model.load_state_dict(torch.load(spa_model_save_file))
+#         print('load spa_model success!')
+#     if tem_model_save_file is not None:
+#         tem_model.load_state_dict(torch.load(tem_model_save_file))
+#         print('load tem_model success!')
+#
+#     spa_model.eval()
+#     # tem_model.eval()
+#
+#     imgs,labels = gen()
+#
+#     labels = Variable(torch.from_numpy(labels)).cuda().long()
+#
+#     n,b,c,w,h = imgs.shape
+#
+#     correct_d = [0,0,0]
+#     correct_spa = [0,0,0]
+#     correct_tmp = [0,0,0]
+#
+#
+#     loops = 30
+#     for l in range(loops):
+#
+#         imgs,labels = gen()
+#
+#         labels = Variable(torch.from_numpy(labels)).cuda().long()
+#
+#         print('\n')
+#         print('loop:',l)
+#         print('test num: ',l*n)
+#         print('correct_d',correct_d)
+#         print('correct_spa',correct_spa)
+#         print('correct_tmp',correct_tmp)
+#
+#         for i in range(n):
+#
+#             label = labels[i][0]
+#
+#             spatial_input = Variable(torch.from_numpy(imgs[i,:,0:3,:,:])).cuda().float()
+#             temporal_input = Variable(torch.from_numpy(imgs[i,:,3:,:,:])).cuda().float()
+#
+#             pred_spa = spa_model.inference(spatial_input)
+#             pred_tem = tem_model.inference(temporal_input)
+#
+#             # pred_spa = F.softmax(pred_spa)
+#             # pred_tem = F.softmax(pred_tem)
+#
+#             t1_spa = pred_spa.sum(0)/b
+#             t1_tem = pred_tem.sum(0)/b
+#
+#             acc_spa = accuracy(t1_spa,label,topk=(1,5,10))
+#             for j in range(3):
+#                 if acc_spa[j] > 0:
+#                     correct_spa[j]+=1
+#
+#             acc_tmp = accuracy(t1_tem,label,topk=(1,5,10))
+#             for j in range(3):
+#                 if acc_tmp[j] > 0:
+#                     correct_tmp[j]+=1
+#
+#             pred_merge = F.softmax((pred_spa.sum(0)/b+pred_tem.sum(0)/b)/ 2)
+#
+#             acc_merge = accuracy(pred_merge,label,topk=(1,5,10))
+#             for j in range(3):
+#                 if acc_merge[j] > 0:
+#                     correct_d[j]+=1
 
 
 

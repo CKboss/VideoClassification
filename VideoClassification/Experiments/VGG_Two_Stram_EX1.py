@@ -43,10 +43,10 @@ def VGG_Temporal_Net_Run():
 
     epochs = 81
     loops = 2001
-    learningrate = 0.001
+    learningrate = 0.0001
     attenuation = 0.1
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
+    model = VGG_Temporal_Net(pretrained=False,dropout1=0.9,dropout2=0.8).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -113,7 +113,7 @@ def VGG_Temporal_Net_Run():
                 print('Temporal save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
-        if epoch in [10,20,40,60]:
+        if epoch in [20,40,60]:
             learningrate = learningrate*attenuation
             optim = torch.optim.Adam(model.parameters(),lr=learningrate)
 
