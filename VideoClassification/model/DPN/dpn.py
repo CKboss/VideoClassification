@@ -14,19 +14,22 @@ __all__ = ['DPN', 'dpn92', 'dpn98', 'dpn131', 'dpn107', 'dpns']
 
 
 def dpn92(num_classes=101,in_channel=3):
-    return DPN(num_init_features=64, k_R=96, G=32, k_sec=(3,4,20,3), inc_sec=(16,32,24,128), num_classes=num_classes,in_channel=in_channel)
+    model = DPN(num_init_features=64, k_R=96, G=32, k_sec=(3,4,20,3), inc_sec=(16,32,24,128), num_classes=num_classes,in_channel=in_channel)
+    return nn.DataParallel(model)
 
 
 def dpn98(num_classes=101,in_channel=3):
-    return DPN(num_init_features=96, k_R=160, G=40, k_sec=(3,6,20,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
-
+    model = DPN(num_init_features=96, k_R=160, G=40, k_sec=(3,6,20,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
+    return nn.DataParallel(model)
 
 def dpn107(num_classes=101,in_channel=3):
-    return DPN(num_init_features=128, k_R=160, G=40, k_sec=(4,8,28,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
+    model = DPN(num_init_features=128, k_R=160, G=40, k_sec=(4,8,28,3), inc_sec=(16,32,32,128), num_classes=num_classes,in_channel=in_channel)
+    return nn.DataParallel(model)
 
 
 def dpn131(num_classes=101,in_channel=3):
-    return DPN(num_init_features=128, k_R=200, G=50, k_sec=(4,8,20,3), inc_sec=(20,64,64,128), num_classes=num_classes,in_channel=in_channel)
+    model = DPN(num_init_features=128, k_R=200, G=50, k_sec=(4,8,20,3), inc_sec=(20,64,64,128), num_classes=num_classes,in_channel=in_channel)
+    return nn.DataParallel(model)
 
 
 dpns = {
@@ -158,6 +161,6 @@ if __name__=='__main__':
 
     model = dpn131(101,20).cuda()
 
-    y = model(x)
+    y = model.inference(x)
 
     y.size()

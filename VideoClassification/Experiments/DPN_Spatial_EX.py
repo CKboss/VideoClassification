@@ -22,18 +22,18 @@ import os.path
 if os.path.isdir(savepath)==False:
     os.mkdir(savepath)
 
-batchsize = 128
+batchsize = 50
 
 ############
 
-def DPN131_SpatialNet_Run():
+def DPN92_SpatialNet_Run():
 
     epochs = 121
     loops = 2001
     learningrate = 0.01
     attenuation = 0.1
 
-    model = dpn131(num_classes=101).cuda()
+    model = dpn92(num_classes=101).cuda()
 
     if Config.LOAD_SAVED_MODE_PATH is not None :
         import types
@@ -60,7 +60,7 @@ def DPN131_SpatialNet_Run():
             pred =  model(imgs)
             loss = lossfunc(pred,labels)
 
-            logger.scalar_summary('DPN131/Spatial/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('DPN92/Spatial/train_loss',loss.data[0],cnt)
 
             loss.backward()
             optim.step()
@@ -73,30 +73,30 @@ def DPN131_SpatialNet_Run():
                 model.eval()
 
                 imgs,labels = pq_test.Get()
-                pred = model.inference(imgs)
+                pred = model(imgs)
                 loss = lossfunc(pred,labels)
 
-                logger.scalar_summary('DPN131/Spatial/test_loss',loss.data[0],cnt)
+                logger.scalar_summary('DPN92/Spatial/test_loss',loss.data[0],cnt)
 
                 #acc
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('DPN131/Spatial/test_acc@1',acc[0],cnt)
-                logger.scalar_summary('DPN131/Spatial/test_acc@5',acc[1],cnt)
-                logger.scalar_summary('DPN131/Spatial/test_acc@10',acc[2],cnt)
+                logger.scalar_summary('DPN92/Spatial/test_acc@1',acc[0],cnt)
+                logger.scalar_summary('DPN92/Spatial/test_acc@5',acc[1],cnt)
+                logger.scalar_summary('DPN92/Spatial/test_acc@10',acc[2],cnt)
 
 
                 imgs,labels = pq_train.Get()
-                pred = model.inference(imgs)
+                pred = model(imgs)
 
                 acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('DPN131/Spatial/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('DPN131/Spatial/train_acc@5',acc[1],cnt)
-                logger.scalar_summary('DPN131/Spatial/train_acc@10',acc[2],cnt)
+                logger.scalar_summary('DPN92/Spatial/train_acc@1',acc[0],cnt)
+                logger.scalar_summary('DPN92/Spatial/train_acc@5',acc[1],cnt)
+                logger.scalar_summary('DPN92/Spatial/train_acc@10',acc[2],cnt)
 
                 model.train()
 
             if cnt%2000 == 0:
-                savefile = savepath + 'DPN131_Spatial_{:02d}.pt'.format(epoch%50)
+                savefile = savepath + 'DPN92_Spatial_{:02d}.pt'.format(epoch%50)
                 print('Spatial save model to {}'.format(savefile))
                 torch.save(model.state_dict(),savefile)
 
