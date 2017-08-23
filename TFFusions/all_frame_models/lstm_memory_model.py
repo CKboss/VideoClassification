@@ -18,6 +18,7 @@ FLAGS = None
 class LstmMemoryModel(models.BaseModel):
 
     def __init__(self):
+        super(LstmMemoryModel,self).__init__()
         global FLAGS
         FLAGS = Get_GlobalFLAG()
 
