@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="server_202" createEmptyFolders="true">
+  <component name="PublishConfigData" serverName="server_209" createEmptyFolders="true">
     <serverData>
       <paths name="server_202">
         <serverdata>
@@ -12,7 +12,7 @@
       <paths name="server_209">
         <serverdata>
           <mappings>
-            <mapping deploy="/ssd/2/UCF_Data/Code/VideoClassification" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/mnt/md0/LSVC/Code/VideoClassification" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
