@@ -68,14 +68,14 @@ class LstmMemoryModel(models.BaseModel):
                                                sequence_length=num_frames,
                                                swap_memory=FLAGS.rnn_swap_memory,
                                                dtype=tf.float32)
-            final_state = tf.concat(map(lambda x: x.c, state), axis = 1)
+            final_state = tf.concat(list(map(lambda x: x.c, state)), axis = 1)
 
         if noise_level is not None:
             final_state = final_state + tf.random_normal(tf.shape(final_state), mean=0.0, stddev=noise_level)
 
         # aggregated_model = getattr(video_level_models, FLAGS.video_level_classifier_model)
 
-        aggregated_model = GetVideoModel(FLAGS.video_level_classifier_model)
+        aggregated_model = GetVideoModel(FLAGS.video_level_model)
 
         return aggregated_model().create_model(
             model_input=final_state,

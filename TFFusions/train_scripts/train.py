@@ -15,13 +15,15 @@ def main():
 
     model = GetFrameModel(FLAGS.frame_level_model)()
 
-    x = tf.random_normal(shape=(4,10,1024))
+    x = tf.random_normal(shape=(4,10,4096))
     vocab_size = 101
     num_frames = np.ones(shape=(4,))*10
     num_frames = tf.stack(num_frames)
 
-    y = model.create_model(model_input=x,vocab_size=vocab_size,num_frames=num_frames)
+    x = tf.placeholder(dtype=tf.float32,shape=(4,10,4096))
+    num_frames = tf.placeholder(dtype=tf.int32,shape=(4,))
 
+    y = model.create_model(model_input=x,vocab_size=vocab_size,num_frames=num_frames)
 
 
 if __name__=='__main__':
