@@ -18,7 +18,6 @@ class MoeModel(models.BaseModel):
                      original_input=None,
                      **unused_params):
         """Creates a Mixture of (Logistic) Experts model.
-
          The model consists of a per-class softmax distribution over a
          configurable number of logistic classifiers. One of the classifiers in the
          mixture is not trained, and always predicts 0.
