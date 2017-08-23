@@ -1,0 +1,13 @@
+# lstm-memory-cell1024 train config
+
+name: lstm-memory-cell1024
+batchsize: 32
+moe_num_mixtures: 4
+frame_level_models: lstm_memory_model
+video_level_models: moe_model
+base_learning_rate: 0.0004
+lstm_cells: 1024
+lstm_layers: 2
+train_dir: ''
+train_data_dir: ''
+train_data_pattern: ''
