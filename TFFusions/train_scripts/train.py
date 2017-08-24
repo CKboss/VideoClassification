@@ -151,9 +151,6 @@ def main(config_yaml=None):
 
             cnt+=1
 
-            break
-        break
-
 
 if __name__=='__main__':
     main()

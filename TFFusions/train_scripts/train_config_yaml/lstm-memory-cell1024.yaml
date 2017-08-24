@@ -8,8 +8,8 @@
 
 # model setting
 name: lstm-memory-cell1024
-EX_ID: 1
-batchsize: 32
+EX_ID: EX1
+batchsize: 64
 moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
 video_level_model: moe_model
