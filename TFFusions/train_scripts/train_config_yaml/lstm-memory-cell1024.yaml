@@ -8,6 +8,7 @@
 
 # model setting
 name: lstm-memory-cell1024
+EX_ID: 1
 batchsize: 32
 moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
@@ -35,7 +36,7 @@ max_to_keep: 10
 regularization_penalty: 0.0001
 
 # dataset seting
-vocab_size: 501
+vocab_size: 500
 
 # train path
 train_dir: '/mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024/'

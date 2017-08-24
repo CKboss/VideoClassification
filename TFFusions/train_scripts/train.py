@@ -1,5 +1,6 @@
 import numpy as np
 import pprint
+import random
 import os
 
 import tensorflow as tf
@@ -9,14 +10,44 @@ from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG,Get_Glob
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
 from TFFusions.toolkits.dataloader import getTrainItems,getValItems,Load_Features
 from TFFusions.losses import SoftmaxLoss
+from TFFusions.average_precision_calculator import mean_ap
+from TFFusions.Logger import Logger
 
 def find_class_by_name(name,models):
     classes = [getattr(model,name,None) for model in models]
-    return classes
+    if len(classes) == 1:
+        return classes[0]
+    else:
+        return classes
 
-def main():
+def gen_tf_input(items,kind):
 
-    train_config = Config.TRAIN_SCRIPT+'lstm-memory-cell1024.yaml'
+    global FLAGS
+
+    features = []
+    video_frames = []
+    labels = []
+
+    for item in items:
+        feat = Load_Features(item[0],kind=kind,limitlen=600)
+        video_frames.append(feat.shape[0])
+        ax0_len = feat.shape[0]
+        feat = np.pad(feat,((0,600-ax0_len),(0,0)),'constant',constant_values=(0,0))
+        features.append(feat)
+        labels.append(item[1])
+
+    features = np.c_[features]
+
+    target_label = np.zeros((FLAGS.batchsize,500))
+    for id,label in enumerate(labels):
+        for la in label:
+            target_label[id,la] = 1
+
+    return features, video_frames, target_label
+
+def main(config_yaml=None):
+
+    train_config = config_yaml or Config.TRAIN_SCRIPT+'lstm-memory-cell1024.yaml'
     LOAD_YAML_TO_FLAG(train_config)
     FLAGS = Get_GlobalFLAG()
 
@@ -30,43 +61,62 @@ def main():
 
     inputs = tf.placeholder(dtype=tf.float32,shape=(None,600,4096))
     num_frames = tf.placeholder(dtype=tf.int32,shape=(None))
-    target_labels = tf.placeholder(dtype=tf.int32,shape=(None,501))
+    target_labels = tf.placeholder(dtype=tf.int32,shape=(None,FLAGS.vocab_size))
 
     model = GetFrameModel(FLAGS.frame_level_model)()
     lossfunc = SoftmaxLoss()
 
-    predict_labels = model.create_model(model_input=inputs, vocab_size=501, num_frames=num_frames)
-    train_loss = lossfunc.calculate_loss(predict_labels,target_labels)
+    predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames)
+    predict_labels = predict_labels['predictions']
+    loss = lossfunc.calculate_loss(predict_labels,target_labels)
 
     optimizer_class = find_class_by_name(FLAGS.optimize,[tf.train])
+    train_op = optimizer_class(FLAGS.base_learning_rate).minimize(loss)
 
+    # LOG
+    log_prefix_name = '{}_{}'.format(FLAGS.name,FLAGS.EX_ID)
+    logger = Logger(FLAGS.train_dir+log_prefix_name)
 
+    tf_config = tf.ConfigProto()
+    tf_config.gpu_options.allow_growth = True
+
+    sess = tf.Session(config=tf_config)
+    sess.run(tf.global_variables_initializer())
+
+    cnt = 0
     for epoch in range(FLAGS.num_epochs):
-
         loop = len(train_items)//batchsize
-
         for i in range(loop):
 
             l = i*batchsize
             r = l+batchsize
             items = train_items[l:r]
-
-            features = []
-            labels = []
-            video_frames = []
-
-            for item in items:
-                feat = Load_Features(item[0],kind='train',limitlen=600)
-
-                video_frames.append(feat.shape[0])
-                ax0_len = feat.shape[0]
-                feat = np.pad(feat,((0,600-ax0_len),(0,0)),'constant',constant_values=(0,0))
-                features.append(feat)
-                labels.append(item[1][0])
-
-            features = np.c_[features]
-            labels = np.array(labels)
+            features, video_frames, target_label = gen_tf_input(items,'train')
             video_frames = np.array(video_frames)
+
+            fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
+            loss_value,_ = sess.run([loss,train_op],feed_dict=fd)
+
+            logger.scalar_summary(log_prefix_name+'/train_loss',loss_value,cnt)
+
+            if cnt%100 == 0:
+
+                fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
+                predict = sess.run(predict_labels,feed_dict=fd)
+                train_meanap = mean_ap(predict,target_label)
+                logger.scalar_summary(log_prefix_name+'/train_mAP',train_meanap,cnt)
+
+                items = random.choices(val_items,k=FLAGS.batchsize)
+                features, video_frames, target_label = gen_tf_input(items,'val')
+                fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
+                predict = sess.run(predict_labels,feed_dict=fd)
+                test_meanap = mean_ap(predict,target_label)
+                logger.scalar_summary(log_prefix_name+'/test_mAP',test_meanap,cnt)
+
+            if cnt%10000 == 0:
+                pass
+
+            cnt+=1
 
             break
         break

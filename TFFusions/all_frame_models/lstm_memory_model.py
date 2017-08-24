@@ -62,7 +62,6 @@ class LstmMemoryModel(models.BaseModel):
                 ],
                 state_is_tuple=True)
 
-        loss = 0.0
         with tf.variable_scope("RNN"):
             outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
                                                sequence_length=num_frames,

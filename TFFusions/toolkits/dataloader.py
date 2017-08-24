@@ -14,7 +14,7 @@ def _load_index(filename=Config.INDEX_DATA):
             line = line.replace(' ','')
             line = line.replace('\n','')
             line = line.split('\t')
-            classId[line[1]] = int(line[0])
+            classId[line[1]] = int(line[0])-1
 
 def _load_data(filename):
     # 最多4个标签
@@ -24,7 +24,7 @@ def _load_data(filename):
             line = line.replace('\n','')
             items = line.split(',')
             name = items[0]
-            value = list(map(lambda x: int(x) , items[1:]))
+            value = list(map(lambda x: int(x)-1 , items[1:]))
             ret.append((name,value))
     return ret
 
@@ -68,9 +68,9 @@ def Load_Features(videoname=None,kind=None,limitlen=600):
     if kind == 'train':
         prefix = Config.DATA_PATH+'trainval/'
     elif kind == 'val':
-        raise NotImplementedError
+        prefix = Config.DATA_PATH+'trainval/'
     elif kind == 'test':
-        raise NotImplementedError
+        prefix = Config.DATA_PATH+'test/'
     else:
         raise NotImplementedError
     # videoname example : lsvc000000
