@@ -19,6 +19,8 @@ def LOAD_YAML_TO_FLAG(filename):
     GLOBAL_FLAG = FLAG
     return FLAG
 
+FLAGS = LOAD_YAML_TO_FLAG()
+
 def Get_GlobalFLAG():
     global GLOBAL_FLAG
     return GLOBAL_FLAG

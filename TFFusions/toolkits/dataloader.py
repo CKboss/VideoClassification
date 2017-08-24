@@ -64,12 +64,23 @@ def getClassId():
         _load_labels()
     return classId
 
-def Load_Features(videoname=None,kind='train'):
+def Load_Features(videoname=None,kind=None,limitlen=600):
     if kind == 'train':
         prefix = Config.DATA_PATH+'trainval/'
+    elif kind == 'val':
+        raise NotImplementedError
+    elif kind == 'test':
+        raise NotImplementedError
+    else:
+        raise NotImplementedError
     # videoname example : lsvc000000
     filename = prefix+'{}_fc6_vgg19_frame.binary'.format(videoname)
     frame_features = np.fromfile(filename, dtype='float32').reshape(-1, 4096)
+
+    # limit the frames len to limitlen
+    if frame_features.shape[0] > limitlen:
+        h = (frame_features.shape[0] - limitlen) // 2
+        frame_features = frame_features[h+1:-h-1,:]
     return frame_features
 
 # 长度3~700之间
