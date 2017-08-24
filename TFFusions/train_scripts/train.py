@@ -2,6 +2,7 @@ import numpy as np
 import pprint
 import random
 import os
+import logging
 
 import tensorflow as tf
 
@@ -55,6 +56,8 @@ def main(config_yaml=None):
         print('mk train dir {}'.format(FLAGS.train_dir))
         os.mkdir(FLAGS.train_dir)
 
+    Saver = tf.train.Saver(max_to_keep=20,keep_checkpoint_every_n_hours=2)
+
     train_items = getTrainItems()
     val_items = getValItems()
     batchsize = FLAGS.batchsize
@@ -75,6 +78,20 @@ def main(config_yaml=None):
 
     # LOG
     log_prefix_name = '{}_{}'.format(FLAGS.name,FLAGS.EX_ID)
+
+    # python's logging
+    pylog = logging.getLogger(log_prefix_name)
+    pylog.setLevel(logging.DEBUG)
+    fh = logging.FileHandler(FLAGS.train_dir+'/'+log_prefix_name+'.log')
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s-%(name)s-%(levelname)s: %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    pylog.addHandler(fh)
+    pylog.addHandler(ch)
+
+
+    # tfboard's log
     logger = Logger(FLAGS.train_dir+log_prefix_name)
 
     tf_config = tf.ConfigProto()
@@ -82,6 +99,13 @@ def main(config_yaml=None):
 
     sess = tf.Session(config=tf_config)
     sess.run(tf.global_variables_initializer())
+
+    if FLAGS.model_checkpoint_path is not None:
+        print('load model from {} ...'.format(FLAGS.model_checkpoint_path))
+        Saver.restore(sess=sess,save_path=FLAGS.model_checkpoint_path)
+        print('Success !!!')
+    else :
+        sess.run(tf.global_variables_initializer())
 
     cnt = 0
     for epoch in range(FLAGS.num_epochs):
@@ -98,6 +122,7 @@ def main(config_yaml=None):
             loss_value,_ = sess.run([loss,train_op],feed_dict=fd)
 
             logger.scalar_summary(log_prefix_name+'/train_loss',loss_value,cnt)
+            pylog.info('cnt: {} train_loss: {}'.format(cnt,loss_value))
 
             if cnt%100 == 0:
 
@@ -106,15 +131,23 @@ def main(config_yaml=None):
                 train_meanap = mean_ap(predict,target_label)
                 logger.scalar_summary(log_prefix_name+'/train_mAP',train_meanap,cnt)
 
+                pylog.info('cnt: {} train_mAP: {}'.format(cnt,train_meanap))
+
                 items = random.choices(val_items,k=FLAGS.batchsize)
                 features, video_frames, target_label = gen_tf_input(items,'val')
+
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
-                predict = sess.run(predict_labels,feed_dict=fd)
+                predict,test_loss = sess.run([predict_labels,loss],feed_dict=fd)
                 test_meanap = mean_ap(predict,target_label)
                 logger.scalar_summary(log_prefix_name+'/test_mAP',test_meanap,cnt)
+                logger.scalar_summary(log_prefix_name+'/test_loss',test_loss,cnt)
 
-            if cnt%10000 == 0:
-                pass
+                pylog.info('cnt: {} test_mAP: {}'.format(cnt,test_meanap))
+
+            if cnt%2000 == 0:
+                savepath = FLAGS.train_dir+log_prefix_name+'_save{:03}.ckpt'.format(cnt)
+                Saver.save(sess,savepath,cnt)
+                pylog.info('save model:{} at {}.'.format(FLAGS.name,savepath))
 
             cnt+=1
 
