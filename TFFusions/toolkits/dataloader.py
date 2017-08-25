@@ -1,4 +1,5 @@
 import numpy as np
+import concurrent.futures
 
 import TFFusions.Config.Config as Config
 
@@ -83,15 +84,72 @@ def Load_Features(videoname=None,kind=None,limitlen=600):
         frame_features = frame_features[h+1:-h-1,:]
     return frame_features
 
+def concurrent_get_items(item,kind):
+    """
+    :param item: a tuple ('video_name',[labels])
+    :param kind: from which kinds of datasets [train/test/val]
+    :return: a tuple the network need
+    """
+    try:
+        feat = Load_Features(item[0],kind=kind,limitlen=600)
+    except Exception as E:
+        print(E)
+        item = ('lsvc000191', [222])
+        feat = Load_Features(item[0],kind=kind,limitlen=600)
+
+    ax0_len = feat.shape[0]
+    return (ax0_len,feat,item[1])
+
+def gen_tf_input(items,kind):
+
+    features = []
+    video_frames = []
+    labels = []
+
+    kinds = [kind for __ in range(len(items))]
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for RET in executor.map(concurrent_get_items,items,kinds):
+            video_frames.append(RET[0])
+            features.append(RET[1])
+            labels.append(RET[2])
+
+    batchsize = len(labels)
+    features_zeros = np.zeros((batchsize,600,4096))
+    for i in range(batchsize):
+        features_zeros[i,:features[i].shape[0],:] = features[i]
+
+    target_label = np.zeros((len(items),500))
+    for id,label in enumerate(labels):
+        for la in label:
+            target_label[id,la] = 1
+
+    return features_zeros, video_frames, target_label
+
+
 # 长度3~700之间
 
 if __name__=='__main__':
-    _load_labels()
-    # feature = Load_Features(videoname='lsvc000008')
-    import random
-    ll = []
-    for i in random.choices(getTrainItems(),k=3000):
-        videoname = i[0]
-        feature = Load_Features(videoname=videoname,kind='train')
-        # print(feature.shape[0])
-        ll.append(feature.shape[0])
+    import time
+
+    train_items = getTrainItems()
+
+    items = train_items[:64]
+
+    item = items[0]
+
+    a,b,c = concurrent_get_items(item,'train')
+
+    a = time.time()
+    x,y,z = gen_tf_input(items,'train')
+    b = time.time()
+    print(b-a)
+
+    # _load_labels()
+    # # feature = Load_Features(videoname='lsvc000008')
+    # import random
+    # ll = []
+    # for i in random.choices(getTrainItems(),k=3000):
+    #     videoname = i[0]
+    #     feature = Load_Features(videoname=videoname,kind='train')
+    #     # print(feature.shape[0])
+    #     ll.append(feature.shape[0])
