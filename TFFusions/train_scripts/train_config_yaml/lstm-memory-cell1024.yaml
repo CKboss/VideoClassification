@@ -19,7 +19,7 @@ rnn_swap_memory: true
 model_checkpoint_path: null
 
 # train setting
-base_learning_rate: 0.0004
+base_learning_rate: 0.001
 learning_rate_decay: 0.9
 num_epochs: 5
 max_step: null
@@ -39,4 +39,4 @@ regularization_penalty: 0.0001
 vocab_size: 500
 
 # train path
-train_dir: '/mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024/'
+train_dir: '/mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex1/'

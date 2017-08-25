@@ -23,7 +23,7 @@ def find_class_by_name(name,models):
 
 def gen_tf_input(items,kind):
 
-    global FLAGS
+    FLAGS = Get_GlobalFLAG()
 
     features = []
     video_frames = []
@@ -55,8 +55,6 @@ def main(config_yaml=None):
     if os.path.exists(FLAGS.train_dir)==False:
         print('mk train dir {}'.format(FLAGS.train_dir))
         os.mkdir(FLAGS.train_dir)
-
-    Saver = tf.train.Saver(max_to_keep=20,keep_checkpoint_every_n_hours=2)
 
     train_items = getTrainItems()
     val_items = getValItems()
@@ -99,6 +97,9 @@ def main(config_yaml=None):
 
     sess = tf.Session(config=tf_config)
     sess.run(tf.global_variables_initializer())
+
+    # save ( after session )
+    Saver = tf.train.Saver(max_to_keep=20,keep_checkpoint_every_n_hours=2)
 
     if FLAGS.model_checkpoint_path is not None:
         print('load model from {} ...'.format(FLAGS.model_checkpoint_path))
