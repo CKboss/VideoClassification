@@ -104,7 +104,7 @@ def main(config_yaml=None):
             logger.scalar_summary(log_prefix_name+'/train_loss',loss_value,cnt)
             pylog.info('cnt: {} train_loss: {}'.format(cnt,loss_value))
 
-            if cnt%100 == 0:
+            if cnt%50 == 0:
 
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
                 predict = sess.run(predict_labels,feed_dict=fd)
@@ -130,9 +130,9 @@ def main(config_yaml=None):
                 acc = accuracy(predict,target_label,topk=(1,5,10))
 
                 logger.scalar_summary(log_prefix_name+'/test_mAP',test_meanap,cnt)
-                logger.scalar_summary(log_prefix_name+'/test_acc@1',acc[0])
-                logger.scalar_summary(log_prefix_name+'/test_acc@5',acc[1])
-                logger.scalar_summary(log_prefix_name+'/test_acc@10',acc[2])
+                logger.scalar_summary(log_prefix_name+'/test_acc@1',acc[0],cnt)
+                logger.scalar_summary(log_prefix_name+'/test_acc@5',acc[1],cnt)
+                logger.scalar_summary(log_prefix_name+'/test_acc@10',acc[2],cnt)
                 logger.scalar_summary(log_prefix_name+'/test_loss',test_loss,cnt)
 
                 pylog.info('cnt: {} test_mAP: {}'.format(cnt,test_meanap))
