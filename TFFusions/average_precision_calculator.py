@@ -274,13 +274,21 @@ class AveragePrecisionCalculator(object):
                                                                  epsilon)
         return ret
 
-def mean_ap(probs, labels):
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    return np.exp(x) / np.sum(np.exp(x), axis=0)
+
+def mean_ap(probs, labels, needSoftmax=True):
     """
     Computes the mean average precision for all classes.
     :param probs: the predict probvalue batchsize x vocab_num
     :param labels: a one hot tensor which size is batchsize x vocab_num
     :return: a float num which is mean_ap
     """
+
+    if needSoftmax:
+        probs = softmax(probs)
+
     mAP = np.zeros((probs.shape[1],1))
     for i in range(probs.shape[1]):
         iClass = probs[:,i]
@@ -297,42 +305,31 @@ def mean_ap(probs, labels):
                 mAP[i] = ap/count
     return np.mean(mAP)
 
-# def accuracy(output, target, topk=(1,)):
-#     """Computes the precision@k for the specified values of k"""
-#     maxk = max(topk)
-#     batch_size = target.size(0)
-#
-#     _, pred = output.topk(maxk, 1, True, True)
-#     pred = pred.t()
-#     correct = pred.eq(target.view(1, -1).expand_as(pred))
-#
-#     res = []
-#     for k in topk:
-#         correct_k = correct[:k].view(-1).float().sum(0)
-#         res.append(correct_k.mul_(100.0 / batch_size))
-#
-#     res = [ t.data[0] for t in res]
-#     return res
+def accuracy(output, target, topk=(1,)):
+    """Computes the precision@k for the specified values of k"""
+    """
+    :param output: a ndarray batchsize x classnum
+    :param target: a ndarray batchsize x classnum 1 for correct label
+    :param topk: a tuple of Ks need to calu
+    :return: a list of accuarcy values
+    """
+    output = softmax(output)
+    n,m = output.shape
+    ret = [0.0 for _ in range(len(topk))]
 
-# def get_score_matrix(scores):
-#     """
-#     Get the predicted scores.
-#     """
-#     score_mat = np.zeros((len(scores), 500))
-#     for i,p in enumerate(scores):
-#         vid_score = p.split(',')[1].strip().split(" ")
-#         score_mat[i,:] = np.asarray(vid_score, dtype=np.float32)
-#     return score_mat
-#
-# def get_ground_truth(actual):
-#     """
-#     Get the ground truth labels.
-#     """
-#     label_mat = np.zeros((len(actual), 500))
-#     for i,p in enumerate(actual):
-#         vid_label = np.asarray(p.strip().split(',')[1:], dtype=np.int) - 1
-#         label_mat[i,vid_label] = 1
-#     return label_mat
+    for i in range(n):
+        lst = list(zip(-output[i],list(range(m))))
+        lst = sorted(lst)
+        for id,k in enumerate(topk):
+            pred_label = list(map(lambda x: x[1],lst[:k]))
+            # print('k: ',k,' predictlabel:',pred_label,' label:',target[i])
+            for item in pred_label:
+                if target[i,item] == 1:
+                    ret[id] += 1
+                    break
+
+    ret = [ x*10/n for x in ret]
+    return ret
 
 if __name__=='__main__':
 

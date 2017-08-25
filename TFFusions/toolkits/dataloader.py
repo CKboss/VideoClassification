@@ -100,6 +100,14 @@ def concurrent_get_items(item,kind):
     ax0_len = feat.shape[0]
     return (ax0_len,feat,item[1])
 
+GLOBAL_EXECUTOR = None
+
+def GetExecutor():
+    global GLOBAL_EXECUTOR
+    if GLOBAL_EXECUTOR is None:
+        GLOBAL_EXECUTOR = concurrent.futures.ProcessPoolExecutor(20)
+    return GLOBAL_EXECUTOR
+
 def gen_tf_input(items,kind):
 
     features = []
@@ -107,11 +115,11 @@ def gen_tf_input(items,kind):
     labels = []
 
     kinds = [kind for __ in range(len(items))]
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        for RET in executor.map(concurrent_get_items,items,kinds):
-            video_frames.append(RET[0])
-            features.append(RET[1])
-            labels.append(RET[2])
+    executor = GetExecutor()
+    for RET in executor.map(concurrent_get_items,items,kinds):
+        video_frames.append(RET[0])
+        features.append(RET[1])
+        labels.append(RET[2])
 
     batchsize = len(labels)
     features_zeros = np.zeros((batchsize,600,4096))
