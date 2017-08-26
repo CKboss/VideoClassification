@@ -37,4 +37,4 @@ device_id: '/gpu:1'
 vocab_size: 500
 
 # train path
-train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex1/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex2/
