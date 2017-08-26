@@ -1,5 +1,5 @@
 import TFFusions.Config.Config as Config
-from TFFusions.toolkits.dataloader import getTrainItems,concurrent_get_items
+from TFFusions.toolkits.dataloader import getTrainItems,concurrent_get_items,getTestItems,getValItems
 
 import tensorflow as tf
 import numpy as np
@@ -15,36 +15,58 @@ def _int64_feature(value):
 
 
 # make tfrecord
-def make_tfrecord(recordfilename):
+def make_tfrecord(items,filename,kind):
 
-    trainitems = getTrainItems()
-    trainitems = trainitems[:64]
+    writer = tf.python_io.TFRecordWriter(filename)
+    cnt = 0
 
-    writer = tf.python_io.TFRecordWriter(recordfilename)
+    for item in items:
 
-    cnt = 100
-    for item in trainitems:
-        frame_len,features,labellst = concurrent_get_items(item,kind='train')
+        name = item[0]
+
+        try:
+            frame_len,features,labellst = concurrent_get_items(item,kind=kind)
+        except Exception as E:
+            print(E)
+            continue
+
         features = np.pad(features,((0,600-frame_len),(0,0)),'constant')
         labels = np.zeros(500,dtype=np.int32)
         for label in labellst: labels[label] = 1
 
         example = tf.train.Example(features=tf.train.Features(feature={
-            'cnt': _int64_feature(cnt),
+            'name': _bytes_feature(name.encode()),
             'frame_len': _int64_feature(frame_len),
             'features': _bytes_feature(features.tostring()),
             'labels': _bytes_feature(labels.tostring())
         }))
 
-        cnt+=1
-
         writer.write(example.SerializeToString())
+
+        cnt += 1
+        if cnt%100 == 0:
+            print('cnt: {} ...'.format(cnt))
 
     writer.close()
 
-recordfilename = '/tmp/tf2.records'
+def RUN_make_TF_records():
 
-make_tfrecord(recordfilename)
+    trainitems = getTrainItems()
+
+    n = len(trainitems)
+    duansize = 10240
+    duan = n//duansize+1
+
+    prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
+
+    for i in range(duan):
+        l = i*duansize
+        r = min(l+duansize,n-1)
+        filename = prefixname.format(l,r-1)
+        items = trainitems[l:r]
+        print(filename+'....')
+        make_tfrecord(items,filename,kind='train')
+
 
 def read_and_decode(filename_queue,batch_size):
 
@@ -54,7 +76,7 @@ def read_and_decode(filename_queue,batch_size):
 
     tffeatures = tf.parse_single_example(serialized_example,
                                          features={
-                                             'cnt': tf.FixedLenFeature([],tf.int64),
+                                             'name': tf.FixedLenFeature([],tf.string),
                                              'frame_len': tf.FixedLenFeature([],tf.int64),
                                              'features': tf.FixedLenFeature([],tf.string),
                                              'labels': tf.FixedLenFeature([],tf.string),
@@ -65,14 +87,14 @@ def read_and_decode(filename_queue,batch_size):
     features = tf.reshape(features,[600,4096])
     labels = tf.decode_raw(tffeatures['labels'],tf.int32)
     labels = tf.reshape(labels,[500])
-    id = tffeatures['cnt']
+    name = tffeatures['name']
 
 
-    frame_len_batch, features_batch, labels_batch,id_batch = tf.train.batch([frame_len,features,labels,id],
+    frame_len_batch, features_batch, labels_batch,name_batch = tf.train.batch([frame_len,features,labels,name],
                                                                             batch_size = batch_size )
-    return frame_len_batch,features_batch,labels_batch,id_batch
+    return frame_len_batch,features_batch,labels_batch,name_batch
 
-filenamequeue = tf.train.string_input_producer(['/tmp/tf1.records','/tmp/tf2.records'])
+filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/tfrecords/val_tf_0_10239.tfrecord'])
 
 a,b,c,d = read_and_decode(filenamequeue,10)
 a1,b1,c1,d1 = read_and_decode(filenamequeue,10)
@@ -86,10 +108,10 @@ with tf.Session() as sess:
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord,sess=sess)
 
-    for i in range(90):
+    for i in range(20):
         A,B,C,D = sess.run([a,b,c,d])
         print('-->',D)
-        A,B,C,D = sess.run([a1,b1,c1,d1])
+        # A,B,C,D = sess.run([a1,b1,c1,d1])
 
     coord.request_stop()
     coord.join(threads)

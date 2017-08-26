@@ -61,7 +61,7 @@ def getTestItems():
     global test_items
     if test_items is None:
         _load_labels()
-    return train_items
+    return test_items
 
 def getClassId():
     global classId
@@ -75,7 +75,7 @@ def Load_Features(videoname=None,kind=None,limitlen=600):
     elif kind == 'val':
         prefix = Config.DATA_PATH+'trainval/'
     elif kind == 'test':
-        prefix = Config.DATA_PATH+'test/'
+        raise NotImplementedError
     else:
         raise NotImplementedError
     # videoname example : lsvc000000
@@ -94,13 +94,14 @@ def concurrent_get_items(item,kind):
     :param kind: from which kinds of datasets [train/test/val]
     :return: a tuple the network need
     """
-    try:
-        feat = Load_Features(item[0],kind=kind,limitlen=600)
-    except Exception as E:
-        print(E)
-        item = ('lsvc000191', [222])
-        feat = Load_Features(item[0],kind=kind,limitlen=600)
+    # try:
+    #     feat = Load_Features(item[0],kind=kind,limitlen=600)
+    # except Exception as E:
+    #     print(E)
+    #     item = ('lsvc000191', [222])
+    #     feat = Load_Features(item[0],kind=kind,limitlen=600)
 
+    feat = Load_Features(item[0],kind=kind,limitlen=600)
     ax0_len = feat.shape[0]
     return (ax0_len,feat,item[1])
 
