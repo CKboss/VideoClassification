@@ -9,7 +9,7 @@ import tensorflow as tf
 import TFFusions.Config.Config as Config
 from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG,Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
-from TFFusions.toolkits.dataloader import getTrainItems,getValItems,gen_tf_input
+from TFFusions.toolkits.dataloader import getTrainItems,getValItems,gen_tf_input,PictureQueue
 from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap,accuracy
 from TFFusions.Logger import Logger
@@ -35,27 +35,26 @@ def main(config_yaml=None):
     val_items = getValItems()
     batchsize = FLAGS.batchsize
 
-    with tf.device(FLAGS.device_id):
-        inputs = tf.placeholder(dtype=tf.float32,shape=(None,600,4096))
-        num_frames = tf.placeholder(dtype=tf.int32,shape=(None))
-        target_labels = tf.placeholder(dtype=tf.int32,shape=(None,FLAGS.vocab_size))
+    inputs = tf.placeholder(dtype=tf.float32,shape=(None,600,4096))
+    num_frames = tf.placeholder(dtype=tf.int32,shape=(None))
+    target_labels = tf.placeholder(dtype=tf.int32,shape=(None,FLAGS.vocab_size))
 
-        model = GetFrameModel(FLAGS.frame_level_model)()
-        lossfunc = SoftmaxLoss()
+    model = GetFrameModel(FLAGS.frame_level_model)()
+    lossfunc = SoftmaxLoss()
 
-        predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames)
-        predict_labels = predict_labels['predictions']
-        loss = lossfunc.calculate_loss(predict_labels,target_labels)
+    predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames)
+    predict_labels = predict_labels['predictions']
+    loss = lossfunc.calculate_loss(predict_labels,target_labels)
 
-        global_step=tf.Variable(0,trainable=False)
-        decayed_learning_rate=tf.train.exponential_decay(FLAGS.base_learning_rate,
-                                                         global_step,
-                                                         FLAGS.decay_at_epoch,
-                                                         FLAGS.learning_rate_decay,
-                                                         staircase=True)
+    global_step=tf.Variable(0,trainable=False)
+    decayed_learning_rate=tf.train.exponential_decay(FLAGS.base_learning_rate,
+                                                     global_step,
+                                                     FLAGS.decay_at_epoch,
+                                                     FLAGS.learning_rate_decay,
+                                                     staircase=True)
 
-        optimizer_class = find_class_by_name(FLAGS.optimize,[tf.train])
-        train_op = optimizer_class(decayed_learning_rate).minimize(loss)
+    optimizer_class = find_class_by_name(FLAGS.optimize,[tf.train])
+    train_op = optimizer_class(decayed_learning_rate).minimize(loss)
 
     # LOG
     log_prefix_name = '{}_{}'.format(FLAGS.name,FLAGS.EX_ID)
@@ -79,6 +78,10 @@ def main(config_yaml=None):
     sess = tf.Session(config=tf_config)
     sess.run(tf.global_variables_initializer())
 
+    # Load Queue
+    pq_train = PictureQueue(kind='train',batchsize=batchsize,worker=5)
+    pq_test = PictureQueue(kind='val',batchsize=batchsize,worker=3)
+
     # save ( after session )
     Saver = tf.train.Saver(max_to_keep=20,keep_checkpoint_every_n_hours=2)
 
@@ -88,14 +91,18 @@ def main(config_yaml=None):
         print('Success !!!')
 
     cnt = 0
+
     for epoch in range(FLAGS.num_epochs):
         loop = len(train_items)//batchsize
         for i in range(loop):
 
-            l = i*batchsize
-            r = l+batchsize
-            items = train_items[l:r]
-            features, video_frames, target_label = gen_tf_input(items,'train')
+            # l = i*batchsize
+            # r = l+batchsize
+            # items = train_items[l:r]
+            # features, video_frames, target_label = gen_tf_input(items,'train')
+
+            features, video_frames, target_label = pq_train.Get()
+
             video_frames = np.array(video_frames)
 
             fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
@@ -121,8 +128,9 @@ def main(config_yaml=None):
                 pylog.info('cnt: {} train_acc@5: {}'.format(cnt,acc[1]))
                 pylog.info('cnt: {} train_acc@10: {}'.format(cnt,acc[2]))
 
-                items = random.choices(val_items,k=FLAGS.batchsize)
-                features, video_frames, target_label = gen_tf_input(items,'val')
+                # items = random.choices(val_items,k=FLAGS.batchsize)
+                # features, video_frames, target_label = gen_tf_input(items,'val')
+                features, video_frames, target_label = pq_test.Get()
 
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
                 predict,test_loss = sess.run([predict_labels,loss],feed_dict=fd)
@@ -136,6 +144,7 @@ def main(config_yaml=None):
                 logger.scalar_summary(log_prefix_name+'/test_loss',test_loss,cnt)
 
                 pylog.info('cnt: {} test_mAP: {}'.format(cnt,test_meanap))
+                pylog.info('cnt: {} test_loss: {}'.format(cnt,test_loss))
                 pylog.info('cnt: {} test_acc@1: {}'.format(cnt,acc[0]))
                 pylog.info('cnt: {} test_acc@5: {}'.format(cnt,acc[1]))
                 pylog.info('cnt: {} test_acc@10: {}'.format(cnt,acc[2]))

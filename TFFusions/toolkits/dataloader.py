@@ -1,5 +1,9 @@
 import numpy as np
 import concurrent.futures
+import multiprocessing
+from multiprocessing import Process
+import random
+import time
 
 import TFFusions.Config.Config as Config
 
@@ -105,7 +109,7 @@ GLOBAL_EXECUTOR = None
 def GetExecutor():
     global GLOBAL_EXECUTOR
     if GLOBAL_EXECUTOR is None:
-        GLOBAL_EXECUTOR = concurrent.futures.ProcessPoolExecutor(20)
+        GLOBAL_EXECUTOR = concurrent.futures.ProcessPoolExecutor()
     return GLOBAL_EXECUTOR
 
 def gen_tf_input(items,kind):
@@ -133,6 +137,88 @@ def gen_tf_input(items,kind):
 
     return features_zeros, video_frames, target_label
 
+class PictureQueue(object):
+
+    def __init__(self,kind,batchsize=8,worker=5,mxsize=10):
+
+        self.kind = kind
+        if kind == 'train':
+            self.datasets= getTrainItems()
+        elif kind == 'test':
+            self.datasets= getTestItems()
+        elif kind == 'val':
+            self.datasets= getValItems()
+        self.worker = worker
+
+        # use manager to share queue between process
+        self.manager = multiprocessing.Manager()
+        self.q = self.manager.Queue(mxsize)
+
+        self.batchsize = batchsize
+
+        self.mainQ = self.manager.Queue(maxsize=mxsize*2)
+        self.q = [ self.manager.Queue(maxsize=mxsize) for i in range(worker)]
+        self.ps = []
+
+        for i in range(worker):
+            self.ps.append(Process(target=self.pr,args=(self.q[i],),name='Producter_{}'.format(i)))
+
+        # self.ps.append(Process(target=self.collectorPr,name='CollectorPR'))
+
+        for i in range(worker):
+            self.ps[i].deamon = True
+            self.ps[i].start()
+
+    def collectorPr(self):
+        time.sleep(1)
+        for i in range(self.worker):
+            # print('collect pr:',self.mainQ.qsize(),'try to get from queue: ',i,' which size is ',self.q[i].qsize())
+            if self.mainQ.full():
+                break
+            while True:
+                try:
+                    item = self.q[i].get_nowait()
+                    # print(' got item !')
+                    self.mainQ.put_nowait(item)
+                    # print(' push in it ')
+                except Exception as E:
+                    break
+
+    def pr(self,que):
+        while True:
+            if que.full():
+                time.sleep(1)
+                continue
+            items = random.choices(self.datasets,k=self.batchsize)
+            features = []
+            video_frames = []
+            labels = []
+            for item in items:
+                RET = concurrent_get_items(item,self.kind)
+                video_frames.append(RET[0])
+                features.append(RET[1])
+                labels.append(RET[2])
+            batchsize = self.batchsize
+            features_zeros = np.zeros((batchsize,600,4096))
+            for i in range(batchsize):
+                features_zeros[i,:features[i].shape[0],:] = features[i]
+            target_label = np.zeros((len(items),500))
+            for id,label in enumerate(labels):
+                for la in label:
+                    target_label[id,la] = 1
+
+            processname  = multiprocessing.current_process().name
+            # print('{}: {}'.format(processname,que.qsize()))
+            que.put((features_zeros, video_frames, target_label))
+
+    def Get(self):
+        # print(Process.pid,'Try To Get q.size:',self.q.qsize())
+        while True:
+            try:
+                return self.mainQ.get_nowait()
+            except:
+                self.collectorPr()
+
 
 # 长度3~700之间
 
@@ -143,14 +229,18 @@ if __name__=='__main__':
 
     items = train_items[:64]
 
-    item = items[0]
+    queue = PictureQueue(kind='train',batchsize=16,worker=5,mxsize=3)
+    item = queue.Get()
 
-    a,b,c = concurrent_get_items(item,'train')
 
-    a = time.time()
-    x,y,z = gen_tf_input(items,'train')
-    b = time.time()
-    print(b-a)
+    # item = items[0]
+    #
+    # a,b,c = concurrent_get_items(item,'train')
+    #
+    # a = time.time()
+    # x,y,z = gen_tf_input(items,'train')
+    # b = time.time()
+    # print(b-a)
 
     # _load_labels()
     # # feature = Load_Features(videoname='lsvc000008')
