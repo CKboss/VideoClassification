@@ -3,7 +3,6 @@ import pprint
 import random
 import os
 import logging
-import glob
 
 import tensorflow as tf
 
@@ -14,7 +13,6 @@ from TFFusions.toolkits.dataloader import getTrainItems,getValItems,gen_tf_input
 from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap,accuracy
 from TFFusions.Logger import Logger
-from TFFusions.tfrecord_tools import read_and_decode
 
 def find_class_by_name(name,models):
     classes = [getattr(model,name,None) for model in models]
@@ -58,8 +56,6 @@ def main(config_yaml=None):
     optimizer_class = find_class_by_name(FLAGS.optimize,[tf.train])
     train_op = optimizer_class(decayed_learning_rate).minimize(loss)
 
-    init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
-
     # LOG
     log_prefix_name = '{}_{}'.format(FLAGS.name,FLAGS.EX_ID)
     # python's logging
@@ -79,23 +75,12 @@ def main(config_yaml=None):
     tf_config.gpu_options.allow_growth = True
     tf_config.allow_soft_placement=True
     tf_config.log_device_placement=True
-
-
-    # Load from TFRecord
-    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
-    train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
-    train_file_queue = tf.train.string_input_producer(train_file_list,num_epochs=FLAGS.num_epochs)
-    val_file_queue = tf.train.string_input_producer(val_file_list,num_epochs=FLAGS.num_epochs)
-    train_frame_len,train_feature,train_label,train_name=read_and_decode(train_file_queue,batchsize)
-    test_frame_len,test_feature,test_label,test_name=read_and_decode(val_file_queue,batchsize)
-
-
-    # init session
     sess = tf.Session(config=tf_config)
-    sess.run(init_op)
+    sess.run(tf.global_variables_initializer())
 
-    coord = tf.train.Coordinator()
-    threads = tf.train.start_queue_runners(coord=coord,sess=sess)
+    # Load Queue
+    pq_train = PictureQueue(kind='train',batchsize=batchsize,worker=5)
+    pq_test = PictureQueue(kind='val',batchsize=batchsize,worker=3)
 
     # save ( after session )
     Saver = tf.train.Saver(max_to_keep=20,keep_checkpoint_every_n_hours=2)
@@ -115,10 +100,10 @@ def main(config_yaml=None):
             # r = l+batchsize
             # items = train_items[l:r]
             # features, video_frames, target_label = gen_tf_input(items,'train')
-            # features, video_frames, target_label = pq_train.Get()
-            # video_frames = np.array(video_frames)
 
-            features,target_label,video_frames,train_name = sess.run([train_feature,train_label,train_frame_len,train_name])
+            features, video_frames, target_label = pq_train.Get()
+
+            video_frames = np.array(video_frames)
 
             fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
             loss_value,_ = sess.run([loss,train_op],feed_dict=fd)
@@ -145,9 +130,7 @@ def main(config_yaml=None):
 
                 # items = random.choices(val_items,k=FLAGS.batchsize)
                 # features, video_frames, target_label = gen_tf_input(items,'val')
-                # features, video_frames, target_label = pq_test.Get()
-
-                features,target_label,video_frames,test_name = sess.run([test_feature,test_label,test_feature,test_name])
+                features, video_frames, target_label = pq_test.Get()
 
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
                 predict,test_loss = sess.run([predict_labels,loss],feed_dict=fd)
@@ -172,10 +155,6 @@ def main(config_yaml=None):
                 pylog.info('save model:{} at {}.'.format(FLAGS.name,savepath))
 
             cnt+=1
-
-
-    coord.request_stop()
-    coord.join(threads)
 
 
 if __name__=='__main__':

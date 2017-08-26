@@ -94,27 +94,28 @@ def read_and_decode(filename_queue,batch_size):
                                                                             batch_size = batch_size )
     return frame_len_batch,features_batch,labels_batch,name_batch
 
-filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/tfrecords/val_tf_0_10239.tfrecord'])
+def test():
+    filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/tfrecords/val_tf_0_10239.tfrecord'])
 
-a,b,c,d = read_and_decode(filenamequeue,10)
-a1,b1,c1,d1 = read_and_decode(filenamequeue,10)
+    a,b,c,d = read_and_decode(filenamequeue,10)
+    a1,b1,c1,d1 = read_and_decode(filenamequeue,10)
 
-init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
+    init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
 
-with tf.Session() as sess:
+    with tf.Session() as sess:
 
-    sess.run(init_op)
+        sess.run(init_op)
 
-    coord = tf.train.Coordinator()
-    threads = tf.train.start_queue_runners(coord=coord,sess=sess)
+        coord = tf.train.Coordinator()
+        threads = tf.train.start_queue_runners(coord=coord,sess=sess)
 
-    for i in range(20):
-        A,B,C,D = sess.run([a,b,c,d])
-        print('-->',D)
-        # A,B,C,D = sess.run([a1,b1,c1,d1])
+        for i in range(20):
+            A,B,C,D = sess.run([a,b,c,d])
+            print('-->',D)
+            # A,B,C,D = sess.run([a1,b1,c1,d1])
 
-    coord.request_stop()
-    coord.join(threads)
+        coord.request_stop()
+        coord.join(threads)
 
 
 
