@@ -84,10 +84,10 @@ def main(config_yaml=None):
     # Load from TFRecord
     val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
     train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
-    train_file_queue = tf.train.string_input_producer(train_file_list,num_epochs=FLAGS.num_epochs)
-    val_file_queue = tf.train.string_input_producer(val_file_list,num_epochs=FLAGS.num_epochs)
-    train_frame_len,train_feature,train_label,train_name=read_and_decode(train_file_queue,batchsize)
-    test_frame_len,test_feature,test_label,test_name=read_and_decode(val_file_queue,batchsize)
+    train_file_queue = tf.train.string_input_producer(train_file_list)
+    val_file_queue = tf.train.string_input_producer(val_file_list)
+    train_frame_len_batch,train_feature_batch,train_label_batch,train_name_batch=read_and_decode(train_file_queue,batchsize)
+    test_frame_len_batch,test_feature_batch,test_label_batch,test_name_batch=read_and_decode(val_file_queue,batchsize)
 
 
     # init session
@@ -118,7 +118,7 @@ def main(config_yaml=None):
             # features, video_frames, target_label = pq_train.Get()
             # video_frames = np.array(video_frames)
 
-            features,target_label,video_frames,train_name = sess.run([train_feature,train_label,train_frame_len,train_name])
+            features,target_label,video_frames,train_name = sess.run([train_feature_batch,train_label_batch,train_frame_len_batch,train_name_batch])
 
             fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
             loss_value,_ = sess.run([loss,train_op],feed_dict=fd)
@@ -147,7 +147,7 @@ def main(config_yaml=None):
                 # features, video_frames, target_label = gen_tf_input(items,'val')
                 # features, video_frames, target_label = pq_test.Get()
 
-                features,target_label,video_frames,test_name = sess.run([test_feature,test_label,test_feature,test_name])
+                features,target_label,video_frames,test_name = sess.run([test_feature_batch,test_label_batch,test_frame_len_batch,test_name_batch])
 
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
                 predict,test_loss = sess.run([predict_labels,loss],feed_dict=fd)
