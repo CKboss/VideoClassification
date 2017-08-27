@@ -5,7 +5,7 @@ from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
 module = vgg16()
 
-module.m1 = types.MethodType(try_to_load_state_dict,module)
+module.m1 = types.MethodType(try_to_load_state_dict, module)
 
 pt = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
 import torch

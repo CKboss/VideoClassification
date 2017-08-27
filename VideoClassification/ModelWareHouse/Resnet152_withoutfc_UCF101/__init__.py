@@ -1,5 +1,4 @@
-
-__doc__= '''
+__doc__ = '''
 
 Resnet 152 without fc 
 

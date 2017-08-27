@@ -3,16 +3,17 @@ from numba import jit
 
 from torch.nn.parameter import Parameter
 
+
 @jit
-def Accuracy(outputs: np.ndarray,targets: np.ndarray) -> float:
+def Accuracy(outputs: np.ndarray, targets: np.ndarray) -> float:
     '''
     :param outputs: 输出的logic值 np.array
     :param targets: 正确的标签
     :return: acc 正确比率
     '''
     n = len(targets)
-    predicts = np.argmax(np.exp(outputs)/np.sum(np.exp(outputs)),axis=1)
-    acc = np.sum(np.fabs(targets-predicts)<1e-6)/n*100
+    predicts = np.argmax(np.exp(outputs) / np.sum(np.exp(outputs)), axis=1)
+    acc = np.sum(np.fabs(targets - predicts) < 1e-6) / n * 100
     return acc
 
 
@@ -30,7 +31,7 @@ def accuracy(output, target, topk=(1,)):
         correct_k = correct[:k].view(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
 
-    res = [ t.data[0] for t in res]
+    res = [t.data[0] for t in res]
     return res
 
 
@@ -49,7 +50,7 @@ def try_to_load_state_dict(self, state_dict):
     for name, param in state_dict.items():
 
         if name not in own_state:
-            print('try to load unexpected key "{}" in state_dict. just to skip it.' .format(name))
+            print('try to load unexpected key "{}" in state_dict. just to skip it.'.format(name))
             continue
 
         if isinstance(param, Parameter):
@@ -64,4 +65,3 @@ def try_to_load_state_dict(self, state_dict):
     missing = set(own_state.keys()) - set(state_dict.keys())
     if len(missing) > 0:
         print('try to load missing keys in state_dict: "{}"'.format(missing))
-

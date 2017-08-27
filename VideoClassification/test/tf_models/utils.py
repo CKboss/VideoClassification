@@ -137,6 +137,7 @@ def AddEpochSummary(summary_writer,
         epoch_id, avg_hit_at_one, avg_perr, mean_ap, gap, avg_loss)
     return info
 
+
 def GetListOfFeatureNamesAndSizes(feature_names, feature_sizes):
     """Extract the list of feature names and the dimensionality of each feature
        from string of comma separated values.

@@ -15,10 +15,10 @@ from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG
 
 FLAGS = None
 
-class BiLstmModel(models.BaseModel):
 
+class BiLstmModel(models.BaseModel):
     def __init__(self):
-        super(BiLstmModel,self).__init__()
+        super(BiLstmModel, self).__init__()
         FLAGS = Get_GlobalFLAG()
 
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
@@ -56,13 +56,13 @@ class BiLstmModel(models.BaseModel):
             state_is_tuple=False)
 
         with tf.variable_scope("RNN"):
-            outputs, states = tf.nn.bidirectional_dynamic_rnn(cell_fw = fw_stacked_lstm, cell_bw = bw_stacked_lstm,
-                                                              inputs = model_input,
+            outputs, states = tf.nn.bidirectional_dynamic_rnn(cell_fw=fw_stacked_lstm, cell_bw=bw_stacked_lstm,
+                                                              inputs=model_input,
                                                               sequence_length=num_frames,
                                                               swap_memory=FLAGS.rnn_swap_memory,
                                                               dtype=tf.float32)
         state_fw, state_bw = states
-        state = tf.concat([state_fw, state_bw], axis = 1)
+        state = tf.concat([state_fw, state_bw], axis=1)
 
         # aggregated_model = getattr(video_level_models,
         #                            FLAGS.video_level_classifier_model)
@@ -74,4 +74,3 @@ class BiLstmModel(models.BaseModel):
             original_input=model_input,
             vocab_size=vocab_size,
             **unused_params)
-

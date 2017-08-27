@@ -59,7 +59,6 @@ CREATE_TABLE_VideoSets_SQL = 'CREATE TABLE VideoSets' \
                              'imgnum INTEGER ' \
                              ');'
 
-
 INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, videoname, first_label, ord) VALUES ' \
                    '(' \
                    '%s,%s,%s,%s,%s,%s,%s' \
@@ -67,6 +66,3 @@ INSERT_NEW_IMAGE = 'INSERT INTO ImgSets (splitkind, imgpath, imgname, imgkind, v
 
 INSERT_VIDEO_LABELS = 'INSERT INTO VideoLabels (videoname , label) VALUES ' \
                       '(%s,%s);'
-
-
-

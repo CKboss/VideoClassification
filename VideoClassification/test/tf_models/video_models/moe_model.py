@@ -4,6 +4,8 @@ import tensorflow as tf
 from .. import utils
 from tensorflow import flags
 import tensorflow.contrib.slim as slim
+
+
 # FLAGS = flags.FLAGS
 
 class MoeModel(models.BaseModel):
@@ -43,13 +45,13 @@ class MoeModel(models.BaseModel):
             activation_fn=None,
             biases_initializer=None,
             weights_regularizer=slim.l2_regularizer(l2_penalty),
-            scope="gates"+sub_scope)
+            scope="gates" + sub_scope)
         expert_activations = slim.fully_connected(
             model_input,
             vocab_size * num_mixtures,
             activation_fn=None,
             weights_regularizer=slim.l2_regularizer(l2_penalty),
-            scope="experts"+sub_scope)
+            scope="experts" + sub_scope)
 
         gating_distribution = tf.nn.softmax(tf.reshape(
             gate_activations,

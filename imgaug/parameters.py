@@ -5,6 +5,7 @@ import numpy as np
 import copy as copy_module
 import six
 
+
 @six.add_metaclass(ABCMeta)
 class StochasticParameter(object):
     def __init__(self):
@@ -26,6 +27,7 @@ class StochasticParameter(object):
 
     def deepcopy(self):
         return copy_module.deepcopy(self)
+
 
 class Binomial(StochasticParameter):
     def __init__(self, p):
@@ -53,6 +55,7 @@ class Binomial(StochasticParameter):
         else:
             return "Binomial(%s)" % (self.p,)
 
+
 class Choice(StochasticParameter):
     def __init__(self, a, replace=True, p=None):
         super(Choice, self).__init__()
@@ -70,13 +73,16 @@ class Choice(StochasticParameter):
     def __str__(self):
         return "Choice(a=%s, replace=%s, p=%s)" % (str(self.a), str(self.replace), str(self.p),)
 
+
 class DiscreteUniform(StochasticParameter):
     def __init__(self, a, b):
         StochasticParameter.__init__(self)
 
         # for two ints the samples will be from range a <= x <= b
-        assert isinstance(a, (int, StochasticParameter)), "Expected a to be int or StochasticParameter, got %s" % (type(a),)
-        assert isinstance(b, (int, StochasticParameter)), "Expected b to be int or StochasticParameter, got %s" % (type(b),)
+        assert isinstance(a, (int, StochasticParameter)), "Expected a to be int or StochasticParameter, got %s" % (
+        type(a),)
+        assert isinstance(b, (int, StochasticParameter)), "Expected b to be int or StochasticParameter, got %s" % (
+        type(b),)
 
         if ia.is_single_integer(a):
             self.a = Deterministic(a)
@@ -102,6 +108,7 @@ class DiscreteUniform(StochasticParameter):
 
     def __str__(self):
         return "DiscreteUniform(%s, %s)" % (self.a, self.b)
+
 
 class Normal(StochasticParameter):
     def __init__(self, loc, scale):
@@ -137,12 +144,15 @@ class Normal(StochasticParameter):
     def __str__(self):
         return "Normal(loc=%s, scale=%s)" % (self.loc, self.scale)
 
+
 class Uniform(StochasticParameter):
     def __init__(self, a, b):
         super(Uniform, self).__init__()
 
-        assert isinstance(a, (int, float, StochasticParameter)), "Expected a to be int, float or StochasticParameter, got %s" % (type(a),)
-        assert isinstance(b, (int, float, StochasticParameter)), "Expected b to be int, float or StochasticParameter, got %s" % (type(b),)
+        assert isinstance(a, (
+        int, float, StochasticParameter)), "Expected a to be int, float or StochasticParameter, got %s" % (type(a),)
+        assert isinstance(b, (
+        int, float, StochasticParameter)), "Expected b to be int, float or StochasticParameter, got %s" % (type(b),)
 
         if ia.is_single_number(a):
             self.a = Deterministic(a)
@@ -169,6 +179,7 @@ class Uniform(StochasticParameter):
     def __str__(self):
         return "Uniform(%s, %s)" % (self.a, self.b)
 
+
 class Deterministic(StochasticParameter):
     def __init__(self, value):
         super(Deterministic, self).__init__()
@@ -192,6 +203,7 @@ class Deterministic(StochasticParameter):
         else:
             return "Deterministic(float %.8f)" % (self.value,)
 
+
 class FromLowerResolution(StochasticParameter):
     def __init__(self, other_param, size_percent=None, size_px=None, method="nearest", min_size=1):
         super(StochasticParameter, self).__init__()
@@ -209,8 +221,10 @@ class FromLowerResolution(StochasticParameter):
             elif isinstance(size_percent, StochasticParameter):
                 self.size_percent = size_percent
             else:
-                raise Exception("Expected int, float, tuple of two ints/floats or StochasticParameter for size_percent, got %s." % (type(size_percent),))
-        else: # = elif size_px is not None:
+                raise Exception(
+                    "Expected int, float, tuple of two ints/floats or StochasticParameter for size_percent, got %s." % (
+                    type(size_percent),))
+        else:  # = elif size_px is not None:
             self.size_method = "px"
             self.size_percent = None
             if ia.is_single_integer(size_px):
@@ -221,7 +235,9 @@ class FromLowerResolution(StochasticParameter):
             elif isinstance(size_px, StochasticParameter):
                 self.size_px = size_px
             else:
-                raise Exception("Expected int, float, tuple of two ints/floats or StochasticParameter for size_px, got %s." % (type(size_px),))
+                raise Exception(
+                    "Expected int, float, tuple of two ints/floats or StochasticParameter for size_px, got %s." % (
+                    type(size_px),))
 
         self.other_param = other_param
 
@@ -241,7 +257,9 @@ class FromLowerResolution(StochasticParameter):
         elif len(size) == 4:
             n, h, w, c = size
         else:
-            raise Exception("FromLowerResolution can only generate samples of shape (H, W, C) or (N, H, W, C), requested was %s." % (str(size),))
+            raise Exception(
+                "FromLowerResolution can only generate samples of shape (H, W, C) or (N, H, W, C), requested was %s." % (
+                str(size),))
 
         if self.size_method == "percent":
             hw_percents = self.size_percent.draw_samples((n, 2), random_state=random_state)
@@ -251,10 +269,10 @@ class FromLowerResolution(StochasticParameter):
 
         methods = self.method.draw_samples((n,), random_state=random_state)
         result = None
-        #for i, (size_factor, method) in enumerate(zip(size_factors, methods)):
+        # for i, (size_factor, method) in enumerate(zip(size_factors, methods)):
         for i, (hw_px, method) in enumerate(zip(hw_pxs, methods)):
-            #h_small = max(int(h * size_factor), self.min_size)
-            #w_small = max(int(w * size_factor), self.min_size)
+            # h_small = max(int(h * size_factor), self.min_size)
+            # w_small = max(int(w * size_factor), self.min_size)
             h_small = max(hw_px[0], self.min_size)
             w_small = max(hw_px[1], self.min_size)
             samples = self.other_param.draw_samples((1, h_small, w_small, c), random_state=random_state)
@@ -273,9 +291,12 @@ class FromLowerResolution(StochasticParameter):
 
     def __str__(self):
         if self.size_method == "percent":
-            return "FromLowerResolution(size_percent=%s, method=%s, other_param=%s)" % (self.size_percent, self.method, self.other_param)
+            return "FromLowerResolution(size_percent=%s, method=%s, other_param=%s)" % (
+            self.size_percent, self.method, self.other_param)
         else:
-            return "FromLowerResolution(size_px=%s, method=%s, other_param=%s)" % (self.size_px, self.method, self.other_param)
+            return "FromLowerResolution(size_px=%s, method=%s, other_param=%s)" % (
+            self.size_px, self.method, self.other_param)
+
 
 class Clip(StochasticParameter):
     def __init__(self, other_param, minval=None, maxval=None):

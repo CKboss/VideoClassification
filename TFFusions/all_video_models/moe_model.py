@@ -7,7 +7,9 @@ import tensorflow.contrib.slim as slim
 # FLAGS = flags.FLAGS
 
 from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG
+
 FLAGS = None
+
 
 class MoeModel(models.BaseModel):
     """A softmax over a mixture of logistic models (with L2 regularization)."""
@@ -50,13 +52,13 @@ class MoeModel(models.BaseModel):
             activation_fn=None,
             biases_initializer=None,
             weights_regularizer=slim.l2_regularizer(l2_penalty),
-            scope="gates"+sub_scope)
+            scope="gates" + sub_scope)
         expert_activations = slim.fully_connected(
             model_input,
             vocab_size * num_mixtures,
             activation_fn=None,
             weights_regularizer=slim.l2_regularizer(l2_penalty),
-            scope="experts"+sub_scope)
+            scope="experts" + sub_scope)
 
         gating_distribution = tf.nn.softmax(tf.reshape(
             gate_activations,

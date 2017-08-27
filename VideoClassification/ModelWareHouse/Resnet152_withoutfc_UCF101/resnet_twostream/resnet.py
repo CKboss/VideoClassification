@@ -2,10 +2,8 @@ import torch.nn as nn
 import math
 import torch.utils.model_zoo as model_zoo
 
-
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152']
-
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
@@ -94,7 +92,6 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-
     def __init__(self, block, layers, in_channels=3, num_classes=1000):
         self.inplanes = 64
         super(ResNet, self).__init__()
@@ -211,4 +208,3 @@ def resnet152(pretrained=False, **kwargs):
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
     return model
-

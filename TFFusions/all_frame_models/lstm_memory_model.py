@@ -15,10 +15,10 @@ from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG
 
 FLAGS = None
 
-class LstmMemoryModel(models.BaseModel):
 
+class LstmMemoryModel(models.BaseModel):
     def __init__(self):
-        super(LstmMemoryModel,self).__init__()
+        super(LstmMemoryModel, self).__init__()
         global FLAGS
         FLAGS = Get_GlobalFLAG()
 
@@ -67,7 +67,7 @@ class LstmMemoryModel(models.BaseModel):
                                                sequence_length=num_frames,
                                                swap_memory=FLAGS.rnn_swap_memory,
                                                dtype=tf.float32)
-            final_state = tf.concat(list(map(lambda x: x.c, state)), axis = 1)
+            final_state = tf.concat(list(map(lambda x: x.c, state)), axis=1)
 
         if noise_level is not None:
             final_state = final_state + tf.random_normal(tf.shape(final_state), mean=0.0, stddev=noise_level)
@@ -82,4 +82,3 @@ class LstmMemoryModel(models.BaseModel):
             vocab_size=vocab_size,
             num_frames=num_frames,
             **unused_params)
-

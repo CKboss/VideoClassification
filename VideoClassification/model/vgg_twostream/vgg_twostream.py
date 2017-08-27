@@ -10,21 +10,21 @@ import VideoClassification.Config.Config as Config
 from VideoClassification.model.vgg_twostream.VGG16 import vgg16
 from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
+
 class VGG_Temporal_Net(nn.Module):
+    def __init__(self, pretrained=False, dropout1=0.9, dropout2=0.8, num_classes=101):
 
-    def __init__(self,pretrained=False,dropout1=0.9,dropout2=0.8,num_classes=101):
-
-        super(VGG_Temporal_Net,self).__init__()
+        super(VGG_Temporal_Net, self).__init__()
 
         self.num_classes = num_classes
-        self.vgg16 = vgg16(in_channels=20,num_classes=self.num_classes)
+        self.vgg16 = vgg16(in_channels=20, num_classes=self.num_classes)
         self.vgg16 = nn.DataParallel(self.vgg16)
 
-        self.fc1 = nn.Linear(512*7*7,4096)
+        self.fc1 = nn.Linear(512 * 7 * 7, 4096)
         self.relu1 = nn.ReLU()
-        self.fc2 = nn.Linear(4096,4096)
+        self.fc2 = nn.Linear(4096, 4096)
         self.relu2 = nn.ReLU()
-        self.fc3 = nn.Linear(4096,101)
+        self.fc3 = nn.Linear(4096, 101)
 
         self.train_classifier = nn.Sequential(
             self.fc1,
@@ -39,7 +39,7 @@ class VGG_Temporal_Net(nn.Module):
         self.train_classifier = nn.DataParallel(self.train_classifier)
         self.init_weight()
 
-        if pretrained==True:
+        if pretrained == True:
             # self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
             # self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
             init_data = torch.load(Config.vgg16pretrainfile)
@@ -47,11 +47,10 @@ class VGG_Temporal_Net(nn.Module):
             tmp_data = dict()
 
             for key in init_data.keys():
-                newkey = 'module.'+key
-                if newkey in origin_data.keys() and init_data[key].size() == origin_data[newkey].size() :
+                newkey = 'module.' + key
+                if newkey in origin_data.keys() and init_data[key].size() == origin_data[newkey].size():
                     tmp_data[newkey] = init_data[key]
             self.vgg16.state_dict().update(origin_data)
-
 
     def init_weight(self):
         for m in self.modules():
@@ -61,34 +60,33 @@ class VGG_Temporal_Net(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
-            elif isinstance(m,nn.Linear):
+            elif isinstance(m, nn.Linear):
                 init.xavier_uniform(m.weight.data)
 
-    def forward(self,x):
+    def forward(self, x):
         x = self.vgg16(x)
         x = self.train_classifier(x)
         return x
 
-    def inference(self,x):
+    def inference(self, x):
         return self.forward(x)
+
 
 class VGG_Spatial_Net(nn.Module):
+    def __init__(self, pretrained=False, dropout1=0.9, dropout2=0.8, num_classes=101):
 
-    def __init__(self,pretrained=False,dropout1=0.9,dropout2=0.8,num_classes=101):
-
-        super(VGG_Spatial_Net,self).__init__()
+        super(VGG_Spatial_Net, self).__init__()
 
         self.num_classes = num_classes
 
-        self.vgg16 = vgg16(in_channels=3,num_classes=self.num_classes)
+        self.vgg16 = vgg16(in_channels=3, num_classes=self.num_classes)
         self.vgg16 = nn.DataParallel(self.vgg16)
 
-        self.fc1 = nn.Linear(512*7*7,4096)
+        self.fc1 = nn.Linear(512 * 7 * 7, 4096)
         self.relu1 = nn.ReLU()
-        self.fc2 = nn.Linear(4096,4096)
+        self.fc2 = nn.Linear(4096, 4096)
         self.relu2 = nn.ReLU()
-        self.fc3 = nn.Linear(4096,self.num_classes)
-
+        self.fc3 = nn.Linear(4096, self.num_classes)
 
         self.train_classifier = nn.Sequential(
             self.fc1,
@@ -103,7 +101,7 @@ class VGG_Spatial_Net(nn.Module):
         self.train_classifier = nn.DataParallel(self.train_classifier)
 
         self.init_weight()
-        if pretrained==True:
+        if pretrained == True:
             # self.vgg16.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,self.vgg16)
             # self.vgg16.try_to_load_state_dict(torch.load(Config.vgg16pretrainfile))
             init_data = torch.load(Config.vgg16pretrainfile)
@@ -111,8 +109,8 @@ class VGG_Spatial_Net(nn.Module):
             tmp_data = dict()
 
             for key in init_data.keys():
-                newkey = 'module.'+key
-                if newkey in origin_data.keys() and init_data[key].size() == origin_data[newkey].size() :
+                newkey = 'module.' + key
+                if newkey in origin_data.keys() and init_data[key].size() == origin_data[newkey].size():
                     tmp_data[newkey] = init_data[key]
             self.vgg16.state_dict().update(origin_data)
 
@@ -124,28 +122,27 @@ class VGG_Spatial_Net(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
-            elif isinstance(m,nn.Linear):
+            elif isinstance(m, nn.Linear):
                 init.xavier_uniform(m.weight.data)
 
-    def forward(self,x):
+    def forward(self, x):
         x = self.vgg16(x)
         x = self.train_classifier(x)
         return x
 
-    def inference(self,x):
+    def inference(self, x):
         return self.forward(x)
 
- # try to merge spatial and temporal
-
-if __name__=='__main__':
+        # try to merge spatial and temporal
 
 
+if __name__ == '__main__':
     model = VGG_Temporal_Net(pretrained=True).cuda()
     # pt = '/home/lab/BackUp/pretrained/vgg16-397923af.pth'
     # vgg16.load_state_dict(torch.load(pt))
 
 
-    x = torch.randn(2,3,224,224)
+    x = torch.randn(2, 3, 224, 224)
     x = Variable(x).cuda()
     model = VGG_Spatial_Net(pretrained=True).cuda()
     y = model.inference(x)

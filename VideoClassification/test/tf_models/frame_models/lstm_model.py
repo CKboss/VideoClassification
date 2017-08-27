@@ -9,11 +9,11 @@ import tensorflow.contrib.slim as slim
 
 from VideoClassification.test.tf_models.video_models.moe_model import MoeModel
 
+
 # from tensorflow import flags
 # FLAGS = flags.FLAGS
 
 class LstmModel(models.BaseModel):
-
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
         """Creates a model which uses a stack of LSTMs to represent the video.
 
@@ -63,14 +63,13 @@ class LstmModel(models.BaseModel):
         return predictions
 
 
-if __name__=='__main__':
-
-    x = tf.random_normal(shape=(4,10,1024))
+if __name__ == '__main__':
+    x = tf.random_normal(shape=(4, 10, 1024))
     vocab_size = 101
-    num_frames = np.ones(shape=(4,))*10
+    num_frames = np.ones(shape=(4,)) * 10
     num_frames = tf.stack(num_frames)
 
-    pred = LstmModel().create_model(x,vocab_size,num_frames)
+    pred = LstmModel().create_model(x, vocab_size, num_frames)
 
     sess = tf.InteractiveSession()
     init = tf.global_variables_initializer()
@@ -80,4 +79,3 @@ if __name__=='__main__':
     p = sess.run(pred)
 
     sess.run(state)
-

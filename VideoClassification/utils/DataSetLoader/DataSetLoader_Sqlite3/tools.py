@@ -7,9 +7,10 @@ from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.U
 
 testlst = []
 
+
 def getTrain_dict():
     if len(testlst) == 0:
-        with open(Config.Code_root+'/data/testlist01.txt','r') as f:
+        with open(Config.Code_root + '/data/testlist01.txt', 'r') as f:
             for line in f.readlines():
                 videoname = line.split(' ')[0]
                 videoname = videoname[:-5]
@@ -18,8 +19,8 @@ def getTrain_dict():
 
 line = '/datacenter/1/UCF_Data/UCF101_images/FrisbeeCatch/v_FrisbeeCatch_g01_c01/flow_x'
 
-def chuli(line):
 
+def chuli(line):
     items = line.split('/')
     classname = items[-3]
     label = image_id[classname]
@@ -32,12 +33,12 @@ def chuli(line):
 
     if items[-1][:4] == 'flow':
         imgkind = 'flow'
-    else :
+    else:
         imgkind = 'frame'
 
     pathprefix = '/'.join(items[5:])
 
-    return splitkind,imgkind,videoname,label,pathprefix
+    return splitkind, imgkind, videoname, label, pathprefix
 
 
 chuli(line)
@@ -47,18 +48,16 @@ chuli(line)
 #     imgkind [frame/optial] , video_name , label
 
 def FindAndInsertImages():
-
     GaoImageID()
     getTrain_dict()
 
-    for root,dirs,files in os.walk(Config.UCF101_images_root):
+    for root, dirs, files in os.walk(Config.UCF101_images_root):
         if len(files) > 0:
-            print('--> ',root)
+            print('--> ', root)
             need_to_insert = []
             for file in files:
-                splitkind,imgkind,videoname,label,prefixpath = chuli(root)
+                splitkind, imgkind, videoname, label, prefixpath = chuli(root)
                 imgname = file
                 imgpath = prefixpath + '/' + file
-                need_to_insert.append([splitkind,imgpath,imgname,imgkind,videoname,label])
+                need_to_insert.append([splitkind, imgpath, imgname, imgkind, videoname, label])
             InsertInToImages(need_to_insert)
-

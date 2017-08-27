@@ -10,9 +10,10 @@ class Netvlad:
     """
     A trainable version NetVlad
     """
-    def __init__(self, vgg16_npy_path = None, trainable = True, dropout = 0.5):
+
+    def __init__(self, vgg16_npy_path=None, trainable=True, dropout=0.5):
         if vgg16_npy_path is not None:
-            self.data_dict = np.load(vgg16_npy_path, encoding = 'latin1').item()
+            self.data_dict = np.load(vgg16_npy_path, encoding='latin1').item()
             print("npy file loaded")
         else:
             self.data_dict = None
@@ -21,7 +22,7 @@ class Netvlad:
         self.trainable = trainable
         self.dropout = dropout
 
-    def build(self, rgb, train_mode = None):
+    def build(self, rgb, train_mode=None):
         """
         load variable from npy to build the VGG
 
@@ -32,15 +33,15 @@ class Netvlad:
         rgb_scaled = rgb * 255.0
 
         # Convert RGB to BGR
-        red, green, blue = tf.split(axis = 3, num_or_size_splits = 3, value = rgb_scaled)
+        red, green, blue = tf.split(axis=3, num_or_size_splits=3, value=rgb_scaled)
         assert red.get_shape().as_list()[1:] == [224, 224, 1]
         assert green.get_shape().as_list()[1:] == [224, 224, 1]
         assert blue.get_shape().as_list()[1:] == [224, 224, 1]
-        bgr = tf.concat(axis = 3, values = [
+        bgr = tf.concat(axis=3, values=[
             blue - VGG_MEAN[0],
             green - VGG_MEAN[1],
             red - VGG_MEAN[2],
-            ])
+        ])
         assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
         self.conv1_1 = self.conv_layer(bgr, 3, 64, "conv1_1")
@@ -72,16 +73,16 @@ class Netvlad:
         self.data_dict = None
 
     def avg_pool(self, bottom, name):
-        return tf.nn.avg_pool(bottom, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
+        return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
 
     def max_pool(self, bottom, name):
-        return tf.nn.max_pool(bottom, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
+        return tf.nn.max_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
 
     def conv_layer(self, bottom, in_channels, out_channels, name):
         with tf.variable_scope(name):
             filt, conv_biases = self.get_conv_var(3, in_channels, out_channels, name)
 
-            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
+            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
             relu = tf.nn.relu(bias)
 
@@ -91,7 +92,7 @@ class Netvlad:
         with tf.variable_scope(name):
             filt, conv_biases = self.get_conv_var(3, in_channels, out_channels, name)
 
-            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
+            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
 
             return bias
@@ -100,21 +101,23 @@ class Netvlad:
         with tf.variable_scope(name):
             filt, conv_biases, centers = self.get_vald_pooling_var(k_cluster, alpha, name)
 
-            conv_reshape = tf.reshape(bottom, shape = [-1, (bottom.get_shape().as_list()[1] * bottom.get_shape().as_list()[2]), 512], name = 'reshape')    # conv_reshape is B x N x D
-            conv_norm = tf.nn.l2_normalize(conv_reshape, dim = 1)
-            descriptor = tf.expand_dims(conv_norm, axis = -1, name = 'expanddim')  # descriptor is B x N x D x 1
-            conv_vlad = tf.nn.convolution(descriptor, filt, padding = 'VALID')  # conv_vlad is B x N x 1 x K
+            conv_reshape = tf.reshape(bottom,
+                                      shape=[-1, (bottom.get_shape().as_list()[1] * bottom.get_shape().as_list()[2]),
+                                             512], name='reshape')  # conv_reshape is B x N x D
+            conv_norm = tf.nn.l2_normalize(conv_reshape, dim=1)
+            descriptor = tf.expand_dims(conv_norm, axis=-1, name='expanddim')  # descriptor is B x N x D x 1
+            conv_vlad = tf.nn.convolution(descriptor, filt, padding='VALID')  # conv_vlad is B x N x 1 x K
             bias = tf.nn.bias_add(conv_vlad, conv_biases)
-            a_k = tf.nn.softmax(tf.squeeze(bias, axis = 2), dim = -1, name = "vlad_softmax")     # a_k is B x N x K
+            a_k = tf.nn.softmax(tf.squeeze(bias, axis=2), dim=-1, name="vlad_softmax")  # a_k is B x N x K
 
-            V1 = tf.matmul(conv_reshape, a_k, transpose_a = True)    # V_1 is B x D x K
-            V2 = tf.multiply(tf.reduce_sum(a_k, axis = 1, keep_dims = True), centers)     # V_1 is B x D x K
+            V1 = tf.matmul(conv_reshape, a_k, transpose_a=True)  # V_1 is B x D x K
+            V2 = tf.multiply(tf.reduce_sum(a_k, axis=1, keep_dims=True), centers)  # V_1 is B x D x K
             V = tf.subtract(V1, V2)
 
-            norm = tf.nn.l2_normalize(tf.reshape(tf.nn.l2_normalize(V, dim = 1), shape = [-1, 32768]), dim = 1)     # norm is B x (D x K)
+            norm = tf.nn.l2_normalize(tf.reshape(tf.nn.l2_normalize(V, dim=1), shape=[-1, 32768]),
+                                      dim=1)  # norm is B x (D x K)
 
             return norm
-
 
     def fc_layer(self, bottom, in_size, out_size, name):
         with tf.variable_scope(name):
@@ -146,7 +149,6 @@ class Netvlad:
 
         return filters, biases, centers
 
-
     def get_fc_var(self, in_size, out_size, name):
         initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.1)
         weights = self.get_var(initial_value, name, 0, name + "_weights")
@@ -163,9 +165,9 @@ class Netvlad:
             value = initial_value
 
         if self.trainable:
-            var = tf.Variable(value, name = var_name)
+            var = tf.Variable(value, name=var_name)
         else:
-            var = tf.constant(value, dtype = tf.float32, name = var_name)
+            var = tf.constant(value, dtype=tf.float32, name=var_name)
 
         self.var_dict[(name, idx)] = var
 
@@ -174,7 +176,7 @@ class Netvlad:
 
         return var
 
-    def save_npy(self, sess, npy_path = "./netvlad-save.npy"):
+    def save_npy(self, sess, npy_path="./netvlad-save.npy"):
         assert isinstance(sess, tf.Session)
 
         data_dict = {}
@@ -195,9 +197,9 @@ class Netvlad:
             count += tf.reduce(lambda x, y: x * y, v.get_shape().as_list())
         return count
 
-if __name__=='__main__':
 
-    x = tf.random_normal(shape=(4,224,224,3))
+if __name__ == '__main__':
+    x = tf.random_normal(shape=(4, 224, 224, 3))
 
     net = Netvlad()
 

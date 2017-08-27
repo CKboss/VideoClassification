@@ -9,12 +9,13 @@ except:
     import cv2
 
 import VideoClassification.Config.Config as Config
-from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_Net,VGG_Spatial_Net
+from VideoClassification.model.vgg_twostream.vgg_twostream import VGG_Temporal_Net, VGG_Spatial_Net
 from VideoClassification.utils.Others.Logger import Logger
-from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import train_UCF0101_Temporal,test_UCF0101_Temporal,train_UCF0101_Spatial,test_UCF0101_Spatial
-from VideoClassification.utils.Others.toolkits import accuracy,try_to_load_state_dict
-from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue,GenVariables_Spatial,GenVariables_Temporal
-
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.UCF101Loader import \
+    train_UCF0101_Temporal, test_UCF0101_Temporal, train_UCF0101_Spatial, test_UCF0101_Spatial
+from VideoClassification.utils.Others.toolkits import accuracy, try_to_load_state_dict
+from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.PictureQueue import PictureQueue, \
+    GenVariables_Spatial, GenVariables_Temporal
 
 '''
 VGG TWO Stram 测试:
@@ -25,183 +26,175 @@ VGG TWO Stram 测试:
 初始学习率0.05 每个epoch学习率*0.5
 '''
 
-
 ############ Config
 
-logger = Logger(Config.LOGSpace+Config.EX_ID)
-savepath = Config.ExWorkSpace+Config.EX_ID+'/'
+logger = Logger(Config.LOGSpace + Config.EX_ID)
+savepath = Config.ExWorkSpace + Config.EX_ID + '/'
 
 import os.path
-if os.path.isdir(savepath)==False:
+
+if os.path.isdir(savepath) == False:
     os.mkdir(savepath)
 
 batchsize = 86
 
+
 ############
 
 def VGG_Temporal_Net_Run():
-
     epochs = 81
     loops = 2001
     learningrate = 0.0001
     attenuation = 0.1
 
-    model = VGG_Temporal_Net(pretrained=False,dropout1=0.9,dropout2=0.8).cuda()
+    model = VGG_Temporal_Net(pretrained=False, dropout1=0.9, dropout2=0.8).cuda()
 
-    if Config.LOAD_SAVED_MODE_PATH is not None :
+    if Config.LOAD_SAVED_MODE_PATH is not None:
         import types
-        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict, model)
         model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.Adam(model.parameters(),lr=learningrate)
+    optim = torch.optim.Adam(model.parameters(), lr=learningrate)
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Temporal(),Gen=GenVariables_Temporal,batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Temporal(), Gen=GenVariables_Temporal, batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Temporal(), Gen=GenVariables_Temporal, batchsize=batchsize)
 
     cnt = 0
-    for epoch in range(epochs) :
+    for epoch in range(epochs):
 
-        for l in range(loops) :
+        for l in range(loops):
 
-            cnt+=1
+            cnt += 1
 
-            imgs,labels = pq_train.Get()
+            imgs, labels = pq_train.Get()
 
             model.zero_grad()
             pred = model(imgs)
-            loss = lossfunc(pred,labels)
+            loss = lossfunc(pred, labels)
 
-            logger.scalar_summary('Temporal/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('Temporal/train_loss', loss.data[0], cnt)
 
             loss.backward()
             optim.step()
 
+            print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch, cnt, loss.data[0]))
 
-            print('Temporal epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
-
-            if cnt%25 == 0:
-
+            if cnt % 25 == 0:
                 model.eval()
 
-                imgs,labels = pq_test.Get()
+                imgs, labels = pq_test.Get()
                 pred = model.inference(imgs)
-                loss = lossfunc(pred,labels)
+                loss = lossfunc(pred, labels)
 
-                logger.scalar_summary('Temporal/test_loss',loss.data[0],cnt)
+                logger.scalar_summary('Temporal/test_loss', loss.data[0], cnt)
 
-                #acc
-                acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('Temporal/test_acc@1',acc[0],cnt)
-                logger.scalar_summary('Temporal/test_acc@5',acc[1],cnt)
-                logger.scalar_summary('Temporal/test_acc@10',acc[2],cnt)
+                # acc
+                acc = accuracy(pred, labels, topk=(1, 5, 10))
+                logger.scalar_summary('Temporal/test_acc@1', acc[0], cnt)
+                logger.scalar_summary('Temporal/test_acc@5', acc[1], cnt)
+                logger.scalar_summary('Temporal/test_acc@10', acc[2], cnt)
 
-
-                imgs,labels = pq_train.Get()
+                imgs, labels = pq_train.Get()
                 pred = model.inference(imgs)
 
-                acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('Temporal/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('Temporal/train_acc@5',acc[1],cnt)
-                logger.scalar_summary('Temporal/train_acc@10',acc[2],cnt)
+                acc = accuracy(pred, labels, topk=(1, 5, 10))
+                logger.scalar_summary('Temporal/train_acc@1', acc[0], cnt)
+                logger.scalar_summary('Temporal/train_acc@5', acc[1], cnt)
+                logger.scalar_summary('Temporal/train_acc@10', acc[2], cnt)
 
                 model.train()
 
-            if cnt%2000 == 0:
-                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch%50)
+            if cnt % 2000 == 0:
+                savefile = savepath + 'VGG_Temporal_EX1_{:02d}.pt'.format(epoch % 50)
                 print('Temporal save model to {}'.format(savefile))
-                torch.save(model.state_dict(),savefile)
+                torch.save(model.state_dict(), savefile)
 
-        if epoch in [20,40,60]:
-            learningrate = learningrate*attenuation
-            optim = torch.optim.Adam(model.parameters(),lr=learningrate)
-
+        if epoch in [20, 40, 60]:
+            learningrate = learningrate * attenuation
+            optim = torch.optim.Adam(model.parameters(), lr=learningrate)
 
 
 def VGG_Spatial_Net_Run():
-
     epochs = 80
     loops = 2000
     learningrate = 0.001
     attenuation = 0.1
 
-    model = VGG_Spatial_Net(pretrained=False,dropout1=0.8,dropout2=0.7).cuda()
+    model = VGG_Spatial_Net(pretrained=False, dropout1=0.8, dropout2=0.7).cuda()
 
-    if Config.LOAD_SAVED_MODE_PATH is not None :
+    if Config.LOAD_SAVED_MODE_PATH is not None:
         import types
-        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict,model)
+        model.try_to_load_state_dict = types.MethodType(try_to_load_state_dict, model)
         model.try_to_load_state_dict(torch.load(Config.LOAD_SAVED_MODE_PATH))
         print('LOAD {} done!'.format(Config.LOAD_SAVED_MODE_PATH))
 
     lossfunc = nn.CrossEntropyLoss()
-    optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9)
+    optim = torch.optim.SGD(model.parameters(), lr=learningrate, momentum=0.9)
 
     cnt = 0
 
-    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
-    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(),Gen=GenVariables_Spatial,batchsize=batchsize)
+    pq_train = PictureQueue(dsl=train_UCF0101_Spatial(), Gen=GenVariables_Spatial, batchsize=batchsize)
+    pq_test = PictureQueue(dsl=test_UCF0101_Spatial(), Gen=GenVariables_Spatial, batchsize=batchsize)
 
-    for epoch in range(epochs) :
+    for epoch in range(epochs):
 
-        for l in range(loops) :
+        for l in range(loops):
 
-            cnt+=1
+            cnt += 1
 
-            imgs,labels = pq_train.Get()
+            imgs, labels = pq_train.Get()
 
             model.zero_grad()
-            pred =  model(imgs)
-            loss = lossfunc(pred,labels)
+            pred = model(imgs)
+            loss = lossfunc(pred, labels)
 
-            logger.scalar_summary('Spatial/train_loss',loss.data[0],cnt)
+            logger.scalar_summary('Spatial/train_loss', loss.data[0], cnt)
 
             loss.backward()
             optim.step()
 
-            print('Spatial epoch: {} cnt: {} loss: {}'.format(epoch,cnt,loss.data[0]))
+            print('Spatial epoch: {} cnt: {} loss: {}'.format(epoch, cnt, loss.data[0]))
 
-            if cnt%20 == 0:
-
-                imgs,labels = pq_test.Get()
+            if cnt % 20 == 0:
+                imgs, labels = pq_test.Get()
                 pred = model.inference(imgs)
 
-                loss = lossfunc(pred,labels)
-                logger.scalar_summary('Spatial/test_loss',loss.data[0],cnt)
+                loss = lossfunc(pred, labels)
+                logger.scalar_summary('Spatial/test_loss', loss.data[0], cnt)
 
-                acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('Spatial/test_acc@1',acc[0],cnt)
-                logger.scalar_summary('Spatial/test_acc@5',acc[1],cnt)
-                logger.scalar_summary('Spatial/test_acc@10',acc[2],cnt)
+                acc = accuracy(pred, labels, topk=(1, 5, 10))
+                logger.scalar_summary('Spatial/test_acc@1', acc[0], cnt)
+                logger.scalar_summary('Spatial/test_acc@5', acc[1], cnt)
+                logger.scalar_summary('Spatial/test_acc@10', acc[2], cnt)
 
-                imgs,labels = pq_train.Get()
+                imgs, labels = pq_train.Get()
                 pred = model.inference(imgs)
 
-                acc = accuracy(pred,labels,topk=(1,5,10))
-                logger.scalar_summary('Spatial/train_acc@1',acc[0],cnt)
-                logger.scalar_summary('Spatial/train_acc@5',acc[1],cnt)
-                logger.scalar_summary('Spatial/train_acc@10',acc[2],cnt)
+                acc = accuracy(pred, labels, topk=(1, 5, 10))
+                logger.scalar_summary('Spatial/train_acc@1', acc[0], cnt)
+                logger.scalar_summary('Spatial/train_acc@5', acc[1], cnt)
+                logger.scalar_summary('Spatial/train_acc@10', acc[2], cnt)
 
             if cnt % 2000 == 0:
-                savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch%50)
+                savefile = savepath + 'VGG_Spatial_EX1_{:02d}.pt'.format(epoch % 50)
                 print('Spatial save model to {}'.format(savefile))
-                torch.save(model.state_dict(),savefile)
+                torch.save(model.state_dict(), savefile)
 
-
-        if epoch in [10,20,50,60]:
-            learningrate = learningrate*attenuation
-            optim = torch.optim.SGD(model.parameters(),lr=learningrate,momentum=0.9,)
-
+        if epoch in [10, 20, 50, 60]:
+            learningrate = learningrate * attenuation
+            optim = torch.optim.SGD(model.parameters(), lr=learningrate, momentum=0.9, )
 
 
 def DoubleRun():
     pool = Pool(processes=2)
-    pool.apply_async(VGG_Temporal_Net_Run,())
-    pool.apply_async(VGG_Spatial_Net_Run,())
+    pool.apply_async(VGG_Temporal_Net_Run, ())
+    pool.apply_async(VGG_Spatial_Net_Run, ())
     pool.close()
     pool.join()
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     # VGG_Temporal_Net_Run()
     pass

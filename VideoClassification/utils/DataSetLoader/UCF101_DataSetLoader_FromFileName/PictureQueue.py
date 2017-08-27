@@ -18,10 +18,10 @@ try:
 except:
     import cv2
 
-def GenVariables_C3D(dsl,batchsize=8,**kwargs):
 
+def GenVariables_C3D(dsl, batchsize=8, **kwargs):
     # TODO add requires_grad params
-    items = random.choices(dsl,k=batchsize)
+    items = random.choices(dsl, k=batchsize)
 
     imgpathss = []
     labels = []
@@ -30,20 +30,19 @@ def GenVariables_C3D(dsl,batchsize=8,**kwargs):
         imgpathss.append(item[0])
         labels.append(item[1])
 
-    imgs = GenTensors(imgpathss,isTemporal=False,outputshape=(112,112),isNormal=False)
+    imgs = GenTensors(imgpathss, isTemporal=False, outputshape=(112, 112), isNormal=False)
 
-    imgs = torch.transpose(imgs,1,2)
+    imgs = torch.transpose(imgs, 1, 2)
 
-    imgs = Variable(imgs,**kwargs).float()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
+    imgs = Variable(imgs, **kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)), **kwargs).long()
 
-    return imgs,labels
+    return imgs, labels
 
 
-def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
-
+def GenVariables_Temporal(dsl, batchsize=8, **kwargs):
     # TODO add requires_grad params
-    items = random.choices(dsl,k=batchsize)
+    items = random.choices(dsl, k=batchsize)
 
     imgpathss = []
     labels = []
@@ -52,18 +51,18 @@ def GenVariables_Temporal(dsl,batchsize=8,**kwargs):
         imgpathss.append(item[0])
         labels.append(item[1])
 
-    imgs = GenTensors(imgpathss,isTemporal=True,NoAug=True)
+    imgs = GenTensors(imgpathss, isTemporal=True, NoAug=True)
 
-    imgs = Variable(imgs,**kwargs).float()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
+    imgs = Variable(imgs, **kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)), **kwargs).long()
 
-    return imgs,labels
+    return imgs, labels
 
-def GenVariables_Spatial(dsl,batchsize=8,NoAug=False,**kwargs):
 
+def GenVariables_Spatial(dsl, batchsize=8, NoAug=False, **kwargs):
     # TODO add requires_grad params
 
-    items = random.choices(dsl,k=batchsize)
+    items = random.choices(dsl, k=batchsize)
 
     imgpaths = []
     labels = []
@@ -77,29 +76,29 @@ def GenVariables_Spatial(dsl,batchsize=8,NoAug=False,**kwargs):
     for path in imgpaths:
         imgs.append(cv2.imread(path))
 
-    imgs = np.array(ImgAugPipes(imgs,NoAug=NoAug))
+    imgs = np.array(ImgAugPipes(imgs, NoAug=NoAug))
 
-    imgs = Variable(torch.from_numpy(imgs),**kwargs).float()
-    labels = Variable(torch.from_numpy(np.array(labels)),**kwargs).long()
+    imgs = Variable(torch.from_numpy(imgs), **kwargs).float()
+    labels = Variable(torch.from_numpy(np.array(labels)), **kwargs).long()
 
-    return imgs,labels
+    return imgs, labels
 
-def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
-    itemss = random.choices(dsl,k=batchsize)
+def GenVariables_VideoSpatialAndTemporal(dsl, batchsize):
+    itemss = random.choices(dsl, k=batchsize)
 
-    ret_imgs= []
+    ret_imgs = []
     ret_labels = []
 
     for b in range(batchsize):
 
         # 8x21 picture paths and 8 same labels
-        imgpathss,labels = itemss[b]
+        imgpathss, labels = itemss[b]
 
         n = len(labels)
         m = len(imgpathss[0])
 
-        tmp_ret_imgs= []
+        tmp_ret_imgs = []
         tmp_ret_labels = []
 
         for i in range(n):
@@ -111,7 +110,7 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
             # the other is temporal image
             temporal_imgs = []
-            for j in range(1,m):
+            for j in range(1, m):
                 temporal_imgs.append(cv2.imread(imgpaths[j]))
 
             # OK now concate them
@@ -125,12 +124,12 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
 
             # now just change it to the tensor and add to ret_imgs
 
-            temp_array = imgs[0,:,:,:]
+            temp_array = imgs[0, :, :, :]
 
-            for j in range(1,m):
-                t = imgs[j,0,:,:]
-                t = np.reshape(t,(1,224,224))
-                temp_array = np.vstack((temp_array,t))
+            for j in range(1, m):
+                t = imgs[j, 0, :, :]
+                t = np.reshape(t, (1, 224, 224))
+                temp_array = np.vstack((temp_array, t))
 
             tmp_ret_imgs.append(temp_array)
             tmp_ret_labels.append(labels[0])
@@ -141,12 +140,11 @@ def GenVariables_VideoSpatialAndTemporal(dsl,batchsize):
     ret_imgs = np.array(ret_imgs)
     ret_labels = np.array(ret_labels)
 
-    return ret_imgs,ret_labels
+    return ret_imgs, ret_labels
 
 
 class PictureQueue(object):
-
-    def __init__(self,dsl,Gen,batchsize=8,worker=8,mxsize=4):
+    def __init__(self, dsl, Gen, batchsize=8, worker=8, mxsize=4):
         self.dsl = dsl
         self.Gen = Gen
         self.worker = worker
@@ -162,28 +160,28 @@ class PictureQueue(object):
         #     self.ts[i].start()
         #
 
-        self.mainQ = self.manager.Queue(maxsize=mxsize*worker)
+        self.mainQ = self.manager.Queue(maxsize=mxsize * worker)
 
-        self.q = [ self.manager.Queue(maxsize=mxsize) for i in range(worker)]
+        self.q = [self.manager.Queue(maxsize=mxsize) for i in range(worker)]
         self.ps = []
 
         for i in range(worker):
-            self.ps.append(Process(target=self.pr,args=(self.q[i],),name='Producter_{}'.format(i)))
+            self.ps.append(Process(target=self.pr, args=(self.q[i],), name='Producter_{}'.format(i)))
 
-        self.ps.append(Process(target=self.collectorPr,name='CollectorPR'))
+        self.ps.append(Process(target=self.collectorPr, name='CollectorPR'))
 
-        for i in range(worker+1):
+        for i in range(worker + 1):
             self.ps[i].deamon = True
             self.ps[i].start()
 
-    def pr(self,que):
+    def pr(self, que):
         while True:
             # processname  = multiprocessing.current_process().name
             # print('{} q.size:{}'.format(processname,que.qsize()))
             if que.full():
                 continue
             # print('process:{} put into que.'.format(processname))
-            que.put(self.Gen(self.dsl,self.batchsize))
+            que.put(self.Gen(self.dsl, self.batchsize))
 
     def collectorPr(self):
         # processname  = multiprocessing.current_process().name
@@ -195,17 +193,16 @@ class PictureQueue(object):
                 #     continue
                 try:
                     while True:
-                        imgs,labels = self.q[i].get_nowait()
+                        imgs, labels = self.q[i].get_nowait()
                         # print('{} try to take item from {}\'s queue'.format(processname,i))
-                        self.mainQ.put_nowait((imgs,labels))
+                        self.mainQ.put_nowait((imgs, labels))
                 except Exception as E:
                     continue
 
     def Get(self):
         # print('Try To Get mainQ.size:',self.mainQ.qsize())
-        imgs,labels = self.mainQ.get()
-        return imgs.cuda(),labels.cuda()
-
+        imgs, labels = self.mainQ.get()
+        return imgs.cuda(), labels.cuda()
 
     def Close(self):
         '''
@@ -214,10 +211,10 @@ class PictureQueue(object):
         '''
         pass
 
-if __name__=='__main__':
 
+if __name__ == '__main__':
     dsl = test_UCF101_C3D()
 
-    pq = PictureQueue(dsl,GenVariables_C3D,3)
+    pq = PictureQueue(dsl, GenVariables_C3D, 3)
 
-    pa,pb = pq.Get()
+    pa, pb = pq.Get()

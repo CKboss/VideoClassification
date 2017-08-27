@@ -19,6 +19,7 @@ if sys.version_info[0] == 2:
 elif sys.version_info[0] == 3:
     import pickle
     from queue import Empty as QueueEmpty
+
     xrange = range
 
 ALL = "ALL"
@@ -29,8 +30,10 @@ ALL = "ALL"
 # here (and in all augmenters) instead of np.random.
 CURRENT_RANDOM_STATE = np.random.RandomState(42)
 
+
 def seed(seedval):
     CURRENT_RANDOM_STATE.seed(seedval)
+
 
 def is_np_array(val):
     return isinstance(val, (np.ndarray, np.generic))
@@ -70,7 +73,7 @@ def new_random_state(seed=None, fully_random=False):
             # sample manually a seed instead of just RandomState(),
             # because the latter one
             # is way slower.
-            seed = CURRENT_RANDOM_STATE.randint(0, 10**6, 1)[0]
+            seed = CURRENT_RANDOM_STATE.randint(0, 10 ** 6, 1)[0]
     return np.random.RandomState(seed)
 
 
@@ -86,6 +89,7 @@ def copy_random_state(random_state, force_copy=False):
         orig_state = random_state.get_state()
         rs_copy.set_state(orig_state)
         return rs_copy
+
 
 # TODO
 # def from_json(json_str):
@@ -104,6 +108,7 @@ def angle_between_vectors(v1, v2):
     v1_u = v1 / np.linalg.norm(v1)
     v2_u = v2 / np.linalg.norm(v2)
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
 
 def draw_text(img, y, x, text, color=[0, 255, 0], size=25):
     # keeping PIL here so that it is not a depdency of the library right now
@@ -136,6 +141,7 @@ def draw_text(img, y, x, text, color=[0, 255, 0], size=25):
 
     return img_np
 
+
 def imresize_many_images(images, sizes=None, interpolation=None):
     s = images.shape
     assert len(s) == 4, s
@@ -148,7 +154,8 @@ def imresize_many_images(images, sizes=None, interpolation=None):
         return np.copy(images)
 
     ip = interpolation
-    assert ip is None or ip in ["nearest", "linear", "area", "cubic", cv2.INTER_NEAREST, cv2.INTER_LINEAR, cv2.INTER_AREA, cv2.INTER_CUBIC]
+    assert ip is None or ip in ["nearest", "linear", "area", "cubic", cv2.INTER_NEAREST, cv2.INTER_LINEAR,
+                                cv2.INTER_AREA, cv2.INTER_CUBIC]
     if ip is None:
         if height > im_height or width > im_width:
             ip = cv2.INTER_AREA
@@ -234,6 +241,7 @@ class HooksImages(object):
     """
     # TODO
     """
+
     def __init__(self, activator=None, propagator=None, preprocessor=None, postprocessor=None):
         self.activator = activator
         self.propagator = propagator
@@ -279,8 +287,8 @@ class Keypoint(object):
     def __init__(self, x, y):
         # these checks are currently removed because they are very slow for some
         # reason
-        #assert is_single_integer(x), type(x)
-        #assert is_single_integer(y), type(y)
+        # assert is_single_integer(x), type(x)
+        # assert is_single_integer(y), type(y)
         self.x = x
         self.y = y
 
@@ -342,10 +350,10 @@ class KeypointsOnImage(object):
         for keypoint in self.keypoints:
             y, x = keypoint.y, keypoint.x
             if 0 <= y < height and 0 <= x < width:
-                x1 = max(x - size//2, 0)
-                x2 = min(x + 1 + size//2, width - 1)
-                y1 = max(y - size//2, 0)
-                y2 = min(y + 1 + size//2, height - 1)
+                x1 = max(x - size // 2, 0)
+                x2 = min(x + 1 + size // 2, width - 1)
+                y1 = max(y - size // 2, 0)
+                y2 = min(y + 1 + size // 2, height - 1)
                 image[y1:y2, x1:x2] = color
             else:
                 if raise_if_out_of_image:
@@ -399,7 +407,8 @@ class KeypointsOnImage(object):
             if_not_found_x = if_not_found_coords["x"]
             if_not_found_y = if_not_found_coords["y"]
         else:
-            raise Exception("Expected if_not_found_coords to be None or tuple or list or dict, got %s." % (type(if_not_found_coords),))
+            raise Exception("Expected if_not_found_coords to be None or tuple or list or dict, got %s." % (
+            type(if_not_found_coords),))
 
         keypoints = []
         for i in sm.xrange(nb_keypoints):
@@ -410,7 +419,7 @@ class KeypointsOnImage(object):
                 keypoints.append(Keypoint(x=maxidx_ndim[1], y=maxidx_ndim[0]))
             else:
                 if drop_if_not_found:
-                    pass # dont add the keypoint to the result list, i.e. drop it
+                    pass  # dont add the keypoint to the result list, i.e. drop it
                 else:
                     keypoints.append(Keypoint(x=if_not_found_x, y=if_not_found_y))
 
@@ -421,7 +430,7 @@ class KeypointsOnImage(object):
 
     def deepcopy(self):
         # for some reason deepcopy is way slower here than manual copy
-        #return copy.deepcopy(self)
+        # return copy.deepcopy(self)
         kps = [Keypoint(x=kp.x, y=kp.y) for kp in self.keypoints]
         return KeypointsOnImage(kps, tuple(self.shape))
 
@@ -429,7 +438,7 @@ class KeypointsOnImage(object):
         return self.__str__()
 
     def __str__(self):
-        #print(type(self.keypoints), type(self.shape))
+        # print(type(self.keypoints), type(self.shape))
         return "KeypointOnImage(%s, shape=%s)" % (str(self.keypoints), self.shape)
 
 
@@ -439,6 +448,7 @@ class KeypointsOnImage(object):
 
 class Batch(object):
     """Class encapsulating a batch before and after augmentation."""
+
     def __init__(self, images=None, keypoints=None, data=None):
         self.images = images
         self.images_aug = None
@@ -446,6 +456,7 @@ class Batch(object):
         self.keypoints = keypoints
         self.keypoints_aug = None
         self.data = data
+
 
 class BatchLoader(object):
     """Class to load batches in the background."""
@@ -458,14 +469,16 @@ class BatchLoader(object):
         self.finished_signals = []
         self.workers = []
         self.threaded = threaded
-        seeds = current_random_state().randint(0, 10**6, size=(nb_workers,))
+        seeds = current_random_state().randint(0, 10 ** 6, size=(nb_workers,))
         for i in range(nb_workers):
             finished_signal = multiprocessing.Event()
             self.finished_signals.append(finished_signal)
             if threaded:
-                worker = threading.Thread(target=self._load_batches, args=(load_batch_func, self.queue, finished_signal, self.join_signal, None))
+                worker = threading.Thread(target=self._load_batches,
+                                          args=(load_batch_func, self.queue, finished_signal, self.join_signal, None))
             else:
-                worker = multiprocessing.Process(target=self._load_batches, args=(load_batch_func, self.queue, finished_signal, self.join_signal, seeds[i]))
+                worker = multiprocessing.Process(target=self._load_batches, args=(
+                load_batch_func, self.queue, finished_signal, self.join_signal, seeds[i]))
             worker.daemon = True
             worker.start()
             self.workers.append(worker)
@@ -480,7 +493,9 @@ class BatchLoader(object):
             seed(seedval)
 
         for batch in load_batch_func():
-            assert isinstance(batch, Batch), "Expected batch returned by lambda function to be of class imgaug.Batch, got %s." % (type(batch),)
+            assert isinstance(batch,
+                              Batch), "Expected batch returned by lambda function to be of class imgaug.Batch, got %s." % (
+            type(batch),)
             queue.put(pickle.dumps(batch, protocol=-1))
             if join_signal.is_set():
                 break
@@ -497,9 +512,11 @@ class BatchLoader(object):
                 worker.terminate()
                 finished_signal.set()
 
+
 class BackgroundAugmenter(object):
     """Class to augment batches in the background (while training on
     the GPU)."""
+
     def __init__(self, batch_loader, augseq, queue_size=50, nb_workers="auto"):
         assert queue_size > 0
         self.augseq = augseq
@@ -516,7 +533,7 @@ class BackgroundAugmenter(object):
             nb_workers = max(1, nb_workers - 1)
         else:
             assert nb_workers >= 1
-        #print("Starting %d background processes" % (nb_workers,))
+        # print("Starting %d background processes" % (nb_workers,))
 
         self.nb_workers = nb_workers
         self.workers = []
@@ -525,9 +542,10 @@ class BackgroundAugmenter(object):
         self.augment_images = True
         self.augment_keypoints = True
 
-        seeds = current_random_state().randint(0, 10**6, size=(nb_workers,))
+        seeds = current_random_state().randint(0, 10 ** 6, size=(nb_workers,))
         for i in range(nb_workers):
-            worker = multiprocessing.Process(target=self._augment_images_worker, args=(augseq, self.queue_source, self.queue_result, self.source_finished_signals, seeds[i]))
+            worker = multiprocessing.Process(target=self._augment_images_worker, args=(
+            augseq, self.queue_source, self.queue_result, self.source_finished_signals, seeds[i]))
             worker.daemon = True
             worker.start()
             self.workers.append(worker)

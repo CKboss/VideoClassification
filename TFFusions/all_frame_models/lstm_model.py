@@ -10,13 +10,13 @@ import tensorflow.contrib.slim as slim
 from TFFusions.all_video_models.video_level_models import GetVideoModel
 from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG
 
+
 # from tensorflow import flags
 # FLAGS = flags.FLAGS
 
 class LstmModel(models.BaseModel):
-
     def __init__(self):
-        super(LstmModel,self).__init__()
+        super(LstmModel, self).__init__()
         global FLAGS
         FLAGS = Get_GlobalFLAG()
 
@@ -66,4 +66,3 @@ class LstmModel(models.BaseModel):
             **unused_params)
         print(predictions)
         return predictions
-

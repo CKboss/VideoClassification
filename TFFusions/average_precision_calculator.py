@@ -274,9 +274,11 @@ class AveragePrecisionCalculator(object):
                                                                  epsilon)
         return ret
 
+
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     return np.exp(x) / np.sum(np.exp(x), axis=0)
+
 
 def mean_ap(probs, labels, needSoftmax=True):
     """
@@ -289,10 +291,10 @@ def mean_ap(probs, labels, needSoftmax=True):
     if needSoftmax:
         probs = softmax(probs)
 
-    mAP = np.zeros((probs.shape[1],1))
+    mAP = np.zeros((probs.shape[1], 1))
     for i in range(probs.shape[1]):
-        iClass = probs[:,i]
-        iY = labels[:,i]
+        iClass = probs[:, i]
+        iY = labels[:, i]
         idx = np.argsort(-iClass)
         iY = iY[idx]
         count = 0
@@ -300,10 +302,11 @@ def mean_ap(probs, labels, needSoftmax=True):
         for j in range(iY.shape[0]):
             if iY[j] == 1:
                 count = count + 1
-                ap = ap + count/float(j+1)
-            if count !=0:
-                mAP[i] = ap/count
+                ap = ap + count / float(j + 1)
+            if count != 0:
+                mAP[i] = ap / count
     return np.mean(mAP)
+
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
@@ -314,31 +317,32 @@ def accuracy(output, target, topk=(1,)):
     :return: a list of accuarcy values
     """
     output = softmax(output)
-    n,m = output.shape
+    n, m = output.shape
     ret = [0.0 for _ in range(len(topk))]
 
     for i in range(n):
-        lst = list(zip(-output[i],list(range(m))))
+        lst = list(zip(-output[i], list(range(m))))
         lst = sorted(lst)
-        for id,k in enumerate(topk):
-            pred_label = list(map(lambda x: x[1],lst[:k]))
+        for id, k in enumerate(topk):
+            pred_label = list(map(lambda x: x[1], lst[:k]))
             # print('k: ',k,' predictlabel:',pred_label,' label:',target[i])
             for item in pred_label:
-                if target[i,item] == 1:
+                if target[i, item] == 1:
                     ret[id] += 1
                     break
 
-    ret = [ x*10/n for x in ret]
+    ret = [x * 10 / n for x in ret]
     return ret
 
-if __name__=='__main__':
 
+if __name__ == '__main__':
     import numpy as np
+
     # AP = AveragePrecisionCalculator()
     # p = np.array([0.5,0.2,0.3])
     # a = np.array([1,0,0])
     # AP.ap(p,a)
 
-    probs = np.random.randn(32,500)
-    labels = np.zeros((32,500))
-    print(mean_ap(probs,labels))
+    probs = np.random.randn(32, 500)
+    labels = np.zeros((32, 500))
+    print(mean_ap(probs, labels))

@@ -20,6 +20,7 @@ from tensorflow import logging
 from tensorflow import flags
 import tensorflow.contrib.slim as slim
 
+
 def SampleRandomSequence(model_input, num_frames, num_samples):
     """Samples a random sequence of frames of size num_samples.
 
@@ -68,6 +69,7 @@ def SampleRandomFrames(model_input, num_frames, num_samples):
         tf.expand_dims(tf.range(batch_size), 1), [1, num_samples])
     index = tf.stack([batch_index, frame_index], 2)
     return tf.gather_nd(model_input, index)
+
 
 def FramePooling(frames, method, **unused_params):
     """Pools over the frames of a video.

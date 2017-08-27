@@ -6,7 +6,6 @@ from collections import OrderedDict
 
 __all__ = ['DenseNet', 'densenet121', 'densenet169', 'densenet201', 'densenet161']
 
-
 model_urls = {
     'densenet121': 'https://download.pytorch.org/models/densenet121-241335ed.pth',
     'densenet169': 'https://download.pytorch.org/models/densenet169-6f0f7f60.pth',
@@ -35,7 +34,7 @@ def densenet169(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 32, 32),**kwargs)
+    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 32, 32), **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['densenet169']))
     return model
@@ -48,7 +47,7 @@ def densenet201(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 48, 32),**kwargs)
+    model = DenseNet(num_init_features=64, growth_rate=32, block_config=(6, 12, 48, 32), **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['densenet201']))
     return model
@@ -61,7 +60,7 @@ def densenet161(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = DenseNet(num_init_features=96, growth_rate=48, block_config=(6, 12, 36, 24),**kwargs)
+    model = DenseNet(num_init_features=96, growth_rate=48, block_config=(6, 12, 36, 24), **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['densenet161']))
     return model
@@ -118,8 +117,9 @@ class DenseNet(nn.Module):
         drop_rate (float) - dropout rate after each dense layer
         num_classes (int) - number of classification classes
     """
+
     def __init__(self, growth_rate=32, block_config=(6, 12, 24, 16),
-                 num_init_features=64, bn_size=4, drop_rate=0, num_classes=1000,in_channels=3):
+                 num_init_features=64, bn_size=4, drop_rate=0, num_classes=1000, in_channels=3):
 
         super(DenseNet, self).__init__()
 
@@ -155,4 +155,3 @@ class DenseNet(nn.Module):
         out = F.avg_pool2d(out, kernel_size=7).view(features.size(0), -1)
         out = self.classifier(out)
         return out
-

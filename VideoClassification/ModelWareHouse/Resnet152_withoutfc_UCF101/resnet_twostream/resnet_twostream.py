@@ -10,22 +10,21 @@ from VideoClassification.utils.Others.toolkits import try_to_load_state_dict
 
 
 class resnet_TwoStreamNet(nn.Module):
+    def __init__(self, in_channels=3, dropout=0.9, pretrained=False, level=101):
 
-    def __init__(self,in_channels=3,dropout=0.9,pretrained=False,level=101):
-
-        super(resnet_TwoStreamNet,self).__init__()
+        super(resnet_TwoStreamNet, self).__init__()
 
         savefile = None
         if level == 152:
             resnet = resnet152
             savefile = Config.resnet152_pretrainfile
-        elif level==101:
+        elif level == 101:
             resnet = resnet101
             savefile = Config.resnet101_pretrainfile
-        else :
+        else:
             raise 'level showld be 101 or 152'
 
-        self.resnet = resnet(in_channels=in_channels,num_classes=101)
+        self.resnet = resnet(in_channels=in_channels, num_classes=101)
 
         if pretrained:
             init = torch.load(savefile)
@@ -67,7 +66,7 @@ class resnet_TwoStreamNet(nn.Module):
         # self.fc2 = nn.Linear(1024,101)
         # self.fc2 = nn.DataParallel(self.fc2)
 
-    def forward(self,x):
+    def forward(self, x):
 
         x = self.resnet(x)
 
@@ -78,7 +77,7 @@ class resnet_TwoStreamNet(nn.Module):
 
         return x
 
-    def inference(self,x):
+    def inference(self, x):
 
         return self.forward(x)
 
@@ -89,29 +88,34 @@ class resnet_TwoStreamNet(nn.Module):
         # x = self.fc2(x)
         # return x
 
-def resnet_SpatialNet(pretrained=False,level=101,**kwargs):
-    return resnet_TwoStreamNet(in_channels=3,pretrained=pretrained,level=level,**kwargs)
 
-def resnet_TemporalNet(pretrained=False,level=101,**kwargs):
-    return resnet_TwoStreamNet(in_channels=20,pretrained=pretrained,level=level,**kwargs)
-
-def resnet101_SpatialNet(pretrained=False,**kwargs):
-    return resnet_SpatialNet(pretrained=pretrained,level=101,**kwargs)
-
-def resnet101_TemporalNet(pretrained=False,**kwargs):
-    return resnet_TemporalNet(pretrained=pretrained,level=101,**kwargs)
-
-def resnet152_SpatialNet(pretrained=False,**kwargs):
-    return resnet_SpatialNet(pretrained=pretrained,level=152,**kwargs)
-
-def resnet152_TemporalNet(pretrained=False,**kwargs):
-    return resnet_TemporalNet(pretrained=pretrained,level=152,**kwargs)
+def resnet_SpatialNet(pretrained=False, level=101, **kwargs):
+    return resnet_TwoStreamNet(in_channels=3, pretrained=pretrained, level=level, **kwargs)
 
 
-if __name__=='__main__':
+def resnet_TemporalNet(pretrained=False, level=101, **kwargs):
+    return resnet_TwoStreamNet(in_channels=20, pretrained=pretrained, level=level, **kwargs)
 
+
+def resnet101_SpatialNet(pretrained=False, **kwargs):
+    return resnet_SpatialNet(pretrained=pretrained, level=101, **kwargs)
+
+
+def resnet101_TemporalNet(pretrained=False, **kwargs):
+    return resnet_TemporalNet(pretrained=pretrained, level=101, **kwargs)
+
+
+def resnet152_SpatialNet(pretrained=False, **kwargs):
+    return resnet_SpatialNet(pretrained=pretrained, level=152, **kwargs)
+
+
+def resnet152_TemporalNet(pretrained=False, **kwargs):
+    return resnet_TemporalNet(pretrained=pretrained, level=152, **kwargs)
+
+
+if __name__ == '__main__':
     model = resnet152_TemporalNet(True).cuda()
-    x = torch.randn(2,20,224,224)
+    x = torch.randn(2, 20, 224, 224)
     x = Variable(x).cuda()
 
     y = model.inference(x)

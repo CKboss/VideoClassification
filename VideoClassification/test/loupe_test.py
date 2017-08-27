@@ -33,7 +33,7 @@ class PoolingBaseModel(object):
     """Inherit from this class when implementing new models."""
 
     def __init__(self, feature_size, max_samples, cluster_size, output_dim,
-                 gating=True,add_batch_norm=True, is_training=True):
+                 gating=True, add_batch_norm=True, is_training=True):
         """Initialize a NetVLAD block.
 
         Args:
@@ -72,7 +72,7 @@ class PoolingBaseModel(object):
 
         gating_weights = tf.get_variable("gating_weights",
                                          [input_dim, input_dim],
-                                         initializer = tf.random_normal_initializer(
+                                         initializer=tf.random_normal_initializer(
                                              stddev=1 / math.sqrt(input_dim)))
 
         gates = tf.matmul(input_layer, gating_weights)
@@ -87,20 +87,22 @@ class PoolingBaseModel(object):
         else:
             gating_biases = tf.get_variable("gating_biases",
                                             [input_dim],
-                                            initializer = tf.random_normal(stddev=1 / math.sqrt(input_dim)))
+                                            initializer=tf.random_normal(stddev=1 / math.sqrt(input_dim)))
             gates += gating_biases
 
         gates = tf.sigmoid(gates)
 
-        activation = tf.multiply(input_layer,gates)
+        activation = tf.multiply(input_layer, gates)
 
         return activation
+
 
 class NetVLAD(PoolingBaseModel):
     """Creates a NetVLAD class.
     """
+
     def __init__(self, feature_size, max_samples, cluster_size, output_dim,
-                 gating=True,add_batch_norm=True, is_training=True):
+                 gating=True, add_batch_norm=True, is_training=True):
         super(self.__class__, self).__init__(
             feature_size=feature_size,
             max_samples=max_samples,
@@ -121,10 +123,9 @@ class NetVLAD(PoolingBaseModel):
         vlad: the pooled vector of size: 'batch_size' x 'output_dim'
         """
 
-
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(
+                                          initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -139,7 +140,7 @@ class NetVLAD(PoolingBaseModel):
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [cluster_size],
-                                             initializer = tf.random_normal_initializer(
+                                             initializer=tf.random_normal_initializer(
                                                  stddev=1 / math.sqrt(self.feature_size)))
             activation += cluster_biases
 
@@ -148,32 +149,31 @@ class NetVLAD(PoolingBaseModel):
         activation = tf.reshape(activation,
                                 [-1, self.max_samples, self.cluster_size])
 
-        a_sum = tf.reduce_sum(activation,-2,keep_dims=True)
+        a_sum = tf.reduce_sum(activation, -2, keep_dims=True)
 
         cluster_weights2 = tf.get_variable("cluster_weights2",
-                                           [1,self.feature_size, self.cluster_size],
-                                           initializer = tf.random_normal_initializer(
+                                           [1, self.feature_size, self.cluster_size],
+                                           initializer=tf.random_normal_initializer(
                                                stddev=1 / math.sqrt(self.feature_size)))
 
-        a = tf.multiply(a_sum,cluster_weights2)
+        a = tf.multiply(a_sum, cluster_weights2)
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,
-                                                    self.max_samples, self.feature_size])
+        reshaped_input = tf.reshape(reshaped_input, [-1,
+                                                     self.max_samples, self.feature_size])
 
-        vlad = tf.matmul(activation,reshaped_input)
-        vlad = tf.transpose(vlad,perm=[0,2,1])
-        vlad = tf.subtract(vlad,a)
+        vlad = tf.matmul(activation, reshaped_input)
+        vlad = tf.transpose(vlad, perm=[0, 2, 1])
+        vlad = tf.subtract(vlad, a)
 
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
-        vlad = tf.nn.l2_normalize(vlad,1)
-
-        vlad = tf.reshape(vlad,[-1, self.cluster_size*self.feature_size])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.reshape(vlad, [-1, self.cluster_size * self.feature_size])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
         hidden1_weights = tf.get_variable("hidden1_weights",
-                                          [self.cluster_size*self.feature_size, self.output_dim],
+                                          [self.cluster_size * self.feature_size, self.output_dim],
                                           initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.cluster_size)))
 
@@ -184,11 +184,13 @@ class NetVLAD(PoolingBaseModel):
 
         return vlad
 
+
 class NetRVLAD(PoolingBaseModel):
     """Creates a NetRVLAD class (Residual-less NetVLAD).
     """
+
     def __init__(self, feature_size, max_samples, cluster_size, output_dim,
-                 gating=True,add_batch_norm=True, is_training=True):
+                 gating=True, add_batch_norm=True, is_training=True):
         super(self.__class__, self).__init__(
             feature_size=feature_size,
             max_samples=max_samples,
@@ -209,10 +211,9 @@ class NetRVLAD(PoolingBaseModel):
         vlad: the pooled vector of size: 'batch_size' x 'output_dim'
         """
 
-
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(
+                                          initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -227,7 +228,7 @@ class NetRVLAD(PoolingBaseModel):
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [cluster_size],
-                                             initializer = tf.random_normal_initializer(
+                                             initializer=tf.random_normal_initializer(
                                                  stddev=1 / math.sqrt(self.feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
@@ -237,20 +238,20 @@ class NetRVLAD(PoolingBaseModel):
         activation = tf.reshape(activation,
                                 [-1, self.max_samples, self.cluster_size])
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,
-                                                    self.max_samples, self.feature_size])
-        vlad = tf.matmul(activation,reshaped_input)
+        reshaped_input = tf.reshape(reshaped_input, [-1,
+                                                     self.max_samples, self.feature_size])
+        vlad = tf.matmul(activation, reshaped_input)
 
-        vlad = tf.transpose(vlad,perm=[0,2,1])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.transpose(vlad, perm=[0, 2, 1])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
-        vlad = tf.reshape(vlad,[-1,self.cluster_size*self.feature_size])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.reshape(vlad, [-1, self.cluster_size * self.feature_size])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
         hidden1_weights = tf.get_variable("hidden1_weights",
-                                          [self.cluster_size*self.feature_size, self.output_dim],
+                                          [self.cluster_size * self.feature_size, self.output_dim],
                                           initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.cluster_size)))
 
@@ -259,16 +260,15 @@ class NetRVLAD(PoolingBaseModel):
         if self.gating:
             vlad = super(self.__class__, self).context_gating(vlad)
 
-
         return vlad
-
 
 
 class SoftDBoW(PoolingBaseModel):
     """Creates a Soft Deep Bag-of-Features class.
     """
+
     def __init__(self, feature_size, max_samples, cluster_size, output_dim,
-                 gating=True,add_batch_norm=True, is_training=True):
+                 gating=True, add_batch_norm=True, is_training=True):
         super(self.__class__, self).__init__(
             feature_size=feature_size,
             max_samples=max_samples,
@@ -289,10 +289,9 @@ class SoftDBoW(PoolingBaseModel):
         bof: the pooled vector of size: 'batch_size' x 'output_dim'
         """
 
-
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(
+                                          initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -307,7 +306,7 @@ class SoftDBoW(PoolingBaseModel):
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal(
+                                             initializer=tf.random_normal(
                                                  stddev=1 / math.sqrt(self.feature_size)))
             activation += cluster_biases
 
@@ -316,8 +315,8 @@ class SoftDBoW(PoolingBaseModel):
         activation = tf.reshape(activation,
                                 [-1, self.max_samples, self.cluster_size])
 
-        bof = tf.reduce_sum(activation,1)
-        bof = tf.nn.l2_normalize(bof,1)
+        bof = tf.reduce_sum(activation, 1)
+        bof = tf.nn.l2_normalize(bof, 1)
 
         hidden1_weights = tf.get_variable("hidden1_weights",
                                           [self.cluster_size, self.output_dim],
@@ -332,12 +331,12 @@ class SoftDBoW(PoolingBaseModel):
         return bof
 
 
-
 class NetFV(PoolingBaseModel):
     """Creates a NetFV class.
     """
+
     def __init__(self, feature_size, max_samples, cluster_size, output_dim,
-                 gating=True,add_batch_norm=True, is_training=True):
+                 gating=True, add_batch_norm=True, is_training=True):
         super(self.__class__, self).__init__(
             feature_size=feature_size,
             max_samples=max_samples,
@@ -360,17 +359,17 @@ class NetFV(PoolingBaseModel):
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(
+                                          initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.feature_size)))
 
         covar_weights = tf.get_variable("covar_weights",
                                         [self.feature_size, self.cluster_size],
-                                        initializer = tf.random_normal_initializer(
-                                            mean=1.0, stddev=1 /math.sqrt(self.feature_size)))
+                                        initializer=tf.random_normal_initializer(
+                                            mean=1.0, stddev=1 / math.sqrt(self.feature_size)))
 
         covar_weights = tf.square(covar_weights)
         eps = tf.constant([1e-6])
-        covar_weights = tf.add(covar_weights,eps)
+        covar_weights = tf.add(covar_weights, eps)
 
         activation = tf.matmul(reshaped_input, cluster_weights)
         if self.add_batch_norm:
@@ -383,7 +382,7 @@ class NetFV(PoolingBaseModel):
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal(
+                                             initializer=tf.random_normal(
                                                  stddev=1 / math.sqrt(self.feature_size)))
             activation += cluster_biases
 
@@ -392,52 +391,52 @@ class NetFV(PoolingBaseModel):
         activation = tf.reshape(activation,
                                 [-1, self.max_samples, self.cluster_size])
 
-        a_sum = tf.reduce_sum(activation,-2,keep_dims=True)
+        a_sum = tf.reduce_sum(activation, -2, keep_dims=True)
 
         cluster_weights2 = tf.get_variable("cluster_weights2",
-                                           [1,self.feature_size, self.cluster_size],
-                                           initializer = tf.random_normal_initializer(
+                                           [1, self.feature_size, self.cluster_size],
+                                           initializer=tf.random_normal_initializer(
                                                stddev=1 / math.sqrt(self.feature_size)))
 
-        a = tf.multiply(a_sum,cluster_weights2)
+        a = tf.multiply(a_sum, cluster_weights2)
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
         reshaped_input = tf.reshape(reshaped_input,
-                                    [-1,self.max_samples,self.feature_size])
-        fv1 = tf.matmul(activation,reshaped_input)
+                                    [-1, self.max_samples, self.feature_size])
+        fv1 = tf.matmul(activation, reshaped_input)
 
-        fv1 = tf.transpose(fv1,perm=[0,2,1])
+        fv1 = tf.transpose(fv1, perm=[0, 2, 1])
 
         # computing second order FV
-        a2 = tf.multiply(a_sum,tf.square(cluster_weights2))
+        a2 = tf.multiply(a_sum, tf.square(cluster_weights2))
 
-        b2 = tf.multiply(fv1,cluster_weights2)
-        fv2 = tf.matmul(activation,tf.square(reshaped_input))
+        b2 = tf.multiply(fv1, cluster_weights2)
+        fv2 = tf.matmul(activation, tf.square(reshaped_input))
 
-        fv2 = tf.transpose(fv2,perm=[0,2,1])
-        fv2 = tf.add_n([a2,fv2,tf.scalar_mul(-2,b2)])
+        fv2 = tf.transpose(fv2, perm=[0, 2, 1])
+        fv2 = tf.add_n([a2, fv2, tf.scalar_mul(-2, b2)])
 
-        fv2 = tf.divide(fv2,tf.square(covar_weights))
-        fv2 = tf.subtract(fv2,a_sum)
+        fv2 = tf.divide(fv2, tf.square(covar_weights))
+        fv2 = tf.subtract(fv2, a_sum)
 
-        fv2 = tf.reshape(fv2,[-1,self.cluster_size*self.feature_size])
+        fv2 = tf.reshape(fv2, [-1, self.cluster_size * self.feature_size])
 
-        fv2 = tf.nn.l2_normalize(fv2,1)
-        fv2 = tf.reshape(fv2,[-1,self.cluster_size*self.feature_size])
-        fv2 = tf.nn.l2_normalize(fv2,1)
+        fv2 = tf.nn.l2_normalize(fv2, 1)
+        fv2 = tf.reshape(fv2, [-1, self.cluster_size * self.feature_size])
+        fv2 = tf.nn.l2_normalize(fv2, 1)
 
-        fv1 = tf.subtract(fv1,a)
-        fv1 = tf.divide(fv1,covar_weights)
+        fv1 = tf.subtract(fv1, a)
+        fv1 = tf.divide(fv1, covar_weights)
 
-        fv1 = tf.nn.l2_normalize(fv1,1)
-        fv1 = tf.reshape(fv1,[-1,self.cluster_size*self.feature_size])
-        fv1 = tf.nn.l2_normalize(fv1,1)
+        fv1 = tf.nn.l2_normalize(fv1, 1)
+        fv1 = tf.reshape(fv1, [-1, self.cluster_size * self.feature_size])
+        fv1 = tf.nn.l2_normalize(fv1, 1)
 
-        fv = tf.concat([fv1,fv2],1)
+        fv = tf.concat([fv1, fv2], 1)
 
         hidden1_weights = tf.get_variable("hidden1_weights",
-                                          [2*self.cluster_size*self.feature_size, self.output_dim],
+                                          [2 * self.cluster_size * self.feature_size, self.output_dim],
                                           initializer=tf.random_normal_initializer(
                                               stddev=1 / math.sqrt(self.cluster_size)))
 
@@ -449,17 +448,16 @@ class NetFV(PoolingBaseModel):
         return fv
 
 
-if __name__=='__main__':
-
-    x = tf.random_normal(shape=[9,100,1024])
+if __name__ == '__main__':
+    x = tf.random_normal(shape=[9, 100, 1024])
 
     # y = tf.random_normal(shape=[1024,64])
 
     # z = tf.matmul(x,y)
 
     net = NetVLAD(feature_size=1024, max_samples=100, cluster_size=64,
-                     output_dim=512, gating=True, add_batch_norm=True,
-                     is_training=True)
+                  output_dim=512, gating=True, add_batch_norm=True,
+                  is_training=True)
 
     y = net.forward(x)
 
@@ -469,5 +467,3 @@ if __name__=='__main__':
 
     yy = sess.run(y)
     print(yy.shape)
-
-

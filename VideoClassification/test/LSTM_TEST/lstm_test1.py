@@ -5,19 +5,19 @@ from torch.autograd import Variable
 
 torch.manual_seed(1)
 
+lstm = nn.LSTM(3, 3)
 
-lstm = nn.LSTM(3,3)
+inputs = [Variable(torch.randn(1, 3)) for i in range(5)]
 
-inputs = [Variable(torch.randn(1,3)) for i in range(5)]
-
-hidden = ( Variable(torch.randn(1,1,3)),
-           Variable(torch.randn(1,1,3)) )
+hidden = (Variable(torch.randn(1, 1, 3)),
+          Variable(torch.randn(1, 1, 3)))
 
 for i in inputs:
-    out,hidden = lstm(i.view(1,1,-1),hidden)
+    out, hidden = lstm(i.view(1, 1, -1), hidden)
 
 out.size()
 hidden
+
 
 def prepare_sequence(seq, to_ix):
     idxs = [to_ix[w] for w in seq]
@@ -41,4 +41,3 @@ tag_to_ix = {"DET": 0, "NN": 1, "V": 2}
 # We will keep them small, so we can see how the weights change as we train.
 EMBEDDING_DIM = 6
 HIDDEN_DIM = 6
-

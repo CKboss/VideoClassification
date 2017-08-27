@@ -1,7 +1,6 @@
-
 WHERE = 'SERVER'
 
-if WHERE=='LOCAL':
+if WHERE == 'LOCAL':
     ''' local pc '''
     vgg16pretrainfile = '/home/itrc/BackUp/pretrained/vgg16-397923af.pth'
     resnet101_pretrainfile = '/home/itrc/BackUp/pretrained/resnet101-5d3b4d8f.pth'
@@ -12,36 +11,35 @@ if WHERE=='LOCAL':
 
     Code_root = '/home/itrc/Desktop/Development/VideoClassification/'
     UCF101_images_root = './'
-    EX_ID='/EX_test1'
+    EX_ID = '/EX_test1'
 
     ExWorkSpace = '/home/itrc/ExperimentsWorkspace/VC/'
     LOGSpace = ExWorkSpace
 
-elif WHERE=='SERVER':
+elif WHERE == 'SERVER':
 
     ''' server '''
     SERVER_ID = '202'
     Server_Root_Path = '/ssd/2/UCF_Data/'
     # Server_Root_Path = '/datacenter/1/UCF_Data/'
-    if SERVER_ID=='211':
+    if SERVER_ID == '211':
         Server_Root_Path = '/ssd/1/UCF_Data/'
-    elif SERVER_ID=='210' or SERVER_ID=='209':
+    elif SERVER_ID == '210' or SERVER_ID == '209':
         Server_Root_Path = '/ssd/2/UCF_Data/'
-    elif SERVER_ID=='202':
+    elif SERVER_ID == '202':
         Server_Root_Path = '/datacenter/1/UCF_Data/'
 
+    vgg16pretrainfile = Server_Root_Path + 'pretrainedmodel/vgg16-397923af.pth'
+    resnet101_pretrainfile = Server_Root_Path + 'pretrainedmodel/resnet101-5d3b4d8f.pth'
+    resnet152_pretrainfile = Server_Root_Path + 'pretrainedmodel/resnet152-b121ed2d.pth'
+    densenet169_pretrainfile = Server_Root_Path + 'pretrainedmodel/densenet169-6f0f7f60.pth'
+    densenet201_pretrainfile = Server_Root_Path + 'pretrainedmodel/densenet201-4c113574.pth'
 
-    vgg16pretrainfile = Server_Root_Path+'pretrainedmodel/vgg16-397923af.pth'
-    resnet101_pretrainfile = Server_Root_Path+'pretrainedmodel/resnet101-5d3b4d8f.pth'
-    resnet152_pretrainfile = Server_Root_Path+'pretrainedmodel/resnet152-b121ed2d.pth'
-    densenet169_pretrainfile = Server_Root_Path+'pretrainedmodel/densenet169-6f0f7f60.pth'
-    densenet201_pretrainfile = Server_Root_Path+'pretrainedmodel/densenet201-4c113574.pth'
+    ExWorkSpace = Server_Root_Path + 'EX/'
+    LOGSpace = Server_Root_Path + 'LOG/'
+    Code_root = Server_Root_Path + 'Code/VideoClassification/'
 
-    ExWorkSpace = Server_Root_Path+'EX/'
-    LOGSpace = Server_Root_Path+'LOG/'
-    Code_root = Server_Root_Path+'Code/VideoClassification/'
-
-    UCF101_images_root = Server_Root_Path+'UCF101_images/'
+    UCF101_images_root = Server_Root_Path + 'UCF101_images/'
 
     # EX_ID = '/VGG16_Temporal_EX3'
     # EX_ID = '/ResNet101_Spatial_EX2'
@@ -57,9 +55,9 @@ elif WHERE=='SERVER':
     LOAD_SAVED_MODE_PATH = None
     LOAD_SAVED_MODE_PATH_2 = None
 
-    MySQL_Config = dict( host='10.1.1.202', user='root', password='123456', db='ucf101', charset='utf8', autocommit=True )
+    MySQL_Config = dict(host='10.1.1.202', user='root', password='123456', db='ucf101', charset='utf8', autocommit=True)
 
-elif WHERE=='DOCKER':
+elif WHERE == 'DOCKER':
     raise NotImplementedError
 else:
     raise NotImplementedError

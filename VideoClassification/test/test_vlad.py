@@ -1,10 +1,11 @@
 import tensorflow as tf
 
+
 def VLAD_pooling(inputs,
-              k_centers,
-              scope,
-              use_xavier=True,
-              stddev=1e-3):
+                 k_centers,
+                 scope,
+                 use_xavier=True,
+                 stddev=1e-3):
     """ VLAD orderless pooling - based on netVLAD paper:
   title={NetVLAD: CNN architecture for weakly supervised place recognition},
   author={Arandjelovic, Relja and Gronat, Petr and Torii, Akihiko and Pajdla, Tomas and Sivic, Josef},
@@ -19,10 +20,10 @@ def VLAD_pooling(inputs,
     """
 
     num_batches = inputs.get_shape()[0].value
-    #num_feature_maps = inputs.get_shape()[1].value
+    # num_feature_maps = inputs.get_shape()[1].value
     num_features = inputs.get_shape()[2].value
 
-    #Initialize the variables for learning w,b,c - Random initialization
+    # Initialize the variables for learning w,b,c - Random initialization
     if use_xavier:
         initializer = tf.contrib.layers.xavier_initializer()
     else:
@@ -48,42 +49,38 @@ def VLAD_pooling(inputs,
         # w = tf.Variable(2 * alpha * centers, name='weights' )
         # b = tf.Variable(-alpha * tf.pow(tf.norm(centers, axis=1),2), name = 'biases')
 
-        #Pooling
+        # Pooling
         for k in range(k_centers):
 
-            wk = tf.expand_dims(tf.tile(tf.expand_dims(w[k, :],0),multiples=[num_batches,1]),[-1])
+            wk = tf.expand_dims(tf.tile(tf.expand_dims(w[k, :], 0), multiples=[num_batches, 1]), [-1])
 
-            print('wk_shape: ',wk.get_shape())
-            Wx_b = tf.matmul(inputs, wk)  + b[k]
-            print('Wx_b shape: ',Wx_b.get_shape())
+            print('wk_shape: ', wk.get_shape())
+            Wx_b = tf.matmul(inputs, wk) + b[k]
+            print('Wx_b shape: ', Wx_b.get_shape())
 
-            a = tf.nn.softmax( Wx_b )
-            print('a shape: ',a.get_shape())
+            a = tf.nn.softmax(Wx_b)
+            print('a shape: ', a.get_shape())
 
             if k == 0:
-                outputs =  tf.reduce_sum(tf.multiply(a, (inputs - tf.slice(c, [k, 0], [1, num_features]))), axis=1)
-                outputs = tf.expand_dims(outputs,1)
+                outputs = tf.reduce_sum(tf.multiply(a, (inputs - tf.slice(c, [k, 0], [1, num_features]))), axis=1)
+                outputs = tf.expand_dims(outputs, 1)
             else:
-                outputs = tf.concat([outputs, tf.expand_dims(tf.reduce_sum(tf.multiply(a, (inputs - tf.slice(c,[k, 0], [1, num_features]))), axis=1),1)], 1)
+                outputs = tf.concat([outputs, tf.expand_dims(
+                    tf.reduce_sum(tf.multiply(a, (inputs - tf.slice(c, [k, 0], [1, num_features]))), axis=1), 1)], 1)
 
-        outputs = tf.nn.l2_normalize(outputs,dim=2) #intra-normalization
-        outputs = tf.reshape(outputs,[num_batches,-1])
-        outputs = tf.nn.l2_normalize(outputs,dim=1) #l2 normalization
+        outputs = tf.nn.l2_normalize(outputs, dim=2)  # intra-normalization
+        outputs = tf.reshape(outputs, [num_batches, -1])
+        outputs = tf.nn.l2_normalize(outputs, dim=1)  # l2 normalization
 
         return outputs
 
 
-if __name__=='__main__':
-
-    a = tf.random_normal(shape=[3,32,4])
-    b = VLAD_pooling(a,5,'scope2')
+if __name__ == '__main__':
+    a = tf.random_normal(shape=[3, 32, 4])
+    b = VLAD_pooling(a, 5, 'scope2')
 
     sess = tf.InteractiveSession()
 
     sess.run(tf.global_variables_initializer())
 
-
     b.get_shape()
-
-
-

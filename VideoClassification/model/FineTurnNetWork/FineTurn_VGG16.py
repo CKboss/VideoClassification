@@ -11,4 +11,3 @@ def FineTurn_VGG16():
     model = vgg16().cuda()
     new_classfier = list(model.classifier)[:-3]
     model.classifier = nn.Sequential(*new_classfier)
-

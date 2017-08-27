@@ -6,17 +6,15 @@ import torch.nn.functional as F
 from torch.nn.parameter import Parameter
 
 
-
 class MyLinear(nn.Module):
-
-    def __init__(self,inputdim,outputdim):
-        super(MyLinear,self).__init__()
-        self.weight = Parameter(torch.randn(inputdim,outputdim))
+    def __init__(self, inputdim, outputdim):
+        super(MyLinear, self).__init__()
+        self.weight = Parameter(torch.randn(inputdim, outputdim))
         self.bias = Parameter(torch.randn(outputdim))
         self.reset_parameters()
 
-    def forward(self,x):
-        return torch.matmul(x,self.weight)+self.bias
+    def forward(self, x):
+        return torch.matmul(x, self.weight) + self.bias
         # return F.linear(x,self.weight,self.bias)
 
     def reset_parameters(self):

@@ -4,10 +4,13 @@ from VideoClassification.utils.DataSetLoader.UCF101_DataSetLoader_FromFileName.P
     GenVariables_VideoSpatialAndTemporal
 
 dsl = test_UCF101_ChooseOrderFromSameVideo(dsl=UCF101_TwoStream)
-def gen():
-    return GenVariables_VideoSpatialAndTemporal(dsl=dsl,batchsize=4)
 
-imgs,labels = gen()
+
+def gen():
+    return GenVariables_VideoSpatialAndTemporal(dsl=dsl, batchsize=4)
+
+
+imgs, labels = gen()
 
 print(id(imgs))
 print(labels)

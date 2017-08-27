@@ -2,12 +2,10 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import math
 
-
 __all__ = [
     'VGG', 'vgg11', 'vgg11_bn', 'vgg13', 'vgg13_bn', 'vgg16', 'vgg16_bn',
     'vgg19_bn', 'vgg19',
 ]
-
 
 model_urls = {
     'vgg11': 'https://download.pytorch.org/models/vgg11-bbd30ac9.pth',
@@ -18,8 +16,7 @@ model_urls = {
 
 
 class VGG(nn.Module):
-
-    def __init__(self, features, num_classes=1000,drop_rate1=0.5,drop_rate2=0.5):
+    def __init__(self, features, num_classes=1000, drop_rate1=0.5, drop_rate2=0.5):
         super(VGG, self).__init__()
         self.features = features
         self._initialize_weights()
@@ -27,7 +24,7 @@ class VGG(nn.Module):
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), -1)
-        #x = self.classifier(x)
+        # x = self.classifier(x)
         return x
 
     def _initialize_weights(self):
@@ -46,7 +43,7 @@ class VGG(nn.Module):
                 m.bias.data.zero_()
 
 
-def make_layers(cfg, batch_norm=False,in_channels=3):
+def make_layers(cfg, batch_norm=False, in_channels=3):
     layers = []
     for v in cfg:
         if v == 'M':
@@ -103,13 +100,13 @@ def vgg13_bn(**kwargs):
     return VGG(make_layers(cfg['B'], batch_norm=True), **kwargs)
 
 
-def vgg16(pretrained=False,in_channels=3, **kwargs):
+def vgg16(pretrained=False, in_channels=3, **kwargs):
     """VGG 16-layer model (configuration "D")
 
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = VGG(make_layers(cfg['D'],batch_norm=False,in_channels=in_channels), **kwargs)
+    model = VGG(make_layers(cfg['D'], batch_norm=False, in_channels=in_channels), **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['vgg16']))
     return model

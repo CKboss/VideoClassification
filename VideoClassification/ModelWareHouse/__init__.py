@@ -1,5 +1,4 @@
-
-__doc__='''
+__doc__ = '''
 
 Model WareHouse is use to save network structure and experiment script
 
