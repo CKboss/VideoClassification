@@ -26,7 +26,7 @@ def find_class_by_name(name, models):
 
 
 def main(config_yaml=None):
-    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024.yaml'
+    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell2048.yaml'
     LOAD_YAML_TO_FLAG(train_config)
     FLAGS = Get_GlobalFLAG()
 
@@ -38,7 +38,8 @@ def main(config_yaml=None):
     val_items = getValItems()
     batchsize = FLAGS.batchsize
 
-    # os.environ['CUDA_VISIBLE_DEVICES']='0'
+    if FLAGS.device_id != None:
+        os.environ['CUDA_VISIBLE_DEVICES']=str(FLAGS.device_id)[1:-1]
 
     # with tf.device('/gpu:0'):
 
@@ -49,7 +50,7 @@ def main(config_yaml=None):
     model = GetFrameModel(FLAGS.frame_level_model)()
     lossfunc = SoftmaxLoss()
 
-    predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames)
+    predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames, num_mixtures=FLAGS.moe_num_mixtures)
     predict_labels = predict_labels['predictions']
     loss = lossfunc.calculate_loss(predict_labels, target_labels)
 
@@ -119,13 +120,6 @@ def main(config_yaml=None):
         pylog.info('epoch: {} ... '.format(epoch))
 
         for i in range(loop):
-
-            # l = i*batchsize
-            # r = l+batchsize
-            # items = train_items[l:r]
-            # features, video_frames, target_label = gen_tf_input(items,'train')
-            # features, video_frames, target_label = pq_train.Get()
-            # video_frames = np.array(video_frames)
 
             features, target_label, video_frames, train_name = sess.run(
                 [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])

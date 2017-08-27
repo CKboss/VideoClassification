@@ -1,14 +1,10 @@
-# lstm-memory-cell1024 train config
+# this is an example configfile
 
-
-# 3. LSTM model (Section 2).
-# cell of LSTM is 1024.
-# layer of LSTM is 2.
-# mixture of MoE is 8.
+# description of the train config
 
 # model setting
-name: lstm-memory-cell1024
-EX_ID: EX3
+name: examplemodel
+EX_ID: EX_1
 batchsize: 32
 moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
