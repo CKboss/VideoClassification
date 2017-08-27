@@ -1,6 +1,7 @@
 from TFFusions.all_frame_models.lstm_memory_model import LstmMemoryModel
 from TFFusions.all_frame_models.lstm_model import LstmModel
 from TFFusions.all_frame_models.lstm_cnn_deep_combine_chain_model import LstmCnnDeepCombineChainModel
+from TFFusions.all_frame_models.lstm_attention_lstm_model import LstmAttentionLstmModel
 
 def GetFrameModel(frame_model_name):
     if frame_model_name == 'lstm_memory_model':
@@ -9,5 +10,7 @@ def GetFrameModel(frame_model_name):
         return LstmModel
     elif frame_model_name == 'LstmCnnDeepCombineChainModel':
         return LstmCnnDeepCombineChainModel
+    elif frame_model_name == 'LstmAttentionLstmModel':
+        return LstmAttentionLstmModel
     else:
         raise NotImplementedError
