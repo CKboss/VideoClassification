@@ -91,8 +91,8 @@ def read_and_decode(filename_queue, batch_size):
 
     frame_len_batch, features_batch, labels_batch, name_batch = tf.train.batch([frame_len, features, labels, name],
                                                                                batch_size=batch_size,
-                                                                               num_threads=4,
-                                                                               capacity=72)
+                                                                               num_threads=10,
+                                                                               capacity=128)
     return frame_len_batch, features_batch, labels_batch, name_batch
 
 

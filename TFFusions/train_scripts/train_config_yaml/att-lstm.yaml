@@ -5,7 +5,7 @@
 # model setting
 name: LstmAttentionLstmModel
 EX_ID: EX_1
-batchsize: 32
+batchsize: 50
 moe_num_mixtures: 8
 frame_level_model: LstmAttentionLstmModel
 video_level_model: moe_model

@@ -10,7 +10,6 @@ import tensorflow as tf
 import TFFusions.Config.Config as Config
 from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
-from TFFusions.toolkits.dataloader import getTrainItems, getValItems, gen_tf_input, PictureQueue
 from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
@@ -34,18 +33,17 @@ def main(config_yaml=None):
         print('mk train dir {}'.format(FLAGS.train_dir))
         os.mkdir(FLAGS.train_dir)
 
-    train_items = getTrainItems()
-    val_items = getValItems()
+    # train_items = getTrainItems()
+    # val_items = getValItems()
     batchsize = FLAGS.batchsize
 
+    #
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES']=str(FLAGS.device_id)[1:-1]
 
-    # with tf.device('/gpu:0'):
-
-    inputs = tf.placeholder(dtype=tf.float32, shape=(None, 600, 4096))
-    num_frames = tf.placeholder(dtype=tf.int32, shape=(None))
-    target_labels = tf.placeholder(dtype=tf.int32, shape=(None, FLAGS.vocab_size))
+    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize, 600, 4096))
+    num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize))
+    target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize, FLAGS.vocab_size))
 
     model = GetFrameModel(FLAGS.frame_level_model)()
     lossfunc = SoftmaxLoss()
@@ -114,9 +112,10 @@ def main(config_yaml=None):
 
     cnt = 0
 
-    for epoch in range(FLAGS.num_epochs):
+    for epoch in range(FLAGS.num_epochs+1):
 
-        loop = len(train_items) // batchsize
+        # loop = len(train_items) // batchsize
+        loop = 2222
         pylog.info('epoch: {} ... '.format(epoch))
 
         for i in range(loop):
