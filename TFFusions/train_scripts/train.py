@@ -37,6 +37,10 @@ def main(config_yaml=None):
     val_items = getValItems()
     batchsize = FLAGS.batchsize
 
+    # os.environ['CUDA_VISIBLE_DEVICES']='0'
+
+    # with tf.device('/gpu:0'):
+
     inputs = tf.placeholder(dtype=tf.float32,shape=(None,600,4096))
     num_frames = tf.placeholder(dtype=tf.int32,shape=(None))
     target_labels = tf.placeholder(dtype=tf.int32,shape=(None,FLAGS.vocab_size))
@@ -58,7 +62,16 @@ def main(config_yaml=None):
     optimizer_class = find_class_by_name(FLAGS.optimize,[tf.train])
     train_op = optimizer_class(decayed_learning_rate).minimize(loss)
 
-    init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
+    # init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
+    init_op = tf.global_variables_initializer()
+
+    # Load from TFRecord
+    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
+    train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
+    train_file_queue = tf.train.string_input_producer(train_file_list)
+    val_file_queue = tf.train.string_input_producer(val_file_list)
+    train_frame_len_batch,train_feature_batch,train_label_batch,train_name_batch=read_and_decode(train_file_queue,batchsize)
+    test_frame_len_batch,test_feature_batch,test_label_batch,test_name_batch=read_and_decode(val_file_queue,batchsize)
 
     # LOG
     log_prefix_name = '{}_{}'.format(FLAGS.name,FLAGS.EX_ID)
@@ -80,16 +93,6 @@ def main(config_yaml=None):
     tf_config.allow_soft_placement=True
     tf_config.log_device_placement=True
 
-
-    # Load from TFRecord
-    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
-    train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
-    train_file_queue = tf.train.string_input_producer(train_file_list)
-    val_file_queue = tf.train.string_input_producer(val_file_list)
-    train_frame_len_batch,train_feature_batch,train_label_batch,train_name_batch=read_and_decode(train_file_queue,batchsize)
-    test_frame_len_batch,test_feature_batch,test_label_batch,test_name_batch=read_and_decode(val_file_queue,batchsize)
-
-
     # init session
     sess = tf.Session(config=tf_config)
     sess.run(init_op)
@@ -108,7 +111,10 @@ def main(config_yaml=None):
     cnt = 0
 
     for epoch in range(FLAGS.num_epochs):
+
         loop = len(train_items)//batchsize
+        pylog.info('epoch: {} ... '.format(epoch))
+
         for i in range(loop):
 
             # l = i*batchsize
@@ -121,6 +127,7 @@ def main(config_yaml=None):
             features,target_label,video_frames,train_name = sess.run([train_feature_batch,train_label_batch,train_frame_len_batch,train_name_batch])
 
             fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
+
             loss_value,_ = sess.run([loss,train_op],feed_dict=fd)
 
             logger.scalar_summary(log_prefix_name+'/train_loss',loss_value,cnt)
@@ -128,10 +135,11 @@ def main(config_yaml=None):
 
             if cnt%50 == 0:
 
+                features,target_label,video_frames,train_name = sess.run([train_feature_batch,train_label_batch,train_frame_len_batch,train_name_batch])
                 fd = {inputs:features, target_labels:target_label, num_frames:video_frames}
                 predict = sess.run(predict_labels,feed_dict=fd)
                 train_meanap = mean_ap(predict,target_label)
-                acc = accuracy(predict,target_labels,topk=(1,5,10))
+                acc = accuracy(predict,target_label,topk=(1,5,10))
 
                 logger.scalar_summary(log_prefix_name+'/train_mAP',train_meanap,cnt)
                 logger.scalar_summary(log_prefix_name+'/train_acc@1',acc[0],cnt)
