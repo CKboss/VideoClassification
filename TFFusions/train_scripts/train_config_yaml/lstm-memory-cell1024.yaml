@@ -8,8 +8,8 @@
 
 # model setting
 name: lstm-memory-cell1024
-EX_ID: EX4
-batchsize: 32
+EX_ID: EX5
+batchsize: 64
 moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
 video_level_model: moe_model
@@ -19,15 +19,15 @@ rnn_swap_memory: true
 model_checkpoint_path: null
 
 # train setting
-base_learning_rate: 0.0001
+base_learning_rate: 0.00001
 learning_rate_decay: 0.1
-decay_at_epoch: 5
+decay_at_epoch: 2
 num_epochs: 30
 max_step: null
 optimize: AdamOptimizer
-dropout: null
-noise_level: 0
-keep_prob: 1.0
+noise_level: 0.001
+dropout: true
+keep_prob: 0.5
 keep_checkpoint_every_n_hour: 2
 max_to_keep: 10
 regularization_penalty: 0.0001
@@ -39,4 +39,4 @@ device_id:
 vocab_size: 500
 
 # train path
-train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex4/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex5/

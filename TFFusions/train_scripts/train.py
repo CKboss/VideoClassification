@@ -130,7 +130,7 @@ def main(config_yaml=None):
             logger.scalar_summary(log_prefix_name + '/train_loss', loss_value, cnt)
             pylog.info('cnt: {} train_loss: {}'.format(cnt, loss_value))
 
-            if cnt % 50 == 0:
+            if cnt % 30 == 0:
                 features, target_label, video_frames, train_name = sess.run(
                     [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])
                 fd = {inputs: features, target_labels: target_label, num_frames: video_frames}

@@ -41,6 +41,9 @@ class LstmMemoryModel(models.BaseModel):
         """
         lstm_size = int(FLAGS.lstm_cells)
         number_of_layers = FLAGS.lstm_layers
+        dropout = dropout or FLAGS.dropout
+        keep_prob = keep_prob or FLAGS.keep_prob
+        noise_level = noise_level or FLAGS.noise_level
 
         ## Batch normalize the input
         if dropout:
