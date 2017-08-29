@@ -9,3 +9,5 @@ with tf.device('/gpu:2'):
 sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 # Runs the op.
 print(sess.run(c))
+
+tf.train.GradientDescentOptimizer

@@ -24,7 +24,7 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
+train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/gru_pooling_1.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 

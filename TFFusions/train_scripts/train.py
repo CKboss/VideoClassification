@@ -83,11 +83,7 @@ def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scal
 
     return features_ret,target_label_ret,video_frames_ret
 
-
-
 #############################################################################
-
-
 
 
 def main(config_yaml=None):

@@ -89,10 +89,11 @@ def read_and_decode(filename_queue, batch_size):
     labels = tf.reshape(labels, [500])
     name = tffeatures['name']
 
-    frame_len_batch, features_batch, labels_batch, name_batch = tf.train.batch([frame_len, features, labels, name],
-                                                                               batch_size=batch_size,
-                                                                               num_threads=10,
-                                                                               capacity=128)
+    frame_len_batch, features_batch, labels_batch, name_batch = tf.train.shuffle_batch([frame_len, features, labels, name],
+                                                                                   min_after_dequeue=512,
+                                                                                   batch_size=batch_size,
+                                                                                   num_threads=10,
+                                                                                   capacity=1024)
     return frame_len_batch, features_batch, labels_batch, name_batch
 
 

@@ -1,9 +1,7 @@
 import sys
 import TFFusions.models as models
-import TFFusions.model_utils as model_utils
 import math
 import numpy as np
-import TFFusions.video_level_models
 import tensorflow as tf
 import TFFusions.utils as utils
 import tensorflow.contrib.slim as slim
@@ -55,7 +53,7 @@ class GruPoolingModel(models.BaseModel):
                                                time_major=False,
                                                swap_memory=FLAGS.rnn_swap_memory,
                                                dtype=tf.float32)
-            num_frames_matrix = tf.maximum(tf.cast(tf.expand_dims(num_frames, axis=1), dtype=tf.float32), tf.ones([batch_size, 1]))
+            num_frames_matrix = tf.maximum(tf.cast(tf.expand_dims(num_frames, axis=1), dtype=tf.float32), tf.ones([FLAGS.realbatchsize, 1]))
             pooling_output = tf.reduce_sum(outputs, axis = 1) / num_frames_matrix
 
         # aggregated_model = getattr(video_level_models,
@@ -68,3 +66,17 @@ class GruPoolingModel(models.BaseModel):
             vocab_size=vocab_size,
             **unused_params)
 
+if __name__=='__main__':
+
+    from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
+
+    train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/gru_pooling_1.yaml'
+    LOAD_YAML_TO_FLAG(train_config)
+    FLAGS = Get_GlobalFLAG()
+
+    x = tf.placeholder(dtype=tf.float32,shape=(12,16,4096))
+    y = tf.placeholder(dtype=tf.float32,shape=(12,))
+
+    model = GruPoolingModel()
+
+    z = model.create_model(x,500,y)
