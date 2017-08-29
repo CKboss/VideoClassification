@@ -41,7 +41,7 @@ class LstmAttentionLstmModel(models.BaseModel):
         number_of_layers = FLAGS.lstm_layers
         l2_penalty = unused_params.get("l2_penalty", 1e-8)
         # max_frames = model_input.get_shape().as_list()[1]
-        max_frames = 600
+        max_frames = FLAGS.fix_length
 
         mask_array = []
         for i in range(max_frames + 1):

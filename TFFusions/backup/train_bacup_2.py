@@ -15,7 +15,6 @@ from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 from TFFusions.tfrecord_tools import read_and_decode
 
-FLAGS = None
 
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
@@ -24,77 +23,9 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-#############################################################################
-
-def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8):
-    '''
-    :param features:  a tensor batchsize x max_frams_len x features
-    :param target_label: a tensor batchsize x 500
-    :param video_frames: a tensor batchsize
-    :param fix_lenght: a int output features's len
-    :param scale: output batchsize will be mulit scale
-    :return:
-        features: (scale x batchsize) x fix_lenght x features
-        target_label: (scale x batchsize) x 500
-        videoframes: (scale x batchsize)
-    '''
-
-    global FLAGS
-    try:
-        fix_lenght = FLAGS.fix_length
-        scale = FLAGS.scale
-    except:
-        fix_lenght = 10
-        scale = 8
-
-    n = features.shape[0]
-    n2 = target_label.shape[-1]
-    m = features.shape[-1]
-
-    features_ret = []
-    target_label_ret = []
-    video_frames_ret = []
-
-    for i in range(n):
-
-        video_len = video_frames[i]
-        rid = random.choices(list(range(video_len)),k=scale)
-
-        # print('video_len: ',video_len)
-        if video_len <= fix_lenght:
-            video_len = fix_lenght+1
-
-        for rg in rid:
-
-            l = rg
-            r = rg+fix_lenght-1
-
-            if r >= video_len :
-                l = video_len - fix_lenght - 1
-                r = video_len - 2
-
-            features_ret.append( features[i,l:r+1,:] )
-            video_frames_ret.append(fix_lenght)
-            target_label_ret.append(target_label[i])
-
-    features_ret = np.vstack(features_ret).reshape(-1,fix_lenght,m)
-    target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
-    video_frames_ret = np.array(video_frames_ret)
-
-    return features_ret,target_label_ret,video_frames_ret
-
-
-
-#############################################################################
-
-
-
 
 def main(config_yaml=None):
-
-    global FLAGS
-
-    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024.yaml'
+    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell2048.yaml'
     LOAD_YAML_TO_FLAG(train_config)
     FLAGS = Get_GlobalFLAG()
 
@@ -110,9 +41,9 @@ def main(config_yaml=None):
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES']=str(FLAGS.device_id)[1:-1]
 
-    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize*FLAGS.scale, FLAGS.fix_length, 4096))
-    num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize*FLAGS.scale))
-    target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize*FLAGS.scale, FLAGS.vocab_size))
+    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize, 600, 4096))
+    num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize))
+    target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize, FLAGS.vocab_size))
 
     model = GetFrameModel(FLAGS.frame_level_model)()
     lossfunc = SoftmaxLoss()
@@ -140,9 +71,9 @@ def main(config_yaml=None):
     train_file_queue = tf.train.string_input_producer(train_file_list)
     val_file_queue = tf.train.string_input_producer(val_file_list)
     train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue,
-                                                                                                      FLAGS.batchsize)
+                                                                                                      batchsize)
     test_frame_len_batch, test_feature_batch, test_label_batch, test_name_batch = read_and_decode(val_file_queue,
-                                                                                                  FLAGS.batchsize)
+                                                                                                  batchsize)
 
     # LOG
     log_prefix_name = '{}_{}'.format(FLAGS.name, FLAGS.EX_ID)
@@ -189,13 +120,8 @@ def main(config_yaml=None):
 
         for i in range(loop):
 
-            features, target_label, video_frames, train_name = sess.run( [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])
-            # F = features
-            # T = target_label
-            # V = video_frames
-            # print(features.shape)
-            features, target_label, video_frames = split_into_small_peice(features,target_label,video_frames)
-            # print(features.shape)
+            features, target_label, video_frames, train_name = sess.run(
+                [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])
 
             fd = {inputs: features, target_labels: target_label, num_frames: video_frames}
 
@@ -207,10 +133,7 @@ def main(config_yaml=None):
             if cnt % 30 == 0:
                 features, target_label, video_frames, train_name = sess.run(
                     [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])
-
-                features, target_label, video_frames = split_into_small_peice(features,target_label,video_frames)
                 fd = {inputs: features, target_labels: target_label, num_frames: video_frames}
-
                 predict = sess.run(predict_labels, feed_dict=fd)
                 train_meanap = mean_ap(predict, target_label)
                 acc = accuracy(predict, target_label, topk=(1, 5, 10))
@@ -231,8 +154,6 @@ def main(config_yaml=None):
 
                 features, target_label, video_frames, test_name = sess.run(
                     [test_feature_batch, test_label_batch, test_frame_len_batch, test_name_batch])
-
-                features, target_label, video_frames = split_into_small_peice(features,target_label,video_frames)
 
                 fd = {inputs: features, target_labels: target_label, num_frames: video_frames}
                 predict, test_loss = sess.run([predict_labels, loss], feed_dict=fd)
