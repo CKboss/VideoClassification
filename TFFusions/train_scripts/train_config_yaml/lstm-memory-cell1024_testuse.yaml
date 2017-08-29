@@ -1,0 +1,42 @@
+# lstm-memory-cell1024 train config
+
+
+# 3. LSTM model (Section 2).
+# cell of LSTM is 1024.
+# layer of LSTM is 2.
+# mixture of MoE is 8.
+
+# model setting
+name: lstm-memory-cell1024
+EX_ID: EX5
+batchsize: 8
+moe_num_mixtures: 2
+frame_level_model: lstm_memory_model
+video_level_model: moe_model
+lstm_cells: 256
+lstm_layers: 1
+rnn_swap_memory: true
+model_checkpoint_path: null
+
+# train setting
+base_learning_rate: 0.00001
+learning_rate_decay: 0.1
+decay_at_epoch: 2
+num_epochs: 30
+max_step: null
+optimize: AdamOptimizer
+noise_level: 0.001
+dropout: null
+keep_prob: 0.9
+keep_checkpoint_every_n_hour: 2
+max_to_keep: 10
+regularization_penalty: 0.0001
+device_id:
+- 0
+- 1
+
+# dataset seting
+vocab_size: 500
+
+# train path
+train_dir: /tmp/test/
