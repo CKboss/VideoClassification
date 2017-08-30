@@ -52,22 +52,21 @@ def make_tfrecord(items, filename, kind):
 
 
 def RUN_make_TF_records():
-    trainitems = getTrainItems()
-
-    n = len(trainitems)
+    valitems = getValItems()
+    n = len(valitems)
     duansize = 10240
     duan = n // duansize + 1
 
     # prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
-    prefixname = '/mnt/md0/LSVC/sen_tfrecords/train_tf_{}_{}.tfrecord'
+    prefixname = '/mnt/md0/LSVC/sen_tfrecords/val_tf_{}_{}.tfrecord'
 
     for i in range(duan):
         l = i * duansize
         r = min(l + duansize, n - 1)
         filename = prefixname.format(l, r - 1)
-        items = trainitems[l:r]
+        items = valitems[l:r]
         print(filename + '....')
-        make_tfrecord(items, filename, kind='train')
+        make_tfrecord(items, filename, kind='test')
 
 
 def read_and_decode(filename_queue, batch_size):

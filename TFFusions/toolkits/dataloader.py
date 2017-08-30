@@ -91,7 +91,7 @@ def Load_Features(videoname=None, kind=None, limitlen=600):
     elif kind == 'val':
         prefix = Config.DATA_PATH + 'trainval/'
     elif kind == 'test':
-        raise NotImplementedError
+        prefix = Config.DATA_PATH + 'test/'
     else:
         raise NotImplementedError
     # videoname example : lsvc000000
