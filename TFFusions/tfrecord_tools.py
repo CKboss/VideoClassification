@@ -1,5 +1,5 @@
 import TFFusions.Config.Config as Config
-from TFFusions.toolkits.dataloader import getTrainItems, concurrent_get_items, getTestItems, getValItems
+from TFFusions.toolkits.dataloader import getTrainItems, concurrent_get_items, getTestItems, getValItems, Load_Features_SENET
 
 import tensorflow as tf
 import numpy as np
@@ -26,7 +26,7 @@ def make_tfrecord(items, filename, kind):
         name = item[0]
 
         try:
-            frame_len, features, labellst = concurrent_get_items(item, kind=kind)
+            frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_SENET)
         except Exception as E:
             print(E)
             continue
@@ -58,7 +58,8 @@ def RUN_make_TF_records():
     duansize = 10240
     duan = n // duansize + 1
 
-    prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
+    # prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
+    prefixname = '/mnt/md0/LSVC/sen_tfrecords/train_tf_{}_{}.tfrecord'
 
     for i in range(duan):
         l = i * duansize

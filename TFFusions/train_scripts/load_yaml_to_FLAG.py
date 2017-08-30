@@ -17,6 +17,7 @@ def LOAD_YAML_TO_FLAG(filename):
         pprint.pprint(data)
         for key in data.keys():
             FLAG.__setattr__(key, data[key])
+    FLAG.__setattr__('YAML',txt)
     GLOBAL_FLAG = FLAG
     return FLAG
 

@@ -74,6 +74,16 @@ def getClassId():
         _load_labels()
     return classId
 
+def Load_Features_SENET(videoname=None, kind=None, limitlen=600):
+    prefix = Config.DATA_PATH + 'feat_senet/'
+    # videoname example : lsvc000000
+    filename = prefix + '{}_pool5_senet.binary'.format(videoname)
+    frame_features = np.fromfile(filename, dtype='float32').reshape(-1, 2048)
+    # limit the frames len to limitlen
+    if frame_features.shape[0] > limitlen:
+        h = (frame_features.shape[0] - limitlen) // 2
+        frame_features = frame_features[h + 1:-h - 1, :]
+    return frame_features
 
 def Load_Features(videoname=None, kind=None, limitlen=600):
     if kind == 'train':
@@ -95,7 +105,7 @@ def Load_Features(videoname=None, kind=None, limitlen=600):
     return frame_features
 
 
-def concurrent_get_items(item, kind):
+def concurrent_get_items(item, kind , load_func=Load_Features):
     """
     :param item: a tuple ('video_name',[labels])
     :param kind: from which kinds of datasets [train/test/val]
@@ -108,7 +118,7 @@ def concurrent_get_items(item, kind):
     #     item = ('lsvc000191', [222])
     #     feat = Load_Features(item[0],kind=kind,limitlen=600)
 
-    feat = Load_Features(item[0], kind=kind, limitlen=600)
+    feat = load_func(item[0], kind=kind, limitlen=600)
     ax0_len = feat.shape[0]
     return (ax0_len, feat, item[1])
 

@@ -177,8 +177,9 @@ def main(config_yaml=None):
         Saver.restore(sess=sess, save_path=FLAGS.model_checkpoint_path)
         print('Success !!!')
 
-    cnt = 0
+    pylog.info('train_config: {}'.format(FLAGS.YAML))
 
+    cnt = 0
     for epoch in range(FLAGS.num_epochs + 1):
 
         # loop = len(train_items) // batchsize
