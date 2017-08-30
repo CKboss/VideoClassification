@@ -26,7 +26,7 @@ def find_class_by_name(name, models):
 
 #############################################################################
 
-def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8):
+def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8,one_hot=True):
     '''
     :param features:  a tensor batchsize x max_frams_len x features
     :param target_label: a tensor batchsize x 500
@@ -38,7 +38,6 @@ def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scal
         target_label: (scale x batchsize) x 500
         videoframes: (scale x batchsize)
     '''
-
     global FLAGS
     try:
         fix_lenght = FLAGS.fix_length
@@ -75,11 +74,15 @@ def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scal
 
             features_ret.append( features[i,l:r+1,:] )
             video_frames_ret.append(fix_lenght)
-            target_label_ret.append(target_label[i])
+
+            if one_hot==True: target_label_ret.append(target_label[i])
+            else: target_label_ret.append(np.argmax(target_label[i]))
 
     features_ret = np.vstack(features_ret).reshape(-1,fix_lenght,m)
-    target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
     video_frames_ret = np.array(video_frames_ret)
+
+    if one_hot==True: target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
+    else: target_label_ret = np.array(target_label_ret)
 
     return features_ret,target_label_ret,video_frames_ret
 

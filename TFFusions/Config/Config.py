@@ -1,4 +1,4 @@
-WHERE = 'SERVER'
+WHERE = 'SERVER202'
 
 if WHERE == 'LOCAL':
     CODE_PATH = '/home/lab/Desktop/Development/VideoClassification/'
@@ -10,6 +10,17 @@ elif WHERE == 'SERVER':
     TRAIN_SCRIPT = CODE_PATH + 'TFFusions/train_scripts/train_config_yaml/'
 
     DATA_PATH = '/mnt/md0/LSVC/'
+    TRAIN_DATA = DATA_PATH + 'lsvc_train.txt'
+    TEST_DATA = DATA_PATH + 'lsvc_test.txt'
+    VAL_DATA = DATA_PATH + 'lsvc_val.txt'
+    INDEX_DATA = DATA_PATH + 'lsvc_class_index.txt'
+
+elif WHERE == 'SERVER202':
+
+    CODE_PATH = '/datacenter/1/LSVC/Code/VideoClassification/'
+    TRAIN_SCRIPT = CODE_PATH + 'TFFusions/train_scripts/train_config_yaml/'
+
+    DATA_PATH = '/datacenter/1/LSVC/'
     TRAIN_DATA = DATA_PATH + 'lsvc_train.txt'
     TEST_DATA = DATA_PATH + 'lsvc_test.txt'
     VAL_DATA = DATA_PATH + 'lsvc_val.txt'

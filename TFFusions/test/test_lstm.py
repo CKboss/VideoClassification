@@ -24,10 +24,11 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/gru_pooling_1.yaml'
+train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
+FLAGS.train_dir = '/tmp/test/'
 if os.path.exists(FLAGS.train_dir) == False:
     print('mk train dir {}'.format(FLAGS.train_dir))
     os.mkdir(FLAGS.train_dir)
@@ -40,14 +41,15 @@ if FLAGS.device_id != None:
 
 inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize, 600, 4096))
 num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize))
-target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize, FLAGS.vocab_size))
+target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize))
 
 model = GetFrameModel(FLAGS.frame_level_model)()
 lossfunc = SoftmaxLoss()
 
 predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames, num_mixtures=FLAGS.moe_num_mixtures)
 predict_labels = predict_labels['predictions']
-loss = lossfunc.calculate_loss(predict_labels, target_labels)
+# loss = lossfunc.calculate_loss(predict_labels, target_labels)
+loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=target_labels,logits=predict_labels)
 
 global_step = tf.Variable(0, trainable=False)
 decayed_learning_rate = tf.train.exponential_decay(FLAGS.base_learning_rate,
@@ -70,9 +72,7 @@ init_op = tf.global_variables_initializer()
 train_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/train_*')
 
 train_file_queue = tf.train.string_input_producer(train_file_list)
-# val_file_queue = tf.train.string_input_producer(val_file_list)
-train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue, batchsize)
-# test_frame_len_batch, test_feature_batch, test_label_batch, test_name_batch = read_and_decode(val_file_queue, batchsize)
+train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue, 12)
 
 # LOG
 log_prefix_name = '{}_{}'.format(FLAGS.name, FLAGS.EX_ID)
@@ -118,7 +118,15 @@ for i in range(dataloop):
     tmp = {inputs: features, target_labels: target_label, num_frames: video_frames}
     fd.append(tmp)
 
-def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8):
+
+def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8,one_hot=True):
+    global FLAGS
+    try:
+        fix_lenght = FLAGS.fix_length
+        scale = FLAGS.scale
+    except:
+        fix_lenght = 10
+        scale = 8
 
     n = features.shape[0]
     n2 = target_label.shape[-1]
@@ -133,6 +141,10 @@ def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scal
         video_len = video_frames[i]
         rid = random.choices(list(range(video_len)),k=scale)
 
+        # print('video_len: ',video_len)
+        if video_len <= fix_lenght:
+            video_len = fix_lenght+1
+
         for rg in rid:
 
             l = rg
@@ -142,18 +154,24 @@ def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scal
                 l = video_len - fix_lenght - 1
                 r = video_len - 2
 
-            # assert r-l+1 == 10 , 'not equal 10 {} {} {}'.format(l,r,video_len)
             features_ret.append( features[i,l:r+1,:] )
             video_frames_ret.append(fix_lenght)
-            target_label_ret.append(target_label[i])
+
+            if one_hot == True:
+                target_label_ret.append(target_label[i])
+            else:
+                target_label_ret.append(np.argmax(target_label[i]))
 
     features_ret = np.vstack(features_ret).reshape(-1,fix_lenght,m)
-    target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
+    if one_hot==True:
+        target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
+    else:
+        target_label_ret = np.array(target_label_ret)
     video_frames_ret = np.array(video_frames_ret)
 
     return features_ret,target_label_ret,video_frames_ret
 
-a,b,c = split_into_small_peice(features,target_label,video_frames)
+a,b,c = split_into_small_peice(features,target_label,video_frames,one_hot=False)
 
 for epoch in range(FLAGS.num_epochs+1):
     loop = 2222

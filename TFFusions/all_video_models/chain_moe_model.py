@@ -1,9 +1,10 @@
 import math
 import TFFusions.models as models
 import tensorflow as tf
-from tensorflow import flags
 import tensorflow.contrib.slim as slim
-FLAGS = flags.FLAGS
+
+# from tensorflow import flags
+# FLAGS = flags.FLAGS
 
 class ChainMoeModel(models.BaseModel):
     """A softmax over a mixture of logistic models (with L2 regularization)."""

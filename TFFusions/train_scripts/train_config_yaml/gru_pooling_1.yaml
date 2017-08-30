@@ -15,10 +15,10 @@ gru_layers: 2
 rnn_swap_memory: true
 model_checkpoint_path: null
 scale: 8
-fix_length: 12
+fix_length: 10
 
 # train setting
-base_learning_rate: 0.00001
+base_learning_rate: 0.000001
 learning_rate_decay: 0.6
 decay_at_epoch: 5
 num_epochs: 80
