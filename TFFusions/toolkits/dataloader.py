@@ -74,6 +74,20 @@ def getClassId():
         _load_labels()
     return classId
 
+def Load_Features_INC(videoname=None,kind=None,limitlen=600):
+    if kind == 'train' or kind=='val':
+        prefix = Config.DATA_PATH + 'inc_trainval/'
+    else:
+        raise NotImplementedError
+    # videoname example : lsvc000000
+    filename = prefix + '{}_flatten_imagenet22k_frame.binary'.format(videoname)
+    frame_features = np.fromfile(filename,dtype='float32').reshape(-1,1024)
+    # limit the frames len to limitlen
+    if frame_features.shape[0] > limitlen:
+        h = (frame_features.shape[0] - limitlen) // 2
+        frame_features = frame_features[h + 1:-h - 1, :]
+    return frame_features
+
 def Load_Features_SENET(videoname=None, kind=None, limitlen=600):
     prefix = Config.DATA_PATH + 'feat_senet/'
     # videoname example : lsvc000000

@@ -17,7 +17,6 @@ from TFFusions.tfrecord_tools import read_and_decode
 
 FLAGS = None
 
-
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
     if len(classes) == 1:
@@ -25,6 +24,10 @@ def find_class_by_name(name, models):
     else:
         return classes
 
+def normalized(a, axis=-1, order=2):
+    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
+    l2[l2==0] = 1
+    return a / np.expand_dims(l2, axis)
 
 #############################################################################
 
@@ -65,7 +68,9 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
             if r >= video_len:
                 l = video_len - fix_lenght - 1
                 r = video_len - 2
-            features_ret.append(features[i, l:r + 1, :])
+            # features_ret.append(features[i, l:r + 1, :])
+            ff = normalized(features[i, l:r + 1, :])
+            features_ret.append(ff)
             video_frames_ret.append(fix_lenght)
             if one_hot == True:
                 target_label_ret.append(target_label[i])
@@ -83,12 +88,24 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
     return features_ret, target_label_ret, video_frames_ret
 
 
+def toOneHot(x,vocab=500):
+    '''
+    :param x: a ndarray (batch)
+    :param vocab: classes num
+    :return: a one_hot array (batch x vocab)
+    '''
+    batchsize = x.shape[0]
+    ret = np.zeros(shape=(batchsize,vocab))
+    for i in range(batchsize):
+        ret[i,x[i]] = 1
+    return ret
+
 #############################################################################
 
 
 def main(config_yaml=None):
     global FLAGS
-    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024.yaml'
+    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024_2.yaml'
     LOAD_YAML_TO_FLAG(train_config)
     FLAGS = Get_GlobalFLAG()
 
@@ -97,13 +114,20 @@ def main(config_yaml=None):
         os.mkdir(FLAGS.train_dir)
     batchsize = FLAGS.batchsize
 
+    one_hot = getattr(FLAGS, 'one_hot', False)
+
     # model
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.device_id)[1:-1]
 
     inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, 4096))
     num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
-    target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale, FLAGS.vocab_size))
+
+    if one_hot == True:
+        target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale, FLAGS.vocab_size))
+    else:
+        target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
+
 
     model = GetFrameModel(FLAGS.frame_level_model)()
 
@@ -112,12 +136,12 @@ def main(config_yaml=None):
     predict_labels = predict_labels['predictions']
 
     # loss
-    one_hot = getattr(FLAGS, 'one_hot', False)
-    if one_hot == False:
+    if one_hot == True:
         lossfunc = SoftmaxLoss()
         loss = lossfunc.calculate_loss(predict_labels, target_labels)
     else:
         loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=predict_labels, labels=target_labels)
+        loss = tf.reduce_mean(loss)
 
     # optimize
     global_step = tf.Variable(0, trainable=False)
@@ -133,8 +157,8 @@ def main(config_yaml=None):
     init_op = tf.global_variables_initializer()
 
     # Load from TFRecord
-    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
-    train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
+    val_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/val_*')
+    train_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/train_*')
     train_file_queue = tf.train.string_input_producer(train_file_list)
     val_file_queue = tf.train.string_input_producer(val_file_list)
     train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue,
@@ -207,6 +231,10 @@ def main(config_yaml=None):
                 fd = {inputs: input_features, target_labels: input_target_labels, num_frames: input_video_frames}
 
                 predict = sess.run(predict_labels, feed_dict=fd)
+
+                if one_hot==False:
+                    input_target_labels = toOneHot(input_target_labels,FLAGS.vocab_size)
+
                 train_meanap = mean_ap(predict, input_target_labels)
                 acc = accuracy(predict, input_target_labels, topk=(1, 5, 10))
 
@@ -227,6 +255,10 @@ def main(config_yaml=None):
                                                                                                  input_video_frames)
                 fd = {inputs: input_features, target_labels: input_target_labels, num_frames: input_video_frames}
                 predict, test_loss = sess.run([predict_labels, loss], feed_dict=fd)
+
+                if one_hot==False:
+                    input_target_labels = toOneHot(input_target_labels,FLAGS.vocab_size)
+
                 test_meanap = mean_ap(predict, input_target_labels)
                 acc = accuracy(predict, input_target_labels, topk=(1, 5, 10))
 

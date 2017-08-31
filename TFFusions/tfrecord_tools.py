@@ -1,5 +1,5 @@
 import TFFusions.Config.Config as Config
-from TFFusions.toolkits.dataloader import getTrainItems, concurrent_get_items, getTestItems, getValItems, Load_Features_SENET
+from TFFusions.toolkits.dataloader import getTrainItems, concurrent_get_items, getTestItems, getValItems, Load_Features_SENET, Load_Features_INC
 
 import tensorflow as tf
 import numpy as np
@@ -22,11 +22,9 @@ def make_tfrecord(items, filename, kind):
     cnt = 0
 
     for item in items:
-
         name = item[0]
-
         try:
-            frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_SENET)
+            frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_INC)
         except Exception as E:
             print(E)
             continue
@@ -52,21 +50,27 @@ def make_tfrecord(items, filename, kind):
 
 
 def RUN_make_TF_records():
-    valitems = getValItems()
-    n = len(valitems)
+
+    # valitems = getValItems()
+    trainitems = getTrainItems()
+
+    # n = len(valitems)
+    n = len(trainitems)
     duansize = 10240
     duan = n // duansize + 1
 
     # prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
-    prefixname = '/mnt/md0/LSVC/sen_tfrecords/val_tf_{}_{}.tfrecord'
+    prefixname = '/mnt/md0/LSVC/inc_tfrecords/train_tf_{}_{}.tfrecord'
 
     for i in range(duan):
         l = i * duansize
         r = min(l + duansize, n - 1)
         filename = prefixname.format(l, r - 1)
-        items = valitems[l:r]
+        # items = valitems[l:r]
+        items = trainitems[l:r]
         print(filename + '....')
-        make_tfrecord(items, filename, kind='test')
+        # make_tfrecord(items, filename, kind='val')
+        make_tfrecord(items, filename, kind='train')
 
 
 def read_and_decode(filename_queue, batch_size):
@@ -90,14 +94,19 @@ def read_and_decode(filename_queue, batch_size):
     name = tffeatures['name']
 
     frame_len_batch, features_batch, labels_batch, name_batch = tf.train.shuffle_batch([frame_len, features, labels, name],
-                                                                                   min_after_dequeue=512,
+                                                                                   min_after_dequeue=32,
                                                                                    batch_size=batch_size,
                                                                                    num_threads=10,
-                                                                                   capacity=1024)
+                                                                                   capacity=128)
     return frame_len_batch, features_batch, labels_batch, name_batch
 
 
 def test():
+
+    kind = 'train'
+    items = getTrainItems()
+    item = items[0]
+
     filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/tfrecords/val_tf_0_10239.tfrecord'])
 
     a, b, c, d = read_and_decode(filenamequeue, 10)
