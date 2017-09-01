@@ -16,7 +16,7 @@ from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 from TFFusions.tfrecord_tools import read_and_decode
-from TFFusions.train_scripts.train import split_into_small_peice
+from TFFusions.train_scripts.train import split_into_small_peice , toOneHot
 
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
@@ -26,7 +26,7 @@ def find_class_by_name(name, models):
         return classes
 
 # train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024.yaml'
-train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_2.yaml'
+train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -54,11 +54,13 @@ loss = lossfunc.calculate_loss(predict_labels, target_labels)
 # loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=target_labels,logits=predict_labels)
 
 global_step = tf.Variable(0, trainable=False)
-decayed_learning_rate = tf.train.exponential_decay(FLAGS.base_learning_rate,
+decayed_learning_rate = tf.train.exponential_decay(float(FLAGS.base_learning_rate),
                                                    global_step,
                                                    FLAGS.decay_at_epoch,
                                                    FLAGS.learning_rate_decay,
                                                    staircase=True)
+
+# learning_rate = tf.placeholder(dtype=tf.float32,shape=(1))
 
 optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
 train_op = optimizer_class(decayed_learning_rate).minimize(loss)
@@ -103,6 +105,8 @@ sess.run(init_op)
 Saver = tf.train.Saver(keep_checkpoint_every_n_hours=2)
 
 # FLAGS.model_checkpoint_path = '/tmp/test/lstm-memory-cell1024_EX5_save400.ckpt-400'
+# FLAGS.model_checkpoint_path = '/tmp/test/lstm-memory-cell1024_EX12_save2000.ckpt-2000'
+
 if FLAGS.model_checkpoint_path is not None:
     print('load model from {} ...'.format(FLAGS.model_checkpoint_path))
     Saver.restore(sess=sess, save_path=FLAGS.model_checkpoint_path)
@@ -112,7 +116,7 @@ coord = tf.train.Coordinator()
 threads = tf.train.start_queue_runners(coord=coord, sess=sess)
 cnt = 0
 
-dataloop = 10
+dataloop = 20
 fd = []
 for i in range(dataloop):
     features, target_label, video_frames, train_name = sess.run(
@@ -120,6 +124,10 @@ for i in range(dataloop):
     features, target_label, video_frames = split_into_small_peice(features, target_label, video_frames)
     tmp = {inputs: features, target_labels: target_label, num_frames: video_frames}
     fd.append(tmp)
+
+# import pickle
+# with  as f:
+# pickle.dump(fd,open('/tmp/test/fd.pl','w'))
 
 for epoch in range(FLAGS.num_epochs+1):
     pylog.info('epoch: {} ... '.format(epoch))
@@ -131,7 +139,7 @@ for epoch in range(FLAGS.num_epochs+1):
         # mAP = mean_ap(pred,target_label)
         pylog.info('cnt: {} train_loss: {}'.format(cnt, loss_value))
         # pylog.info('cnt: {} train_mAP: {}'.format(cnt,mAP))
-        if cnt%10000 == 0:
+        if cnt%1000 == 0:
             savepath = FLAGS.train_dir + log_prefix_name + '_save{:03}.ckpt'.format(cnt)
             Saver.save(sess, savepath, cnt)
             pylog.info('save model:{} at {}.'.format(FLAGS.name, savepath))

@@ -6,37 +6,43 @@
 # layer of LSTM is 2.
 # mixture of MoE is 8.
 
+# use l2-norm and tf's cross loss function
+
 # model setting
 name: lstm-memory-cell1024
-EX_ID: EX5
-batchsize: 8
-moe_num_mixtures: 2
+EX_ID: EX12
+batchsize: 32
+moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
-video_level_model: moe_model
-lstm_cells: 256
-lstm_layers: 1
+video_level_model: LogisticModel
+lstm_cells: 1024
+lstm_layers: 2
 rnn_swap_memory: true
 model_checkpoint_path: null
+scale: 32
+fix_length: 12
 
 # train setting
-base_learning_rate: 0.00001
-learning_rate_decay: 0.1
-decay_at_epoch: 2
-num_epochs: 30
+one_hot: false
+base_learning_rate: 0.0001
+learning_rate_decay: 0.7
+decay_at_epoch: 5
+num_epochs: 81
 max_step: null
 optimize: AdamOptimizer
-noise_level: 0.001
-dropout: null
-keep_prob: 0.9
+noise_level: null
+dropout: true
+keep_prob: 0.7
 keep_checkpoint_every_n_hour: 2
 max_to_keep: 10
 regularization_penalty: 0.0001
 device_id:
-- 0
-- 1
+- 2
+- 3
 
 # dataset seting
 vocab_size: 500
 
 # train path
-train_dir: /tmp/test/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex12/
+

@@ -22,7 +22,7 @@ class MoeModel(models.BaseModel):
                      model_input,
                      vocab_size,
                      num_mixtures=None,
-                     l2_penalty=1e-8,
+                     l2_penalty=1e-4,
                      sub_scope="",
                      original_input=None,
                      **unused_params):
