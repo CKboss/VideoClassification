@@ -24,10 +24,10 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-def normalized(a, axis=-1, order=2):
-    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
-    l2[l2==0] = 1
-    return a / np.expand_dims(l2, axis)
+# def normalized(a, axis=-1, order=2):
+#     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
+#     l2[l2==0] = 1
+#     return a / np.expand_dims(l2, axis)
 
 #############################################################################
 
@@ -68,9 +68,9 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
             if r >= video_len:
                 l = video_len - fix_lenght - 1
                 r = video_len - 2
-            # features_ret.append(features[i, l:r + 1, :])
-            ff = normalized(features[i, l:r + 1, :])
-            features_ret.append(ff)
+            features_ret.append(features[i, l:r + 1, :])
+            # ff = normalized(features[i, l:r + 1, :])
+            # features_ret.append(ff)
             video_frames_ret.append(fix_lenght)
             if one_hot == True:
                 target_label_ret.append(target_label[i])
@@ -105,7 +105,8 @@ def toOneHot(x,vocab=500):
 
 def main(config_yaml=None):
     global FLAGS
-    train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024_2.yaml'
+    # train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024_2.yaml'
+    train_config = config_yaml or Config.TRAIN_SCRIPT + 'att-lstm.yaml'
     LOAD_YAML_TO_FLAG(train_config)
     FLAGS = Get_GlobalFLAG()
 
@@ -120,7 +121,7 @@ def main(config_yaml=None):
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.device_id)[1:-1]
 
-    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, 4096))
+    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, 1024))
     num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
 
     if one_hot == True:

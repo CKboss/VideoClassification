@@ -261,6 +261,9 @@ if __name__ == '__main__':
 
     train_items = getTrainItems()
 
+    items = train_items[:3]
+    Load_Features_INC(items[2][0],'train')
+
     items = train_items[:64]
 
     queue = PictureQueue(kind='train', batchsize=16, worker=5, mxsize=3)

@@ -10,26 +10,26 @@
 
 # model setting
 name: lstm-memory-cell1024
-EX_ID: EX10
-batchsize: 12
-moe_num_mixtures: 4
+EX_ID: EX12
+batchsize: 32
+moe_num_mixtures: 8
 frame_level_model: lstm_memory_model
 video_level_model: moe_model
 lstm_cells: 1024
 lstm_layers: 2
 rnn_swap_memory: true
 model_checkpoint_path: null
-scale: 12
+scale: 32
 fix_length: 12
 
 # train setting
 one_hot: false
-base_learning_rate: 0.000001
-learning_rate_decay: 0.5
+base_learning_rate: 0.0001
+learning_rate_decay: 0.7
 decay_at_epoch: 5
-num_epochs: 80
+num_epochs: 81
 max_step: null
-optimize: GradientDescentOptimizer
+optimize: AdamOptimizer
 noise_level: 0.0001
 dropout: true
 keep_prob: 0.7
@@ -37,11 +37,11 @@ keep_checkpoint_every_n_hour: 2
 max_to_keep: 10
 regularization_penalty: 0.0001
 device_id:
-- 0
-- 1
+- 2
+- 3
 
 # dataset seting
 vocab_size: 500
 
 # train path
-train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex10/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_ex12/

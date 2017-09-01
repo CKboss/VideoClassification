@@ -25,6 +25,7 @@ def make_tfrecord(items, filename, kind):
         name = item[0]
         try:
             frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_INC)
+            assert frame_len != 0
         except Exception as E:
             print(E)
             continue
@@ -51,26 +52,26 @@ def make_tfrecord(items, filename, kind):
 
 def RUN_make_TF_records():
 
-    # valitems = getValItems()
-    trainitems = getTrainItems()
+    valitems = getValItems()
+    # trainitems = getTrainItems()
 
-    # n = len(valitems)
-    n = len(trainitems)
+    n = len(valitems)
+    # n = len(trainitems)
     duansize = 10240
     duan = n // duansize + 1
 
     # prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
-    prefixname = '/mnt/md0/LSVC/inc_tfrecords/train_tf_{}_{}.tfrecord'
+    prefixname = '/mnt/md0/LSVC/inc_tfrecords/val_tf_{}_{}.tfrecord'
 
     for i in range(duan):
         l = i * duansize
         r = min(l + duansize, n - 1)
         filename = prefixname.format(l, r - 1)
-        # items = valitems[l:r]
-        items = trainitems[l:r]
+        items = valitems[l:r]
+        # items = trainitems[l:r]
         print(filename + '....')
-        # make_tfrecord(items, filename, kind='val')
-        make_tfrecord(items, filename, kind='train')
+        make_tfrecord(items, filename, kind='val')
+        # make_tfrecord(items, filename, kind='train')
 
 
 def read_and_decode(filename_queue, batch_size):
@@ -88,7 +89,7 @@ def read_and_decode(filename_queue, batch_size):
 
     frame_len = tffeatures['frame_len']
     features = tf.decode_raw(tffeatures['features'], tf.float32)
-    features = tf.reshape(features, [600, 4096])
+    features = tf.reshape(features, [600, 1024])
     labels = tf.decode_raw(tffeatures['labels'], tf.int32)
     labels = tf.reshape(labels, [500])
     name = tffeatures['name']
@@ -107,7 +108,7 @@ def test():
     items = getTrainItems()
     item = items[0]
 
-    filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/tfrecords/val_tf_0_10239.tfrecord'])
+    filenamequeue = tf.train.string_input_producer(['/mnt/md0/LSVC/inc_tfrecords/val_tf_0_10239.tfrecord'])
 
     a, b, c, d = read_and_decode(filenamequeue, 10)
     a1, b1, c1, d1 = read_and_decode(filenamequeue, 10)

@@ -16,6 +16,7 @@ from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 from TFFusions.tfrecord_tools import read_and_decode
+from TFFusions.train_scripts.train import split_into_small_peice
 
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
@@ -24,7 +25,8 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024.yaml'
+# train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024.yaml'
+train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_2.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -33,23 +35,23 @@ if os.path.exists(FLAGS.train_dir) == False:
     print('mk train dir {}'.format(FLAGS.train_dir))
     os.mkdir(FLAGS.train_dir)
 
-batchsize = FLAGS.batchsize
+batchsize = 96
 
 #
 if FLAGS.device_id != None:
     os.environ['CUDA_VISIBLE_DEVICES']=str(FLAGS.device_id)[1:-1]
 
-inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize, 600, 4096))
+inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize, 10, 1024))
 num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize))
-target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize))
+target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize,500))
 
 model = GetFrameModel(FLAGS.frame_level_model)()
 lossfunc = SoftmaxLoss()
 
 predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames, num_mixtures=FLAGS.moe_num_mixtures)
 predict_labels = predict_labels['predictions']
-# loss = lossfunc.calculate_loss(predict_labels, target_labels)
-loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=target_labels,logits=predict_labels)
+loss = lossfunc.calculate_loss(predict_labels, target_labels)
+# loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=target_labels,logits=predict_labels)
 
 global_step = tf.Variable(0, trainable=False)
 decayed_learning_rate = tf.train.exponential_decay(FLAGS.base_learning_rate,
@@ -69,7 +71,7 @@ init_op = tf.global_variables_initializer()
 # train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
 
 # val_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/val_*')
-train_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/train_*')
+train_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/train_*')
 
 train_file_queue = tf.train.string_input_producer(train_file_list)
 train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue, 12)
@@ -110,79 +112,26 @@ coord = tf.train.Coordinator()
 threads = tf.train.start_queue_runners(coord=coord, sess=sess)
 cnt = 0
 
-dataloop = 20
+dataloop = 10
 fd = []
 for i in range(dataloop):
     features, target_label, video_frames, train_name = sess.run(
         [train_feature_batch, train_label_batch, train_frame_len_batch, train_name_batch])
+    features, target_label, video_frames = split_into_small_peice(features, target_label, video_frames)
     tmp = {inputs: features, target_labels: target_label, num_frames: video_frames}
     fd.append(tmp)
 
-
-def split_into_small_peice(features,target_label,video_frames,fix_lenght=10,scale=8,one_hot=True):
-    global FLAGS
-    try:
-        fix_lenght = FLAGS.fix_length
-        scale = FLAGS.scale
-    except:
-        fix_lenght = 10
-        scale = 8
-
-    n = features.shape[0]
-    n2 = target_label.shape[-1]
-    m = features.shape[-1]
-
-    features_ret = []
-    target_label_ret = []
-    video_frames_ret = []
-
-    for i in range(n):
-
-        video_len = video_frames[i]
-        rid = random.choices(list(range(video_len)),k=scale)
-
-        # print('video_len: ',video_len)
-        if video_len <= fix_lenght:
-            video_len = fix_lenght+1
-
-        for rg in rid:
-
-            l = rg
-            r = rg+fix_lenght-1
-
-            if r >= video_len :
-                l = video_len - fix_lenght - 1
-                r = video_len - 2
-
-            features_ret.append( features[i,l:r+1,:] )
-            video_frames_ret.append(fix_lenght)
-
-            if one_hot == True:
-                target_label_ret.append(target_label[i])
-            else:
-                target_label_ret.append(np.argmax(target_label[i]))
-
-    features_ret = np.vstack(features_ret).reshape(-1,fix_lenght,m)
-    if one_hot==True:
-        target_label_ret = np.vstack(target_label_ret).reshape(-1,n2)
-    else:
-        target_label_ret = np.array(target_label_ret)
-    video_frames_ret = np.array(video_frames_ret)
-
-    return features_ret,target_label_ret,video_frames_ret
-
-a,b,c = split_into_small_peice(features,target_label,video_frames,one_hot=False)
-
 for epoch in range(FLAGS.num_epochs+1):
-    loop = 2222
     pylog.info('epoch: {} ... '.format(epoch))
+    loop = 2222
     for i in range(loop):
         loss_value, _, pred = sess.run([loss, train_op, predict_labels], feed_dict=fd[cnt%dataloop])
         logger.scalar_summary(log_prefix_name + '/train_loss', loss_value, cnt)
-        mAP = mean_ap(pred,target_label)
+        # target_label = toOneHot(target_label)
+        # mAP = mean_ap(pred,target_label)
         pylog.info('cnt: {} train_loss: {}'.format(cnt, loss_value))
-        pylog.info('cnt: {} train_mAP: {}'.format(cnt,mAP))
-        if cnt%100 == 0:
+        # pylog.info('cnt: {} train_mAP: {}'.format(cnt,mAP))
+        if cnt%10000 == 0:
             savepath = FLAGS.train_dir + log_prefix_name + '_save{:03}.ckpt'.format(cnt)
             Saver.save(sess, savepath, cnt)
             pylog.info('save model:{} at {}.'.format(FLAGS.name, savepath))
