@@ -10,13 +10,13 @@ import numpy as np
 import tensorflow as tf
 
 import TFFusions.Config.Config as Config
-from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
+from TFFusions.Train.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
 from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 from TFFusions.tfrecord_tools import read_and_decode
-from TFFusions.train_scripts.train import split_into_small_peice , toOneHot
+from TFFusions.Train.train import split_into_small_peice , toOneHot
 
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
@@ -25,8 +25,8 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-# train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024.yaml'
-train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
+# train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024.yaml'
+train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -63,7 +63,7 @@ decayed_learning_rate = tf.train.exponential_decay(float(FLAGS.base_learning_rat
 # learning_rate = tf.placeholder(dtype=tf.float32,shape=(1))
 
 optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
-train_op = optimizer_class(decayed_learning_rate).minimize(loss)
+train_op = optimizer_class(decayed_learning_rate).minimize(loss,global_step=global_step)
 
 # init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
 init_op = tf.global_variables_initializer()

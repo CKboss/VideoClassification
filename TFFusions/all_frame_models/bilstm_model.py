@@ -11,7 +11,7 @@ import tensorflow.contrib.slim as slim
 # FLAGS = flags.FLAGS
 
 from TFFusions.all_video_models.video_level_models import GetVideoModel
-from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG
+from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG
 
 FLAGS = None
 

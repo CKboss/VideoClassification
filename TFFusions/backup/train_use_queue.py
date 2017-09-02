@@ -7,7 +7,7 @@ import logging
 import tensorflow as tf
 
 import TFFusions.Config.Config as Config
-from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
+from TFFusions.Train.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
 from TFFusions.toolkits.dataloader import getTrainItems, getValItems, gen_tf_input, PictureQueue
 from TFFusions.losses import SoftmaxLoss

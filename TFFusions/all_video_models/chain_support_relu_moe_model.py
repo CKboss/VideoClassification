@@ -58,7 +58,7 @@ class ChainSupportReluMoeModel(models.BaseModel):
 if __name__=='__main__':
 
     import TFFusions.Config.Config as Config
-    from TFFusions.train_scripts.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG,Get_GlobalFLAG
+    from TFFusions.Train.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG,Get_GlobalFLAG
 
     train_config = Config.TRAIN_SCRIPT + 'chaining-lstm-cnn.yaml'
     LOAD_YAML_TO_FLAG(train_config)

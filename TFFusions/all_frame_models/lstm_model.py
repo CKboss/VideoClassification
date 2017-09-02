@@ -8,7 +8,7 @@ import TFFusions.utils as utils
 import tensorflow.contrib.slim as slim
 
 from TFFusions.all_video_models.video_level_models import GetVideoModel
-from TFFusions.train_scripts.load_yaml_to_FLAG import Get_GlobalFLAG, LOAD_YAML_TO_FLAG
+from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG, LOAD_YAML_TO_FLAG
 
 # from tensorflow import flags
 # FLAGS = flags.FLAGS
@@ -71,7 +71,7 @@ class LstmModel(models.BaseModel):
 
 if __name__=='__main__':
 
-    train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/train_scripts/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
+    train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
     LOAD_YAML_TO_FLAG(train_config)
 
     x = tf.placeholder(dtype=tf.float32,shape=(10,30,1024))
