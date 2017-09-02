@@ -1,0 +1,84 @@
+# lstm-memory-cell1024 train config
+
+
+# 3. LSTM model (Section 2).
+
+# cell of LSTM is 1024.
+
+# layer of LSTM is 2.
+
+# mixture of MoE is 8.
+
+
+
+# model setting
+
+name: lstm-memory-cell1024
+
+EX_ID: EX14_1
+
+batchsize: 32
+
+moe_num_mixtures: 8
+
+frame_level_model: lstm_memory_model
+
+video_level_model: moe_model
+
+lstm_cells: 1024
+
+lstm_layers: 4
+
+rnn_swap_memory: true
+
+model_checkpoint_path: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_EX14/lstm-memory-cell1024_EX14_save98000.ckpt-98000
+
+scale: 3
+
+fix_length: 64
+
+one_hot: false
+
+
+
+# train setting
+
+base_learning_rate: 0.00001
+
+learning_rate_decay: 0.5
+
+decay_at_epoch: 10
+
+num_epochs: 91
+
+max_step: null
+
+optimize: GradientDescentOptimizer
+
+noise_level: 0.001
+
+dropout: true
+
+keep_prob: 0.7
+
+keep_checkpoint_every_n_hour: 2
+
+max_to_keep: 10
+
+regularization_penalty: 0.0000001
+
+device_id:
+
+- 0
+
+
+
+# dataset seting
+
+vocab_size: 500
+
+
+
+# train path
+
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_EX14_1/

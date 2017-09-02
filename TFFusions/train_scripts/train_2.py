@@ -159,7 +159,8 @@ def main(config_yaml=None):
                                                        FLAGS.learning_rate_decay,
                                                        staircase=True)
     optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
-    train_op = optimizer_class(decayed_learning_rate).minimize(loss)
+    # train_op = tf.train.GradientDescentOptimizer(learning_rate=decayed_learning_rate).minimize(loss,global_step=global_step)
+    train_op = optimizer_class(learning_rate=decayed_learning_rate).minimize(loss,global_step=global_step)
 
     # init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
     init_op = tf.global_variables_initializer()
