@@ -17,12 +17,14 @@ from TFFusions.tfrecord_tools import read_and_decode
 
 FLAGS = None
 
+
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
     if len(classes) == 1:
         return classes[0]
     else:
         return classes
+
 
 # def normalized(a, axis=-1, order=2):
 #     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
@@ -59,7 +61,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     for i in range(n):
         video_len = video_frames[i]
-        realen = min(video_len,fix_lenght)
+        realen = min(video_len, fix_lenght)
         rid = random.choices(list(range(realen)), k=scale)
 
         if video_len <= fix_lenght:
@@ -91,23 +93,23 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
     return features_ret, target_label_ret, video_frames_ret
 
 
-def toOneHot(x,vocab=500):
+def toOneHot(x, vocab=500):
     '''
     :param x: a ndarray (batch)
     :param vocab: classes num
     :return: a one_hot array (batch x vocab)
     '''
     batchsize = x.shape[0]
-    ret = np.zeros(shape=(batchsize,vocab))
+    ret = np.zeros(shape=(batchsize, vocab))
     for i in range(batchsize):
-        ret[i,x[i]] = 1
+        ret[i, x[i]] = 1
     return ret
+
 
 #############################################################################
 
 
 def main(config_yaml=None):
-
     global FLAGS
     # train_config = config_yaml or Config.TRAIN_SCRIPT + 'att-lstm.yaml'
     train_config = config_yaml or Config.TRAIN_SCRIPT + 'lstm-memory-cell1024_ex14.yaml'
@@ -133,7 +135,6 @@ def main(config_yaml=None):
     else:
         target_labels = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
 
-
     model = GetFrameModel(FLAGS.frame_level_model)()
 
     predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames,
@@ -141,7 +142,7 @@ def main(config_yaml=None):
     predict_labels = predict_labels['predictions']
 
     vars = tf.trainable_variables()
-    lossL2 = tf.add_n([ tf.nn.l2_loss(v) for v in vars if 'bias' not in v.name ]) * FLAGS.regularization_penalty
+    lossL2 = tf.add_n([tf.nn.l2_loss(v) for v in vars if 'bias' not in v.name]) * FLAGS.regularization_penalty
 
     # loss
     if one_hot == True:
@@ -160,7 +161,7 @@ def main(config_yaml=None):
                                                        staircase=True)
     optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
     # train_op = tf.train.GradientDescentOptimizer(learning_rate=decayed_learning_rate).minimize(loss,global_step=global_step)
-    train_op = optimizer_class(learning_rate=decayed_learning_rate).minimize(loss,global_step=global_step)
+    train_op = optimizer_class(learning_rate=decayed_learning_rate).minimize(loss, global_step=global_step)
 
     # init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
     init_op = tf.global_variables_initializer()
@@ -241,8 +242,8 @@ def main(config_yaml=None):
 
                 predict = sess.run(predict_labels, feed_dict=fd)
 
-                if one_hot==False:
-                    input_target_labels = toOneHot(input_target_labels,FLAGS.vocab_size)
+                if one_hot == False:
+                    input_target_labels = toOneHot(input_target_labels, FLAGS.vocab_size)
 
                 train_meanap = mean_ap(predict, input_target_labels)
                 acc = accuracy(predict, input_target_labels, topk=(1, 5, 10))
@@ -265,8 +266,8 @@ def main(config_yaml=None):
                 fd = {inputs: input_features, target_labels: input_target_labels, num_frames: input_video_frames}
                 predict, test_loss = sess.run([predict_labels, loss], feed_dict=fd)
 
-                if one_hot==False:
-                    input_target_labels = toOneHot(input_target_labels,FLAGS.vocab_size)
+                if one_hot == False:
+                    input_target_labels = toOneHot(input_target_labels, FLAGS.vocab_size)
 
                 test_meanap = mean_ap(predict, input_target_labels)
                 acc = accuracy(predict, input_target_labels, topk=(1, 5, 10))
@@ -292,6 +293,7 @@ def main(config_yaml=None):
 
     coord.request_stop()
     coord.join(threads)
+
 
 if __name__ == '__main__':
     main()

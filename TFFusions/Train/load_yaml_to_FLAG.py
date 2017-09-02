@@ -11,7 +11,9 @@ def LOAD_YAML_TO_FLAG(filename):
 
     FLAG = _flag()
     with open(filename, 'r') as f:
-        txt = '\n'.join(f.readlines())
+        lines = f.readlines()
+        lines = list(filter(lambda x: x!='\n',lines))
+        txt = '\n'.join(lines)
         data = yaml.load(txt)
         print('load config paramters: ', data['name'])
         pprint.pprint(data)
