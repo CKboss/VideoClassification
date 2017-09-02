@@ -25,8 +25,8 @@ def find_class_by_name(name, models):
     else:
         return classes
 
-# train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024.yaml'
-train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
+train_config ='/datacenter/1/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024.yaml'
+# train_config ='/mnt/md0/LSVC/Code/VideoClassification/TFFusions/Train/train_config_yaml/lstm-memory-cell1024_testuse.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -56,14 +56,14 @@ loss = lossfunc.calculate_loss(predict_labels, target_labels)
 global_step = tf.Variable(0, trainable=False)
 decayed_learning_rate = tf.train.exponential_decay(float(FLAGS.base_learning_rate),
                                                    global_step,
-                                                   FLAGS.decay_at_epoch,
+                                                   FLAGS.decay_at_step,
                                                    FLAGS.learning_rate_decay,
                                                    staircase=True)
 
 # learning_rate = tf.placeholder(dtype=tf.float32,shape=(1))
 
 optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
-train_op = optimizer_class(decayed_learning_rate).minimize(loss,global_step=global_step)
+train_op = optimizer_class(decayed_learning_rate).minimize(loss)
 
 # init_op = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer())
 init_op = tf.global_variables_initializer()
@@ -73,7 +73,8 @@ init_op = tf.global_variables_initializer()
 # train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
 
 # val_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/val_*')
-train_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/train_*')
+# train_file_list = glob.glob('/datacenter/1/LSVC/inc_tfrecords/train_*')
+train_file_list = ['/datacenter/1/LSVC/inc_tfrecords/train_tf_0_10239.tfrecord']
 
 train_file_queue = tf.train.string_input_producer(train_file_list)
 train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue, 12)
@@ -138,6 +139,8 @@ for epoch in range(FLAGS.num_epochs+1):
         # target_label = toOneHot(target_label)
         # mAP = mean_ap(pred,target_label)
         pylog.info('cnt: {} train_loss: {}'.format(cnt, loss_value))
+        lr = sess.run(decayed_learning_rate)
+        pylog.info('lr: {}'.format(lr))
         # pylog.info('cnt: {} train_mAP: {}'.format(cnt,mAP))
         if cnt%1000 == 0:
             savepath = FLAGS.train_dir + log_prefix_name + '_save{:03}.ckpt'.format(cnt)

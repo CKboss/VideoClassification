@@ -21,7 +21,7 @@ feature_sizes: '1024,128'
 # train setting
 base_learning_rate: 0.001
 learning_rate_decay: 0.1
-decay_at_epoch: 5
+decay_at_step: 100000
 num_epochs: 30
 max_step: null
 optimize: AdamOptimizer

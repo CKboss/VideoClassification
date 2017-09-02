@@ -155,7 +155,7 @@ def main(config_yaml=None):
     global_step = tf.Variable(0, trainable=False)
     decayed_learning_rate = tf.train.exponential_decay(FLAGS.base_learning_rate,
                                                        global_step,
-                                                       FLAGS.decay_at_epoch,
+                                                       FLAGS.decay_at_step,
                                                        FLAGS.learning_rate_decay,
                                                        staircase=True)
     optimizer_class = find_class_by_name(FLAGS.optimize, [tf.train])
