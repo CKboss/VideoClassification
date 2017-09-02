@@ -26,7 +26,7 @@ fix_length: 12
 one_hot: false
 base_learning_rate: 0.000001
 learning_rate_decay: 0.7
-decay_at_step: 100000
+decay_at_step: 10000
 num_epochs: 81
 max_step: null
 optimize: AdamOptimizer

@@ -23,7 +23,7 @@ fix_length: 12
 # train setting
 base_learning_rate: 0.00001
 learning_rate_decay: 0.1
-decay_at_step: 100000
+decay_at_step: 10000
 num_epochs: 50
 max_step: null
 optimize: AdamOptimizer

@@ -37,9 +37,9 @@ one_hot: false
 
 base_learning_rate: 0.0001
 
-learning_rate_decay: 0.5
+learning_rate_decay: 0.7
 
-decay_at_step: 100000
+decay_at_step: 10000
 
 num_epochs: 91
 
@@ -73,4 +73,4 @@ vocab_size: 500
 
 # train path
 
-train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1025_EX19/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_EX19/
