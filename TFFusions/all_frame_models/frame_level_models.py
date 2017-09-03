@@ -4,6 +4,7 @@ from TFFusions.all_frame_models.lstm_cnn_deep_combine_chain_model import LstmCnn
 from TFFusions.all_frame_models.lstm_attention_lstm_model import LstmAttentionLstmModel
 from TFFusions.all_frame_models.lstm_attention_lstm_model_2 import LstmAttentionLstmModel2
 from TFFusions.all_frame_models.gru_pooling_model import GruPoolingModel
+from TFFusions.all_frame_models.bilstm_model import BiLstmModel
 
 def GetFrameModel(frame_model_name):
     if frame_model_name == 'lstm_memory_model':
@@ -18,5 +19,7 @@ def GetFrameModel(frame_model_name):
         return LstmAttentionLstmModel2
     elif frame_model_name == 'GruPoolingModel':
         return GruPoolingModel
+    elif frame_model_name == 'bilstm':
+        return BiLstmModel
     else:
         raise NotImplementedError

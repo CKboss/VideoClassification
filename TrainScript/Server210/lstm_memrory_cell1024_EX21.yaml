@@ -1,12 +1,10 @@
 #Server210
-
 # lstm-memory-cell1024 EX20 train config
-
 # model setting
 
 name: lstm-memory-cell1024
 
-EX_ID: EX20
+EX_ID: EX21
 
 batchsize: 32
 
@@ -34,39 +32,37 @@ one_hot: false
 
 base_learning_rate: 0.0001
 
-learning_rate_decay: 0.55
+learning_rate_decay: 0.6
 
-decay_at_step: 12000
+decay_at_step: 30000
 
 num_epochs: 91
 
 max_step: null
 
+# optimize: AdamOptimizer
 optimize: GradientDescentOptimizer
 
 noise_level: 0.001
 
 dropout: true
 
-keep_prob: 0.3
+keep_prob: 0.7
 
 keep_checkpoint_every_n_hour: 2
 
 max_to_keep: 10
 
-regularization_penalty: 0.0000001
+regularization_penalty: 0.00000001
 
 device_id:
 - 5
-
-
 
 # dataset seting
 
 vocab_size: 500
 
 
-
 # train path
 
-train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_EX20/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/lstm_memory_cell_1024_EX21/

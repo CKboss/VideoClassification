@@ -17,7 +17,9 @@ FLAGS = None
 
 
 class BiLstmModel(models.BaseModel):
+
     def __init__(self):
+        global FLAGS
         super(BiLstmModel, self).__init__()
         FLAGS = Get_GlobalFLAG()
 
