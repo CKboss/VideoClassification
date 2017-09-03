@@ -61,10 +61,11 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     for i in range(n):
         video_len = video_frames[i]
-        realen = min(video_len, fix_lenght)
-        rid = random.choices(list(range(realen)), k=scale)
+        rid = random.choices(list(range(fix_lenght)), k=scale)
 
+        ff = features[i,:,:]
         if video_len <= fix_lenght:
+            ff = np.tile(ff,(fix_lenght//video_len+1,1))
             video_len = fix_lenght + 1
 
         for rg in rid:
@@ -73,10 +74,8 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
             if r >= video_len:
                 l = video_len - fix_lenght - 1
                 r = video_len - 2
-            features_ret.append(features[i, l:r + 1, :])
-            # ff = normalized(features[i, l:r + 1, :])
-            # features_ret.append(ff)
-            video_frames_ret.append(realen)
+            features_ret.append(ff[l:r + 1, :])
+            video_frames_ret.append(fix_lenght)
             if one_hot == True:
                 target_label_ret.append(target_label[i])
             else:
