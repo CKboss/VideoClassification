@@ -1,0 +1,41 @@
+# Evaluate Att lstm
+# description of the train config
+# model setting
+
+name: Eval_LstmAttentionLstmModel
+EX_ID: EX_19_1
+batchsize: 32
+moe_num_mixtures: 4
+frame_level_model: LstmAttentionLstmModel
+video_level_model: moe_model
+lstm_cells: 1024
+lstm_layers: 2
+rnn_swap_memory: true
+# model_checkpoint_path: /mnt/md0/LSVC/ExWorkSpace/LstmAttentionModel_EX19/LstmAttentionLstmModel_EX_19_save92000.ckpt-92000
+model_checkpoint_path: /datacenter/1/LSVC/downloads/LstmAttentionLstmModel_EX_19_1_save124000.ckpt-124000
+scale: 1
+fix_length: 64
+
+# train setting
+one_hot: false
+base_learning_rate: 0.0001
+learning_rate_decay: 0.7
+decay_at_step: 28000
+num_epochs: 91
+max_step: null
+optimize: GradientDescentOptimizer
+keep_checkpoint_every_n_hour: 2
+
+dropout: false
+keep_prob: 0.7
+max_to_keep: 10
+regularization_penalty: 0.00001
+noise_level: null
+device_id:
+- 0
+
+# dataset seting
+vocab_size: 500
+
+# train path
+train_dir: /datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX19_1/
