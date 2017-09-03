@@ -36,6 +36,7 @@ class LstmAttentionLstmModel2(models.BaseModel):
           A dictionary with a tensor containing the probability predictions of the
           model in the 'predictions' key. The dimensions of the tensor are
           'batch_size' x 'num_classes'.
+
         """
         lstm_size = int(FLAGS.lstm_cells)
         number_of_layers = FLAGS.lstm_layers

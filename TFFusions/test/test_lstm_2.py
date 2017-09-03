@@ -17,19 +17,12 @@ from TFFusions.tfrecord_tools import read_and_decode
 
 FLAGS = None
 
-
 def find_class_by_name(name, models):
     classes = [getattr(model, name, None) for model in models]
     if len(classes) == 1:
         return classes[0]
     else:
         return classes
-
-
-# def normalized(a, axis=-1, order=2):
-#     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
-#     l2[l2==0] = 1
-#     return a / np.expand_dims(l2, axis)
 
 #############################################################################
 
