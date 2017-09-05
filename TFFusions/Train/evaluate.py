@@ -176,38 +176,46 @@ if FLAGS.model_checkpoint_path is not None:
 pylog.info('train_config: {}'.format(FLAGS.YAML))
 
 cnt = 0
-loop = 501
+loop = 502
 
 acc_1 = np.zeros((500))
 acc_5 = np.zeros((500))
 acc_10 = np.zeros((500))
 label_cnt = np.zeros(500)
+predict_result = []
+correct_labels = []
 
 for i in range(loop):
 
-    if i % 10 == 0:
+    if i % 20 == 0:
         print('loop {} ....'.format(i))
 
     input_features, input_target_labels, input_video_frames, test_name = sess.run(
         [test_feature_batch, test_label_batch, test_frame_len_batch, test_name_batch])
     input_features, input_target_labels, input_video_frames = split_into_small_peice(input_features, input_target_labels, input_video_frames)
     fd = {inputs: input_features, target_labels: input_target_labels, num_frames: input_video_frames}
+
     # pred = sess.run(predict_labels,feed_dict=fd)
+    # _,top_1 = sess.run(tp_1,feed_dict=fd)
+    # _,top_5 = sess.run(tp_5,feed_dict=fd)
 
-    _,top_1 = sess.run(tp_1,feed_dict=fd)
-    _,top_5 = sess.run(tp_5,feed_dict=fd)
-    _,top_10 = sess.run(tp_10,feed_dict=fd)
-
+    (_,top_10),pred = sess.run([tp_10,predict_labels],feed_dict=fd)
+    predict_result.append(pred)
+    correct_labels.append(input_target_labels)
     for j,label in  enumerate(input_target_labels):
-        if label in top_1[j]:
+        if label == top_10[j][0]:
             acc_1[label] += 1
-        if label in top_5[j]:
+        if label in top_10[j][:5]:
             acc_5[label] += 1
         if label in top_10[j]:
             acc_10[label] += 1
         label_cnt[label] += 1
 
-np.savez('/tmp/accs.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,label_cnt=label_cnt)
+predict_result = np.concatenate(predict_result)
+correct_labels = np.concatenate(correct_labels)
+
+np.savez('/datacenter/1/LSVC/downloads/accs_2.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
+         label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels)
 
 coord.request_stop()
 coord.join(threads)
