@@ -3,6 +3,12 @@ import pprint
 
 GLOBAL_FLAG = None
 
+def SetDefaultlValueToFLAG(name,value):
+    '''set value to Object if object.name is not exitst
+       Otherwise do nothing
+    '''
+    global GLOBAL_FLAG
+    setattr(GLOBAL_FLAG,name,getattr(GLOBAL_FLAG,name,value))
 
 def LOAD_YAML_TO_FLAG(filename):
     global GLOBAL_FLAG

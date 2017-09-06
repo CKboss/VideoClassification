@@ -25,7 +25,9 @@ import TFFusions.model_utils as utils
 import TFFusions.models as models
 
 from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG
+
 FLAGS = None
+
 
 # FLAGS = flags.FLAGS
 #
@@ -132,19 +134,19 @@ FLAGS = None
 # flags.DEFINE_bool("fc_dimred", True, "Adding FC dimred after pooling")
 
 class LightVLAD():
-    def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = cluster_size
 
-    def forward(self,reshaped_input):
-
+    def forward(self, reshaped_input):
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                          initializer=tf.random_normal_initializer(
+                                              stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.matmul(reshaped_input, cluster_weights)
 
@@ -158,7 +160,8 @@ class LightVLAD():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(self.feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
@@ -166,34 +169,34 @@ class LightVLAD():
 
         activation = tf.reshape(activation, [-1, self.max_frames, self.cluster_size])
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,self.max_frames,self.feature_size])
-        vlad = tf.matmul(activation,reshaped_input)
+        reshaped_input = tf.reshape(reshaped_input, [-1, self.max_frames, self.feature_size])
+        vlad = tf.matmul(activation, reshaped_input)
 
-        vlad = tf.transpose(vlad,perm=[0,2,1])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.transpose(vlad, perm=[0, 2, 1])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
-        vlad = tf.reshape(vlad,[-1,self.cluster_size*self.feature_size])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.reshape(vlad, [-1, self.cluster_size * self.feature_size])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
         return vlad
 
 
 class NetVLAD():
-    def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = cluster_size
 
-    def forward(self,reshaped_input):
-
+    def forward(self, reshaped_input):
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                          initializer=tf.random_normal_initializer(
+                                              stddev=1 / math.sqrt(self.feature_size)))
 
         tf.summary.histogram("cluster_weights", cluster_weights)
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -208,7 +211,8 @@ class NetVLAD():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(self.feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
@@ -217,44 +221,44 @@ class NetVLAD():
 
         activation = tf.reshape(activation, [-1, self.max_frames, self.cluster_size])
 
-        a_sum = tf.reduce_sum(activation,-2,keep_dims=True)
+        a_sum = tf.reduce_sum(activation, -2, keep_dims=True)
 
         cluster_weights2 = tf.get_variable("cluster_weights2",
-                                           [1,self.feature_size, self.cluster_size],
-                                           initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                           [1, self.feature_size, self.cluster_size],
+                                           initializer=tf.random_normal_initializer(
+                                               stddev=1 / math.sqrt(self.feature_size)))
 
-        a = tf.multiply(a_sum,cluster_weights2)
+        a = tf.multiply(a_sum, cluster_weights2)
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,self.max_frames,self.feature_size])
-        vlad = tf.matmul(activation,reshaped_input)
-        vlad = tf.transpose(vlad,perm=[0,2,1])
-        vlad = tf.subtract(vlad,a)
+        reshaped_input = tf.reshape(reshaped_input, [-1, self.max_frames, self.feature_size])
+        vlad = tf.matmul(activation, reshaped_input)
+        vlad = tf.transpose(vlad, perm=[0, 2, 1])
+        vlad = tf.subtract(vlad, a)
 
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
-        vlad = tf.nn.l2_normalize(vlad,1)
-
-        vlad = tf.reshape(vlad,[-1,self.cluster_size*self.feature_size])
-        vlad = tf.nn.l2_normalize(vlad,1)
+        vlad = tf.reshape(vlad, [-1, self.cluster_size * self.feature_size])
+        vlad = tf.nn.l2_normalize(vlad, 1)
 
         return vlad
 
 
 class NetVLAGD():
-    def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = int(max_frames)
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = int(cluster_size)
 
-    def forward(self,reshaped_input):
-
+    def forward(self, reshaped_input):
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                          initializer=tf.random_normal_initializer(
+                                              stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.matmul(reshaped_input, cluster_weights)
 
@@ -268,39 +272,39 @@ class NetVLAGD():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(self.feature_size)))
 
         activation = tf.nn.softmax(activation)
 
         activation = tf.reshape(activation, [-1, self.max_frames, self.cluster_size])
 
         gate_weights = tf.get_variable("gate_weights",
-                                       [1, self.cluster_size,self.feature_size],
-                                       initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                       [1, self.cluster_size, self.feature_size],
+                                       initializer=tf.random_normal_initializer(
+                                           stddev=1 / math.sqrt(self.feature_size)))
 
         gate_weights = tf.sigmoid(gate_weights)
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,self.max_frames,self.feature_size])
+        reshaped_input = tf.reshape(reshaped_input, [-1, self.max_frames, self.feature_size])
 
-        vlagd = tf.matmul(activation,reshaped_input)
-        vlagd = tf.multiply(vlagd,gate_weights)
+        vlagd = tf.matmul(activation, reshaped_input)
+        vlagd = tf.multiply(vlagd, gate_weights)
 
-        vlagd = tf.transpose(vlagd,perm=[0,2,1])
+        vlagd = tf.transpose(vlagd, perm=[0, 2, 1])
 
-        vlagd = tf.nn.l2_normalize(vlagd,1)
+        vlagd = tf.nn.l2_normalize(vlagd, 1)
 
-        vlagd = tf.reshape(vlagd,[-1,self.cluster_size*self.feature_size])
-        vlagd = tf.nn.l2_normalize(vlagd,1)
+        vlagd = tf.reshape(vlagd, [-1, self.cluster_size * self.feature_size])
+        vlagd = tf.nn.l2_normalize(vlagd, 1)
 
         return vlagd
 
 
-
-
 class GatedDBoF():
-    def __init__(self, feature_size,max_frames,cluster_size, max_pool, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, max_pool, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
@@ -319,7 +323,7 @@ class GatedDBoF():
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [feature_size, cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
+                                          initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
 
         tf.summary.histogram("cluster_weights", cluster_weights)
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -334,7 +338,7 @@ class GatedDBoF():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [cluster_size],
-                                             initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                             initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
@@ -342,19 +346,19 @@ class GatedDBoF():
 
         activation = tf.reshape(activation, [-1, max_frames, cluster_size])
 
-        activation_sum = tf.reduce_sum(activation,1)
+        activation_sum = tf.reduce_sum(activation, 1)
 
-        activation_max = tf.reduce_max(activation,1)
-        activation_max = tf.nn.l2_normalize(activation_max,1)
-
+        activation_max = tf.reduce_max(activation, 1)
+        activation_max = tf.nn.l2_normalize(activation_max, 1)
 
         dim_red = tf.get_variable("dim_red",
                                   [cluster_size, feature_size],
-                                  initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
+                                  initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
 
         cluster_weights_2 = tf.get_variable("cluster_weights_2",
                                             [feature_size, cluster_size],
-                                            initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
+                                            initializer=tf.random_normal_initializer(
+                                                stddev=1 / math.sqrt(feature_size)))
 
         tf.summary.histogram("cluster_weights_2", cluster_weights_2)
 
@@ -371,21 +375,20 @@ class GatedDBoF():
         else:
             cluster_biases = tf.get_variable("cluster_biases_2",
                                              [cluster_size],
-                                             initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                             initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
             tf.summary.histogram("cluster_biases_2", cluster_biases)
             activation += cluster_biases
 
         activation = tf.sigmoid(activation)
 
-        activation = tf.multiply(activation,activation_sum)
-        activation = tf.nn.l2_normalize(activation,1)
+        activation = tf.multiply(activation, activation_sum)
+        activation = tf.nn.l2_normalize(activation, 1)
 
         return activation
 
 
-
 class SoftDBoF():
-    def __init__(self, feature_size,max_frames,cluster_size, max_pool, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, max_pool, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
@@ -404,7 +407,7 @@ class SoftDBoF():
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [feature_size, cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
+                                          initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
 
         tf.summary.histogram("cluster_weights", cluster_weights)
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -419,7 +422,7 @@ class SoftDBoF():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [cluster_size],
-                                             initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                             initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
@@ -427,29 +430,27 @@ class SoftDBoF():
 
         activation = tf.reshape(activation, [-1, max_frames, cluster_size])
 
-        activation_sum = tf.reduce_sum(activation,1)
-        activation_sum = tf.nn.l2_normalize(activation_sum,1)
+        activation_sum = tf.reduce_sum(activation, 1)
+        activation_sum = tf.nn.l2_normalize(activation_sum, 1)
 
         if max_pool:
-            activation_max = tf.reduce_max(activation,1)
-            activation_max = tf.nn.l2_normalize(activation_max,1)
-            activation = tf.concat([activation_sum,activation_max],1)
+            activation_max = tf.reduce_max(activation, 1)
+            activation_max = tf.nn.l2_normalize(activation_max, 1)
+            activation = tf.concat([activation_sum, activation_max], 1)
         else:
             activation = activation_sum
 
         return activation
 
 
-
 class DBoF():
-    def __init__(self, feature_size,max_frames,cluster_size,activation, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, activation, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = cluster_size
         self.activation = activation
-
 
     def forward(self, reshaped_input):
 
@@ -461,7 +462,7 @@ class DBoF():
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [feature_size, cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
+                                          initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(feature_size)))
 
         tf.summary.histogram("cluster_weights", cluster_weights)
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -476,16 +477,16 @@ class DBoF():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [cluster_size],
-                                             initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                             initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
         if activation == 'glu':
-            space_ind = range(cluster_size/2)
-            gate_ind = range(cluster_size/2,cluster_size)
+            space_ind = range(cluster_size / 2)
+            gate_ind = range(cluster_size / 2, cluster_size)
 
-            gates = tf.sigmoid(activation[:,gate_ind])
-            activation = tf.multiply(activation[:,space_ind],gates)
+            gates = tf.sigmoid(activation[:, gate_ind])
+            activation = tf.multiply(activation[:, space_ind], gates)
 
         elif activation == 'relu':
             activation = tf.nn.relu6(activation)
@@ -495,33 +496,36 @@ class DBoF():
         activation = tf.reshape(activation, [-1, max_frames, cluster_size])
 
         avg_activation = utils.FramePooling(activation, 'average')
-        avg_activation = tf.nn.l2_normalize(avg_activation,1)
+        avg_activation = tf.nn.l2_normalize(avg_activation, 1)
 
         max_activation = utils.FramePooling(activation, 'max')
-        max_activation = tf.nn.l2_normalize(max_activation,1)
+        max_activation = tf.nn.l2_normalize(max_activation, 1)
 
-        return tf.concat([avg_activation,max_activation],1)
+        return tf.concat([avg_activation, max_activation], 1)
+
 
 class NetFV():
-    def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
+    def __init__(self, feature_size, max_frames, cluster_size, add_batch_norm, is_training):
         self.feature_size = feature_size
         self.max_frames = max_frames
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = cluster_size
 
-    def forward(self,reshaped_input):
+    def forward(self, reshaped_input):
         cluster_weights = tf.get_variable("cluster_weights",
                                           [self.feature_size, self.cluster_size],
-                                          initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                          initializer=tf.random_normal_initializer(
+                                              stddev=1 / math.sqrt(self.feature_size)))
 
         covar_weights = tf.get_variable("covar_weights",
                                         [self.feature_size, self.cluster_size],
-                                        initializer = tf.random_normal_initializer(mean=1.0, stddev=1 /math.sqrt(self.feature_size)))
+                                        initializer=tf.random_normal_initializer(mean=1.0, stddev=1 / math.sqrt(
+                                            self.feature_size)))
 
         covar_weights = tf.square(covar_weights)
         eps = tf.constant([1e-6])
-        covar_weights = tf.add(covar_weights,eps)
+        covar_weights = tf.add(covar_weights, eps)
 
         tf.summary.histogram("cluster_weights", cluster_weights)
         activation = tf.matmul(reshaped_input, cluster_weights)
@@ -535,7 +539,7 @@ class NetFV():
         else:
             cluster_biases = tf.get_variable("cluster_biases",
                                              [self.cluster_size],
-                                             initializer = tf.random_normal(stddev=1 / math.sqrt(self.feature_size)))
+                                             initializer=tf.random_normal(stddev=1 / math.sqrt(self.feature_size)))
             tf.summary.histogram("cluster_biases", cluster_biases)
             activation += cluster_biases
 
@@ -544,50 +548,52 @@ class NetFV():
 
         activation = tf.reshape(activation, [-1, self.max_frames, self.cluster_size])
 
-        a_sum = tf.reduce_sum(activation,-2,keep_dims=True)
+        a_sum = tf.reduce_sum(activation, -2, keep_dims=True)
 
         if not FLAGS.fv_couple_weights:
             cluster_weights2 = tf.get_variable("cluster_weights2",
-                                               [1,self.feature_size, self.cluster_size],
-                                               initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(self.feature_size)))
+                                               [1, self.feature_size, self.cluster_size],
+                                               initializer=tf.random_normal_initializer(
+                                                   stddev=1 / math.sqrt(self.feature_size)))
         else:
-            cluster_weights2 = tf.scalar_mul(FLAGS.fv_coupling_factor,cluster_weights)
+            cluster_weights2 = tf.scalar_mul(FLAGS.fv_coupling_factor, cluster_weights)
 
-        a = tf.multiply(a_sum,cluster_weights2)
+        a = tf.multiply(a_sum, cluster_weights2)
 
-        activation = tf.transpose(activation,perm=[0,2,1])
+        activation = tf.transpose(activation, perm=[0, 2, 1])
 
-        reshaped_input = tf.reshape(reshaped_input,[-1,self.max_frames,self.feature_size])
-        fv1 = tf.matmul(activation,reshaped_input)
+        reshaped_input = tf.reshape(reshaped_input, [-1, self.max_frames, self.feature_size])
+        fv1 = tf.matmul(activation, reshaped_input)
 
-        fv1 = tf.transpose(fv1,perm=[0,2,1])
+        fv1 = tf.transpose(fv1, perm=[0, 2, 1])
 
         # computing second order FV
-        a2 = tf.multiply(a_sum,tf.square(cluster_weights2))
+        a2 = tf.multiply(a_sum, tf.square(cluster_weights2))
 
-        b2 = tf.multiply(fv1,cluster_weights2)
-        fv2 = tf.matmul(activation,tf.square(reshaped_input))
+        b2 = tf.multiply(fv1, cluster_weights2)
+        fv2 = tf.matmul(activation, tf.square(reshaped_input))
 
-        fv2 = tf.transpose(fv2,perm=[0,2,1])
-        fv2 = tf.add_n([a2,fv2,tf.scalar_mul(-2,b2)])
+        fv2 = tf.transpose(fv2, perm=[0, 2, 1])
+        fv2 = tf.add_n([a2, fv2, tf.scalar_mul(-2, b2)])
 
-        fv2 = tf.divide(fv2,tf.square(covar_weights))
-        fv2 = tf.subtract(fv2,a_sum)
+        fv2 = tf.divide(fv2, tf.square(covar_weights))
+        fv2 = tf.subtract(fv2, a_sum)
 
-        fv2 = tf.reshape(fv2,[-1,self.cluster_size*self.feature_size])
+        fv2 = tf.reshape(fv2, [-1, self.cluster_size * self.feature_size])
 
-        fv2 = tf.nn.l2_normalize(fv2,1)
-        fv2 = tf.reshape(fv2,[-1,self.cluster_size*self.feature_size])
-        fv2 = tf.nn.l2_normalize(fv2,1)
+        fv2 = tf.nn.l2_normalize(fv2, 1)
+        fv2 = tf.reshape(fv2, [-1, self.cluster_size * self.feature_size])
+        fv2 = tf.nn.l2_normalize(fv2, 1)
 
-        fv1 = tf.subtract(fv1,a)
-        fv1 = tf.divide(fv1,covar_weights)
+        fv1 = tf.subtract(fv1, a)
+        fv1 = tf.divide(fv1, covar_weights)
 
-        fv1 = tf.nn.l2_normalize(fv1,1)
-        fv1 = tf.reshape(fv1,[-1,self.cluster_size*self.feature_size])
-        fv1 = tf.nn.l2_normalize(fv1,1)
+        fv1 = tf.nn.l2_normalize(fv1, 1)
+        fv1 = tf.reshape(fv1, [-1, self.cluster_size * self.feature_size])
+        fv1 = tf.nn.l2_normalize(fv1, 1)
 
-        return tf.concat([fv1,fv2],1)
+        return tf.concat([fv1, fv2], 1)
+
 
 class NetVLADModelLF(models.BaseModel):
     """Creates a NetVLAD based model.
@@ -606,7 +612,6 @@ class NetVLADModelLF(models.BaseModel):
     def __init__(self):
         global FLAGS
         FLAGS = Get_GlobalFLAG()
-
 
     def create_model(self,
                      model_input,
@@ -633,17 +638,16 @@ class NetVLADModelLF(models.BaseModel):
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
 
         if lightvlad:
-            video_NetVLAD = LightVLAD(1024,max_frames,cluster_size, add_batch_norm, is_training)
-            audio_NetVLAD = LightVLAD(128,max_frames,cluster_size/2, add_batch_norm, is_training)
+            video_NetVLAD = LightVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            audio_NetVLAD = LightVLAD(128, max_frames, cluster_size / 2, add_batch_norm, is_training)
         elif vlagd:
-            video_NetVLAD = NetVLAGD(1024,max_frames,cluster_size, add_batch_norm, is_training)
-            audio_NetVLAD = NetVLAGD(128,max_frames,cluster_size/2, add_batch_norm, is_training)
+            video_NetVLAD = NetVLAGD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            audio_NetVLAD = NetVLAGD(128, max_frames, cluster_size / 2, add_batch_norm, is_training)
         else:
-            video_NetVLAD = NetVLAD(1024,max_frames,cluster_size, add_batch_norm, is_training)
-            audio_NetVLAD = NetVLAD(128,max_frames,cluster_size/2, add_batch_norm, is_training)
+            video_NetVLAD = NetVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            audio_NetVLAD = NetVLAD(128, max_frames, cluster_size / 2, add_batch_norm, is_training)
 
-
-        if add_batch_norm:# and not lightvlad:
+        if add_batch_norm:  # and not lightvlad:
             reshaped_input = slim.batch_norm(
                 reshaped_input,
                 center=True,
@@ -652,12 +656,12 @@ class NetVLADModelLF(models.BaseModel):
                 scope="input_bn")
 
         with tf.variable_scope("video_VLAD"):
-            vlad_video = video_NetVLAD.forward(reshaped_input[:,0:1024])
+            vlad_video = video_NetVLAD.forward(reshaped_input[:, 0:1024])
 
         with tf.variable_scope("audio_VLAD"):
-            vlad_audio = audio_NetVLAD.forward(reshaped_input[:,1024:])
+            vlad_audio = audio_NetVLAD.forward(reshaped_input[:, 1024:])
 
-        vlad = tf.concat([vlad_video, vlad_audio],1)
+        vlad = tf.concat([vlad_video, vlad_audio], 1)
 
         vlad_dim = vlad.get_shape().as_list()[1]
         hidden1_weights = tf.get_variable("hidden1_weights",
@@ -677,26 +681,25 @@ class NetVLADModelLF(models.BaseModel):
         else:
             hidden1_biases = tf.get_variable("hidden1_biases",
                                              [hidden1_size],
-                                             initializer = tf.random_normal_initializer(stddev=0.01))
+                                             initializer=tf.random_normal_initializer(stddev=0.01))
             tf.summary.histogram("hidden1_biases", hidden1_biases)
             activation += hidden1_biases
 
         if relu:
             activation = tf.nn.relu6(activation)
 
-
         if gating:
             gating_weights = tf.get_variable("gating_weights_2",
                                              [hidden1_size, hidden1_size],
-                                             initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(hidden1_size)))
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(hidden1_size)))
 
             gates = tf.matmul(activation, gating_weights)
 
             if remove_diag:
-                #removes diagonals coefficients
+                # removes diagonals coefficients
                 diagonals = tf.matrix_diag_part(gating_weights)
-                gates = gates - tf.multiply(diagonals,activation)
-
+                gates = gates - tf.multiply(diagonals, activation)
 
             if add_batch_norm:
                 gates = slim.batch_norm(
@@ -708,22 +711,22 @@ class NetVLADModelLF(models.BaseModel):
             else:
                 gating_biases = tf.get_variable("gating_biases",
                                                 [cluster_size],
-                                                initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                                initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
                 gates += gating_biases
 
             gates = tf.sigmoid(gates)
 
-            activation = tf.multiply(activation,gates)
+            activation = tf.multiply(activation, gates)
 
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
-
 
         return aggregated_model().create_model(
             model_input=activation,
             vocab_size=vocab_size,
             is_training=is_training,
             **unused_params)
+
 
 class DbofModelLF(models.BaseModel):
     """Creates a Deep Bag of Frames model.
@@ -776,11 +779,10 @@ class DbofModelLF(models.BaseModel):
         tf.summary.histogram("input_hist", reshaped_input)
 
         if cluster_activation == 'glu':
-            cluster_size = 2*cluster_size
+            cluster_size = 2 * cluster_size
 
-        video_Dbof = DBoF(1024,max_frames,cluster_size, cluster_activation, add_batch_norm, is_training)
-        audio_Dbof = DBoF(128,max_frames,cluster_size/8, cluster_activation, add_batch_norm, is_training)
-
+        video_Dbof = DBoF(1024, max_frames, cluster_size, cluster_activation, add_batch_norm, is_training)
+        audio_Dbof = DBoF(128, max_frames, cluster_size / 8, cluster_activation, add_batch_norm, is_training)
 
         if add_batch_norm:
             reshaped_input = slim.batch_norm(
@@ -791,12 +793,12 @@ class DbofModelLF(models.BaseModel):
                 scope="input_bn")
 
         with tf.variable_scope("video_DBOF"):
-            dbof_video = video_Dbof.forward(reshaped_input[:,0:1024])
+            dbof_video = video_Dbof.forward(reshaped_input[:, 0:1024])
 
         with tf.variable_scope("audio_DBOF"):
-            dbof_audio = audio_Dbof.forward(reshaped_input[:,1024:])
+            dbof_audio = audio_Dbof.forward(reshaped_input[:, 1024:])
 
-        dbof = tf.concat([dbof_video, dbof_audio],1)
+        dbof = tf.concat([dbof_video, dbof_audio], 1)
 
         dbof_dim = dbof.get_shape().as_list()[1]
 
@@ -816,7 +818,7 @@ class DbofModelLF(models.BaseModel):
         else:
             hidden1_biases = tf.get_variable("hidden1_biases",
                                              [hidden1_size],
-                                             initializer = tf.random_normal_initializer(stddev=0.01))
+                                             initializer=tf.random_normal_initializer(stddev=0.01))
             tf.summary.histogram("hidden1_biases", hidden1_biases)
             activation += hidden1_biases
 
@@ -831,6 +833,7 @@ class DbofModelLF(models.BaseModel):
             model_input=activation,
             vocab_size=vocab_size,
             **unused_params)
+
 
 class GatedDbofModelLF(models.BaseModel):
     """Creates a Gated Deep Bag of Frames model.
@@ -883,9 +886,8 @@ class GatedDbofModelLF(models.BaseModel):
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
         tf.summary.histogram("input_hist", reshaped_input)
 
-        video_Dbof = GatedDBoF(1024,max_frames,cluster_size, max_pool, add_batch_norm, is_training)
-        audio_Dbof = SoftDBoF(128,max_frames,cluster_size/8, max_pool, add_batch_norm, is_training)
-
+        video_Dbof = GatedDBoF(1024, max_frames, cluster_size, max_pool, add_batch_norm, is_training)
+        audio_Dbof = SoftDBoF(128, max_frames, cluster_size / 8, max_pool, add_batch_norm, is_training)
 
         if add_batch_norm:
             reshaped_input = slim.batch_norm(
@@ -896,19 +898,20 @@ class GatedDbofModelLF(models.BaseModel):
                 scope="input_bn")
 
         with tf.variable_scope("video_DBOF"):
-            dbof_video = video_Dbof.forward(reshaped_input[:,0:1024])
+            dbof_video = video_Dbof.forward(reshaped_input[:, 0:1024])
 
         with tf.variable_scope("audio_DBOF"):
-            dbof_audio = audio_Dbof.forward(reshaped_input[:,1024:])
+            dbof_audio = audio_Dbof.forward(reshaped_input[:, 1024:])
 
-        dbof = tf.concat([dbof_video, dbof_audio],1)
+        dbof = tf.concat([dbof_video, dbof_audio], 1)
 
         dbof_dim = dbof.get_shape().as_list()[1]
 
         if fc_dimred:
             hidden1_weights = tf.get_variable("hidden1_weights",
                                               [dbof_dim, hidden1_size],
-                                              initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(cluster_size)))
+                                              initializer=tf.random_normal_initializer(
+                                                  stddev=1 / math.sqrt(cluster_size)))
             tf.summary.histogram("hidden1_weights", hidden1_weights)
             activation = tf.matmul(dbof, hidden1_weights)
 
@@ -922,7 +925,7 @@ class GatedDbofModelLF(models.BaseModel):
             else:
                 hidden1_biases = tf.get_variable("hidden1_biases",
                                                  [hidden1_size],
-                                                 initializer = tf.random_normal_initializer(stddev=0.01))
+                                                 initializer=tf.random_normal_initializer(stddev=0.01))
                 tf.summary.histogram("hidden1_biases", hidden1_biases)
                 activation += hidden1_biases
 
@@ -934,7 +937,6 @@ class GatedDbofModelLF(models.BaseModel):
 
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
-
 
         return aggregated_model().create_model(
             model_input=activation,
@@ -994,9 +996,8 @@ class SoftDbofModelLF(models.BaseModel):
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
         tf.summary.histogram("input_hist", reshaped_input)
 
-        video_Dbof = SoftDBoF(1024,max_frames,cluster_size, max_pool, add_batch_norm, is_training)
-        audio_Dbof = SoftDBoF(128,max_frames,cluster_size/8, max_pool, add_batch_norm, is_training)
-
+        video_Dbof = SoftDBoF(1024, max_frames, cluster_size, max_pool, add_batch_norm, is_training)
+        audio_Dbof = SoftDBoF(128, max_frames, cluster_size / 8, max_pool, add_batch_norm, is_training)
 
         if add_batch_norm:
             reshaped_input = slim.batch_norm(
@@ -1007,19 +1008,20 @@ class SoftDbofModelLF(models.BaseModel):
                 scope="input_bn")
 
         with tf.variable_scope("video_DBOF"):
-            dbof_video = video_Dbof.forward(reshaped_input[:,0:1024])
+            dbof_video = video_Dbof.forward(reshaped_input[:, 0:1024])
 
         with tf.variable_scope("audio_DBOF"):
-            dbof_audio = audio_Dbof.forward(reshaped_input[:,1024:])
+            dbof_audio = audio_Dbof.forward(reshaped_input[:, 1024:])
 
-        dbof = tf.concat([dbof_video, dbof_audio],1)
+        dbof = tf.concat([dbof_video, dbof_audio], 1)
 
         dbof_dim = dbof.get_shape().as_list()[1]
 
         if fc_dimred:
             hidden1_weights = tf.get_variable("hidden1_weights",
                                               [dbof_dim, hidden1_size],
-                                              initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(cluster_size)))
+                                              initializer=tf.random_normal_initializer(
+                                                  stddev=1 / math.sqrt(cluster_size)))
             tf.summary.histogram("hidden1_weights", hidden1_weights)
             activation = tf.matmul(dbof, hidden1_weights)
 
@@ -1033,7 +1035,7 @@ class SoftDbofModelLF(models.BaseModel):
             else:
                 hidden1_biases = tf.get_variable("hidden1_biases",
                                                  [hidden1_size],
-                                                 initializer = tf.random_normal_initializer(stddev=0.01))
+                                                 initializer=tf.random_normal_initializer(stddev=0.01))
                 tf.summary.histogram("hidden1_biases", hidden1_biases)
                 activation += hidden1_biases
 
@@ -1046,15 +1048,14 @@ class SoftDbofModelLF(models.BaseModel):
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
 
-
         return aggregated_model().create_model(
             model_input=activation,
             vocab_size=vocab_size,
             is_training=is_training,
             **unused_params)
 
-class LstmModel(models.BaseModel):
 
+class LstmModel(models.BaseModel):
     def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
         """Creates a model which uses a stack of LSTMs to represent the video.
         Args:
@@ -1105,7 +1106,6 @@ class LstmModel(models.BaseModel):
 
 
 class GruModel(models.BaseModel):
-
     def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
         """Creates a model which uses a stack of GRUs to represent the video.
         Args:
@@ -1152,7 +1152,6 @@ class GruModel(models.BaseModel):
             vocab_size=vocab_size,
             is_training=is_training,
             **unused_params)
-
 
 
 class NetFVModelLF(models.BaseModel):
@@ -1205,9 +1204,8 @@ class NetFVModelLF(models.BaseModel):
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
         tf.summary.histogram("input_hist", reshaped_input)
 
-        video_NetFV = NetFV(1024,max_frames,cluster_size, add_batch_norm, is_training)
-        audio_NetFV = NetFV(128,max_frames,cluster_size/2, add_batch_norm, is_training)
-
+        video_NetFV = NetFV(1024, max_frames, cluster_size, add_batch_norm, is_training)
+        audio_NetFV = NetFV(128, max_frames, cluster_size / 2, add_batch_norm, is_training)
 
         if add_batch_norm:
             reshaped_input = slim.batch_norm(
@@ -1218,12 +1216,12 @@ class NetFVModelLF(models.BaseModel):
                 scope="input_bn")
 
         with tf.variable_scope("video_FV"):
-            fv_video = video_NetFV.forward(reshaped_input[:,0:1024])
+            fv_video = video_NetFV.forward(reshaped_input[:, 0:1024])
 
         with tf.variable_scope("audio_FV"):
-            fv_audio = audio_NetFV.forward(reshaped_input[:,1024:])
+            fv_audio = audio_NetFV.forward(reshaped_input[:, 1024:])
 
-        fv = tf.concat([fv_video, fv_audio],1)
+        fv = tf.concat([fv_video, fv_audio], 1)
 
         fv_dim = fv.get_shape().as_list()[1]
         hidden1_weights = tf.get_variable("hidden1_weights",
@@ -1242,7 +1240,7 @@ class NetFVModelLF(models.BaseModel):
         else:
             hidden1_biases = tf.get_variable("hidden1_biases",
                                              [hidden1_size],
-                                             initializer = tf.random_normal_initializer(stddev=0.01))
+                                             initializer=tf.random_normal_initializer(stddev=0.01))
             tf.summary.histogram("hidden1_biases", hidden1_biases)
             activation += hidden1_biases
 
@@ -1252,7 +1250,8 @@ class NetFVModelLF(models.BaseModel):
         if gating:
             gating_weights = tf.get_variable("gating_weights_2",
                                              [hidden1_size, hidden1_size],
-                                             initializer = tf.random_normal_initializer(stddev=1 / math.sqrt(hidden1_size)))
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(hidden1_size)))
 
             gates = tf.matmul(activation, gating_weights)
 
@@ -1266,13 +1265,12 @@ class NetFVModelLF(models.BaseModel):
             else:
                 gating_biases = tf.get_variable("gating_biases",
                                                 [cluster_size],
-                                                initializer = tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                                                initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
                 gates += gating_biases
 
             gates = tf.sigmoid(gates)
 
-            activation = tf.multiply(activation,gates)
-
+            activation = tf.multiply(activation, gates)
 
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
@@ -1282,5 +1280,3 @@ class NetFVModelLF(models.BaseModel):
             vocab_size=vocab_size,
             is_training=is_training,
             **unused_params)
-
-

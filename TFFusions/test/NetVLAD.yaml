@@ -11,10 +11,11 @@ vlagd: true
 video_level_classifier_model: MoeModel
 moe_num_mixtures: 4
 gating_remove_diag: false
-moe_prob_gating: false
-moe_prob_gating_input: prob
-moe_low_rank_gating: -1
-moe_l2: 0.0000001
+
+#moe_prob_gating: true
+#moe_prob_gating_input: prob
+#moe_low_rank_gating: -1
+#moe_l2: 0.0000001
 
 
 #        add_batch_norm = add_batch_norm or FLAGS.netvlad_add_batch_norm
