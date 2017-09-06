@@ -35,7 +35,7 @@ fix_length: 64
 
 one_hot: true
 
-base_learning_rate: 0.0001
+base_learning_rate: 0.00001
 
 learning_rate_decay: 0.8
 
