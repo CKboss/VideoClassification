@@ -1,7 +1,7 @@
 # netvlad video only
 name: NetVLAD_Videoonly
-EX_ID: EX_1
-batchsize: 32
+EX_ID: EX_2
+batchsize: 64
 model_checkpoint_path: null
 scale: 8
 fix_length: 64
@@ -21,20 +21,20 @@ gating_remove_diag: false
 regularization_penalty: 0.000001
 
 # Train Setting
-one_hot: false
+one_hot: true
 base_learning_rate: 0.1
 learning_rate_decay: 0.7
-decay_at_step: 10000
+decay_at_step: 20000
 num_epochs: 41
 max_step: null
 optimize: GradientDescentOptimizer
 keep_checkpoint_every_n_hour: 2
 
 device_id:
-- 3
+- 7
 
 # dataset seting
 vocab_size: 500
 
 # train path
-train_dir: /mnt/md0/LSVC/ExWorkSpace/NetVLAD_Video_EX1/
+train_dir: /mnt/md0/LSVC/ExWorkSpace/NetVLAD_Video_EX2/

@@ -750,7 +750,6 @@ class NetVLADModelLF_VideoOnly(models.BaseModel):
                      model_input,
                      vocab_size,
                      num_frames,
-                     iterations=None,
                      add_batch_norm=None,
                      sample_random_frames=None,
                      cluster_size=None,

@@ -75,28 +75,41 @@ class BaseLoss(object):
         raise NotImplementedError()
 
 
-class CrossEntropyLoss(BaseLoss):
-    """Calculate the cross entropy loss between the predictions and labels.
-    """
 
-    def calculate_loss(self, predictions, labels, weights=None, **unused_params):
-        with tf.name_scope("loss_xent"):
-            epsilon = 10e-6
-            if FLAGS.label_smoothing:
-                float_labels = smoothing(labels)
-            else:
-                float_labels = tf.cast(labels, tf.float32)
-            cross_entropy_loss = float_labels * tf.log(predictions + epsilon) + (
-                                                                                    1 - float_labels) * tf.log(
-                1 - predictions + epsilon)
-            cross_entropy_loss = tf.negative(cross_entropy_loss)
-            if weights is not None:
-                print(cross_entropy_loss, weights)
-                weighted_loss = tf.einsum("ij,i->ij", cross_entropy_loss, weights)
-                print("create weighted_loss", weighted_loss)
-                return tf.reduce_mean(tf.reduce_sum(weighted_loss, 1))
-            else:
-                return tf.reduce_mean(tf.reduce_sum(cross_entropy_loss, 1))
+class CrossEntropyLoss(BaseLoss):
+  """Calculate the cross entropy loss between the predictions and labels.
+  """
+  def calculate_loss(self, predictions, labels, **unused_params):
+    with tf.name_scope("loss_xent"):
+      epsilon = 10e-6
+      alpha = 0.5
+      float_labels = tf.cast(labels, tf.float32)
+      cross_entropy_loss = 2*(alpha*float_labels * tf.log(predictions + epsilon) + (1-alpha)*(1 - float_labels) * tf.log(1 - predictions + epsilon))
+      cross_entropy_loss = tf.negative(cross_entropy_loss)
+      return tf.reduce_mean(tf.reduce_sum(cross_entropy_loss, 1))
+
+# class CrossEntropyLoss(BaseLoss):
+#     """Calculate the cross entropy loss between the predictions and labels.
+#     """
+#
+#     def calculate_loss(self, predictions, labels, weights=None, **unused_params):
+#         with tf.name_scope("loss_xent"):
+#             epsilon = 10e-6
+#             if FLAGS.label_smoothing:
+#                 float_labels = smoothing(labels)
+#             else:
+#                 float_labels = tf.cast(labels, tf.float32)
+#             cross_entropy_loss = float_labels * tf.log(predictions + epsilon) + (
+#                                                                                     1 - float_labels) * tf.log(
+#                 1 - predictions + epsilon)
+#             cross_entropy_loss = tf.negative(cross_entropy_loss)
+#             if weights is not None:
+#                 print(cross_entropy_loss, weights)
+#                 weighted_loss = tf.einsum("ij,i->ij", cross_entropy_loss, weights)
+#                 print("create weighted_loss", weighted_loss)
+#                 return tf.reduce_mean(tf.reduce_sum(weighted_loss, 1))
+#             else:
+#                 return tf.reduce_mean(tf.reduce_sum(cross_entropy_loss, 1))
 
 
 class HingeLoss(BaseLoss):

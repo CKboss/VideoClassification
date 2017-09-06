@@ -10,7 +10,7 @@ import tensorflow as tf
 import TFFusions.Config.Config as Config
 from TFFusions.Train.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
-from TFFusions.losses import SoftmaxLoss
+from TFFusions.losses import SoftmaxLoss,CrossEntropyLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 from TFFusions.tfrecord_tools import read_and_decode
@@ -145,7 +145,8 @@ def main(config_yaml=None):
 
     # loss
     if one_hot == True:
-        lossfunc = SoftmaxLoss()
+        # lossfunc = SoftmaxLoss()
+        lossfunc = CrossEntropyLoss()
         loss = lossfunc.calculate_loss(predict_labels, target_labels) + lossL2
     else:
         loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=predict_labels, labels=target_labels)
