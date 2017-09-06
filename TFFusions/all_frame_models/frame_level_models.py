@@ -5,6 +5,7 @@ from TFFusions.all_frame_models.lstm_attention_lstm_model import LstmAttentionLs
 from TFFusions.all_frame_models.lstm_attention_lstm_model_2 import LstmAttentionLstmModel2
 from TFFusions.all_frame_models.gru_pooling_model import GruPoolingModel
 from TFFusions.all_frame_models.bilstm_model import BiLstmModel
+from TFFusions.WILLOW.willow_frame_level_models import NetVLADModelLF,NetVLADModelLF_VideoOnly
 
 def GetFrameModel(frame_model_name):
     if frame_model_name == 'lstm_memory_model':
@@ -21,5 +22,9 @@ def GetFrameModel(frame_model_name):
         return GruPoolingModel
     elif frame_model_name == 'bilstm':
         return BiLstmModel
+    elif frame_model_name == 'NetVLADModelLF_VideoOnly':
+        return NetVLADModelLF_VideoOnly
+    elif frame_model_name == 'NetVLADModelLF':
+        return NetVLADModelLF
     else:
         raise NotImplementedError

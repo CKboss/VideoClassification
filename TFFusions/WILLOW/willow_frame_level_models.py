@@ -728,6 +728,134 @@ class NetVLADModelLF(models.BaseModel):
             **unused_params)
 
 
+class NetVLADModelLF_VideoOnly(models.BaseModel):
+    """Creates a NetVLAD based model.
+    Args:
+      model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                   input features.
+      vocab_size: The number of classes in the dataset.
+      num_frames: A vector of length 'batch' which indicates the number of
+           frames for each video (before padding).
+    Returns:
+      A dictionary with a tensor containing the probability predictions of the
+      model in the 'predictions' key. The dimensions of the tensor are
+      'batch_size' x 'num_classes'.
+    """
+
+    def __init__(self):
+        global FLAGS
+        FLAGS = Get_GlobalFLAG()
+
+    def create_model(self,
+                     model_input,
+                     vocab_size,
+                     num_frames,
+                     iterations=None,
+                     add_batch_norm=None,
+                     sample_random_frames=None,
+                     cluster_size=None,
+                     hidden_size=None,
+                     is_training=True,
+                     **unused_params):
+        add_batch_norm = add_batch_norm or FLAGS.netvlad_add_batch_norm
+        cluster_size = cluster_size or FLAGS.netvlad_cluster_size
+        hidden1_size = hidden_size or FLAGS.netvlad_hidden_size
+        relu = FLAGS.netvlad_relu
+        gating = FLAGS.gating
+        remove_diag = FLAGS.gating_remove_diag
+        lightvlad = FLAGS.lightvlad
+        vlagd = FLAGS.vlagd
+
+        max_frames = model_input.get_shape().as_list()[1]
+        feature_size = model_input.get_shape().as_list()[2]
+        reshaped_input = tf.reshape(model_input, [-1, feature_size])
+
+        if lightvlad:
+            video_NetVLAD = LightVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+        elif vlagd:
+            video_NetVLAD = NetVLAGD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+        else:
+            video_NetVLAD = NetVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+
+        if add_batch_norm:  # and not lightvlad:
+            reshaped_input = slim.batch_norm(
+                reshaped_input,
+                center=True,
+                scale=True,
+                is_training=is_training,
+                scope="input_bn")
+
+        with tf.variable_scope("video_VLAD"):
+            vlad_video = video_NetVLAD.forward(reshaped_input)
+
+        vlad = vlad_video
+
+        vlad_dim = vlad.get_shape().as_list()[1]
+        hidden1_weights = tf.get_variable("hidden1_weights",
+                                          [vlad_dim, hidden1_size],
+                                          initializer=tf.random_normal_initializer(stddev=1 / math.sqrt(cluster_size)))
+
+        activation = tf.matmul(vlad, hidden1_weights)
+
+        if add_batch_norm and relu:
+            activation = slim.batch_norm(
+                activation,
+                center=True,
+                scale=True,
+                is_training=is_training,
+                scope="hidden1_bn")
+
+        else:
+            hidden1_biases = tf.get_variable("hidden1_biases",
+                                             [hidden1_size],
+                                             initializer=tf.random_normal_initializer(stddev=0.01))
+            tf.summary.histogram("hidden1_biases", hidden1_biases)
+            activation += hidden1_biases
+
+        if relu:
+            activation = tf.nn.relu6(activation)
+
+        if gating:
+            gating_weights = tf.get_variable("gating_weights_2",
+                                             [hidden1_size, hidden1_size],
+                                             initializer=tf.random_normal_initializer(
+                                                 stddev=1 / math.sqrt(hidden1_size)))
+
+            gates = tf.matmul(activation, gating_weights)
+
+            if remove_diag:
+                # removes diagonals coefficients
+                diagonals = tf.matrix_diag_part(gating_weights)
+                gates = gates - tf.multiply(diagonals, activation)
+
+            if add_batch_norm:
+                gates = slim.batch_norm(
+                    gates,
+                    center=True,
+                    scale=True,
+                    is_training=is_training,
+                    scope="gating_bn")
+            else:
+                gating_biases = tf.get_variable("gating_biases",
+                                                [cluster_size],
+                                                initializer=tf.random_normal(stddev=1 / math.sqrt(feature_size)))
+                gates += gating_biases
+
+            gates = tf.sigmoid(gates)
+
+            activation = tf.multiply(activation, gates)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=activation,
+            vocab_size=vocab_size,
+            is_training=is_training,
+            **unused_params)
+
+
+
 class DbofModelLF(models.BaseModel):
     """Creates a Deep Bag of Frames model.
     The model projects the features for each frame into a higher dimensional
