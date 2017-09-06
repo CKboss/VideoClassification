@@ -482,8 +482,8 @@ class DBoF():
             activation += cluster_biases
 
         if activation == 'glu':
-            space_ind = range(cluster_size / 2)
-            gate_ind = range(cluster_size / 2, cluster_size)
+            space_ind = range(cluster_size // 2)
+            gate_ind = range(cluster_size // 2, cluster_size)
 
             gates = tf.sigmoid(activation[:, gate_ind])
             activation = tf.multiply(activation[:, space_ind], gates)
