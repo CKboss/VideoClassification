@@ -19,29 +19,38 @@ import TFFusions.models as models
 import tensorflow as tf
 import TFFusions.utils as utils
 
-from tensorflow import flags
 import tensorflow.contrib.slim as slim
 
-FLAGS = flags.FLAGS
-flags.DEFINE_integer(
-    "moe_num_mixtures", 2,
-    "The number of mixtures (excluding the dummy 'expert') used for MoeModel.")
-flags.DEFINE_float(
-    "moe_l2", 1e-8,
-    "L2 penalty for MoeModel.")
-flags.DEFINE_integer(
-    "moe_low_rank_gating", -1,
-    "Low rank gating for MoeModel.")
-flags.DEFINE_bool(
-    "moe_prob_gating", False,
-    "Prob gating for MoeModel.")
-flags.DEFINE_string(
-    "moe_prob_gating_input", "prob",
-    "input Prob gating for MoeModel.")
+# from tensorflow import flags
+#
+# FLAGS = flags.FLAGS
+# flags.DEFINE_integer(
+#     "moe_num_mixtures", 2,
+#     "The number of mixtures (excluding the dummy 'expert') used for MoeModel.")
+# flags.DEFINE_float(
+#     "moe_l2", 1e-8,
+#     "L2 penalty for MoeModel.")
+# flags.DEFINE_integer(
+#     "moe_low_rank_gating", -1,
+#     "Low rank gating for MoeModel.")
 
+# flags.DEFINE_bool(
+#     "moe_prob_gating", False,
+#     "Prob gating for MoeModel.")
+# flags.DEFINE_string(
+#     "moe_prob_gating_input", "prob",
+#     "input Prob gating for MoeModel.")
+
+from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG
+
+FLAGS = None
 
 class MoeModel(models.BaseModel):
   """A softmax over a mixture of logistic models (with L2 regularization)."""
+
+  def __init__(self):
+      global FLAGS
+      FLAGS = Get_GlobalFLAG()
 
   def create_model(self,
                    model_input,
@@ -70,7 +79,7 @@ class MoeModel(models.BaseModel):
     """
     num_mixtures = num_mixtures or FLAGS.moe_num_mixtures
     low_rank_gating = FLAGS.moe_low_rank_gating
-    l2_penalty = FLAGS.moe_l2;
+    l2_penalty = FLAGS.moe_l2
     gating_probabilities = FLAGS.moe_prob_gating
     gating_input = FLAGS.moe_prob_gating_input
 

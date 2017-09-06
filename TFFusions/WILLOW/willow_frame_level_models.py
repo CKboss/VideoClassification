@@ -18,115 +18,118 @@ import math
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-from tensorflow import flags
+# from tensorflow import flags
 
 import TFFusions.WILLOW.willow_video_level_models as video_level_models
 import TFFusions.model_utils as utils
 import TFFusions.models as models
 
-FLAGS = flags.FLAGS
+from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG
+FLAGS = None
 
-
-flags.DEFINE_bool("gating_remove_diag", False,
-                  "Remove diag for self gating")
-flags.DEFINE_bool("lightvlad", False,
-                  "Light or full NetVLAD")
-flags.DEFINE_bool("vlagd", False,
-                  "vlagd of vlad")
-
-
-
-flags.DEFINE_integer("iterations", 30,
-                     "Number of frames per batch for DBoF.")
-flags.DEFINE_bool("dbof_add_batch_norm", True,
-                  "Adds batch normalization to the DBoF model.")
-flags.DEFINE_bool(
-    "sample_random_frames", True,
-    "If true samples random frames (for frame level models). If false, a random"
-    "sequence of frames is sampled instead.")
-flags.DEFINE_integer("dbof_cluster_size", 16384,
-                     "Number of units in the DBoF cluster layer.")
-flags.DEFINE_integer("dbof_hidden_size", 2048,
-                     "Number of units in the DBoF hidden layer.")
-flags.DEFINE_bool("dbof_relu", True, 'add ReLU to hidden layer')
-flags.DEFINE_integer("dbof_var_features", 0,
-                     "Variance features on top of Dbof cluster layer.")
-
-flags.DEFINE_string("dbof_activation", "relu", 'dbof activation')
-
-flags.DEFINE_bool("softdbof_maxpool", False, 'add max pool to soft dbof')
-
-flags.DEFINE_integer("netvlad_cluster_size", 64,
-                     "Number of units in the NetVLAD cluster layer.")
-flags.DEFINE_bool("netvlad_relu", True, 'add ReLU to hidden layer')
-flags.DEFINE_integer("netvlad_dimred", -1,
-                     "NetVLAD output dimension reduction")
-flags.DEFINE_integer("gatednetvlad_dimred", 1024,
-                     "GatedNetVLAD output dimension reduction")
-
-flags.DEFINE_bool("gating", False,
-                  "Gating for NetVLAD")
-flags.DEFINE_integer("hidden_size", 1024,
-                     "size of hidden layer for BasicStatModel.")
-
-
-flags.DEFINE_integer("netvlad_hidden_size", 1024,
-                     "Number of units in the NetVLAD hidden layer.")
-
-flags.DEFINE_integer("netvlad_hidden_size_video", 1024,
-                     "Number of units in the NetVLAD video hidden layer.")
-
-flags.DEFINE_integer("netvlad_hidden_size_audio", 64,
-                     "Number of units in the NetVLAD audio hidden layer.")
-
-
-
-flags.DEFINE_bool("netvlad_add_batch_norm", True,
-                  "Adds batch normalization to the DBoF model.")
-
-flags.DEFINE_integer("fv_cluster_size", 64,
-                     "Number of units in the NetVLAD cluster layer.")
-
-flags.DEFINE_integer("fv_hidden_size", 2048,
-                     "Number of units in the NetVLAD hidden layer.")
-flags.DEFINE_bool("fv_relu", True,
-                  "ReLU after the NetFV hidden layer.")
-
-
-flags.DEFINE_bool("fv_couple_weights", True,
-                  "Coupling cluster weights or not")
-
-flags.DEFINE_integer("fv_coupling_factor", 0.01,
-                     "Coupling factor")
-
-
-flags.DEFINE_string("dbof_pooling_method", "max",
-                    "The pooling method used in the DBoF cluster layer. "
-                    "Choices are 'average' and 'max'.")
-flags.DEFINE_string("video_level_classifier_model", "MoeModel",
-                    "Some Frame-Level models can be decomposed into a "
-                    "generalized pooling operation followed by a "
-                    "classifier layer")
-flags.DEFINE_integer("lstm_cells", 1024, "Number of LSTM cells.")
-flags.DEFINE_integer("lstm_layers", 2, "Number of LSTM layers.")
-flags.DEFINE_integer("lstm_cells_video", 1024, "Number of LSTM cells (video).")
-flags.DEFINE_integer("lstm_cells_audio", 128, "Number of LSTM cells (audio).")
-
-
-
-flags.DEFINE_integer("gru_cells", 1024, "Number of GRU cells.")
-flags.DEFINE_integer("gru_cells_video", 1024, "Number of GRU cells (video).")
-flags.DEFINE_integer("gru_cells_audio", 128, "Number of GRU cells (audio).")
-flags.DEFINE_integer("gru_layers", 2, "Number of GRU layers.")
-flags.DEFINE_bool("lstm_random_sequence", False,
-                  "Random sequence input for lstm.")
-flags.DEFINE_bool("gru_random_sequence", False,
-                  "Random sequence input for gru.")
-flags.DEFINE_bool("gru_backward", False, "BW reading for GRU")
-flags.DEFINE_bool("lstm_backward", False, "BW reading for LSTM")
-
-
-flags.DEFINE_bool("fc_dimred", True, "Adding FC dimred after pooling")
+# FLAGS = flags.FLAGS
+#
+#
+# flags.DEFINE_bool("gating_remove_diag", False,
+#                   "Remove diag for self gating")
+# flags.DEFINE_bool("lightvlad", False,
+#                   "Light or full NetVLAD")
+# flags.DEFINE_bool("vlagd", False,
+#                   "vlagd of vlad")
+#
+#
+#
+# flags.DEFINE_integer("iterations", 30,
+#                      "Number of frames per batch for DBoF.")
+# flags.DEFINE_bool("dbof_add_batch_norm", True,
+#                   "Adds batch normalization to the DBoF model.")
+# flags.DEFINE_bool(
+#     "sample_random_frames", True,
+#     "If true samples random frames (for frame level models). If false, a random"
+#     "sequence of frames is sampled instead.")
+# flags.DEFINE_integer("dbof_cluster_size", 16384,
+#                      "Number of units in the DBoF cluster layer.")
+# flags.DEFINE_integer("dbof_hidden_size", 2048,
+#                      "Number of units in the DBoF hidden layer.")
+# flags.DEFINE_bool("dbof_relu", True, 'add ReLU to hidden layer')
+# flags.DEFINE_integer("dbof_var_features", 0,
+#                      "Variance features on top of Dbof cluster layer.")
+#
+# flags.DEFINE_string("dbof_activation", "relu", 'dbof activation')
+#
+# flags.DEFINE_bool("softdbof_maxpool", False, 'add max pool to soft dbof')
+#
+# flags.DEFINE_integer("netvlad_cluster_size", 64,
+#                      "Number of units in the NetVLAD cluster layer.")
+# flags.DEFINE_bool("netvlad_relu", True, 'add ReLU to hidden layer')
+# flags.DEFINE_integer("netvlad_dimred", -1,
+#                      "NetVLAD output dimension reduction")
+# flags.DEFINE_integer("gatednetvlad_dimred", 1024,
+#                      "GatedNetVLAD output dimension reduction")
+#
+# flags.DEFINE_bool("gating", False,
+#                   "Gating for NetVLAD")
+# flags.DEFINE_integer("hidden_size", 1024,
+#                      "size of hidden layer for BasicStatModel.")
+#
+#
+# flags.DEFINE_integer("netvlad_hidden_size", 1024,
+#                      "Number of units in the NetVLAD hidden layer.")
+#
+# flags.DEFINE_integer("netvlad_hidden_size_video", 1024,
+#                      "Number of units in the NetVLAD video hidden layer.")
+#
+# flags.DEFINE_integer("netvlad_hidden_size_audio", 64,
+#                      "Number of units in the NetVLAD audio hidden layer.")
+#
+#
+#
+# flags.DEFINE_bool("netvlad_add_batch_norm", True,
+#                   "Adds batch normalization to the DBoF model.")
+#
+# flags.DEFINE_integer("fv_cluster_size", 64,
+#                      "Number of units in the NetVLAD cluster layer.")
+#
+# flags.DEFINE_integer("fv_hidden_size", 2048,
+#                      "Number of units in the NetVLAD hidden layer.")
+# flags.DEFINE_bool("fv_relu", True,
+#                   "ReLU after the NetFV hidden layer.")
+#
+#
+# flags.DEFINE_bool("fv_couple_weights", True,
+#                   "Coupling cluster weights or not")
+#
+# flags.DEFINE_integer("fv_coupling_factor", 0.01,
+#                      "Coupling factor")
+#
+#
+# flags.DEFINE_string("dbof_pooling_method", "max",
+#                     "The pooling method used in the DBoF cluster layer. "
+#                     "Choices are 'average' and 'max'.")
+# flags.DEFINE_string("video_level_classifier_model", "MoeModel",
+#                     "Some Frame-Level models can be decomposed into a "
+#                     "generalized pooling operation followed by a "
+#                     "classifier layer")
+# flags.DEFINE_integer("lstm_cells", 1024, "Number of LSTM cells.")
+# flags.DEFINE_integer("lstm_layers", 2, "Number of LSTM layers.")
+# flags.DEFINE_integer("lstm_cells_video", 1024, "Number of LSTM cells (video).")
+# flags.DEFINE_integer("lstm_cells_audio", 128, "Number of LSTM cells (audio).")
+#
+#
+#
+# flags.DEFINE_integer("gru_cells", 1024, "Number of GRU cells.")
+# flags.DEFINE_integer("gru_cells_video", 1024, "Number of GRU cells (video).")
+# flags.DEFINE_integer("gru_cells_audio", 128, "Number of GRU cells (audio).")
+# flags.DEFINE_integer("gru_layers", 2, "Number of GRU layers.")
+# flags.DEFINE_bool("lstm_random_sequence", False,
+#                   "Random sequence input for lstm.")
+# flags.DEFINE_bool("gru_random_sequence", False,
+#                   "Random sequence input for gru.")
+# flags.DEFINE_bool("gru_backward", False, "BW reading for GRU")
+# flags.DEFINE_bool("lstm_backward", False, "BW reading for LSTM")
+#
+#
+# flags.DEFINE_bool("fc_dimred", True, "Adding FC dimred after pooling")
 
 class LightVLAD():
     def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
@@ -241,10 +244,10 @@ class NetVLAD():
 class NetVLAGD():
     def __init__(self, feature_size,max_frames,cluster_size, add_batch_norm, is_training):
         self.feature_size = feature_size
-        self.max_frames = max_frames
+        self.max_frames = int(max_frames)
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
-        self.cluster_size = cluster_size
+        self.cluster_size = int(cluster_size)
 
     def forward(self,reshaped_input):
 
@@ -600,6 +603,10 @@ class NetVLADModelLF(models.BaseModel):
       'batch_size' x 'num_classes'.
     """
 
+    def __init__(self):
+        global FLAGS
+        FLAGS = Get_GlobalFLAG()
+
 
     def create_model(self,
                      model_input,
@@ -612,26 +619,14 @@ class NetVLADModelLF(models.BaseModel):
                      hidden_size=None,
                      is_training=True,
                      **unused_params):
-        iterations = iterations or FLAGS.iterations
         add_batch_norm = add_batch_norm or FLAGS.netvlad_add_batch_norm
-        random_frames = sample_random_frames or FLAGS.sample_random_frames
         cluster_size = cluster_size or FLAGS.netvlad_cluster_size
         hidden1_size = hidden_size or FLAGS.netvlad_hidden_size
         relu = FLAGS.netvlad_relu
-        dimred = FLAGS.netvlad_dimred
         gating = FLAGS.gating
         remove_diag = FLAGS.gating_remove_diag
         lightvlad = FLAGS.lightvlad
         vlagd = FLAGS.vlagd
-
-        num_frames = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
-        if random_frames:
-            model_input = utils.SampleRandomFrames(model_input, num_frames,
-                                                   iterations)
-        else:
-            model_input = utils.SampleRandomSequence(model_input, num_frames,
-                                                     iterations)
-
 
         max_frames = model_input.get_shape().as_list()[1]
         feature_size = model_input.get_shape().as_list()[2]
@@ -1175,6 +1170,9 @@ class NetFVModelLF(models.BaseModel):
       'batch_size' x 'num_classes'.
     """
 
+    def __init__(self):
+        global FLAGS
+        FLAGS = Get_GlobalFLAG()
 
     def create_model(self,
                      model_input,
