@@ -1,0 +1,39 @@
+# this is an example configfile
+
+# description of the train config
+
+# model setting
+name: gru_pooling
+EX_ID: EX_2
+batchsize: 8
+realbatchsize: 64
+moe_num_mixtures: 4
+frame_level_model: GruPoolingModel
+video_level_model: moe_model
+gru_cells: 1024
+gru_layers: 2
+rnn_swap_memory: true
+model_checkpoint_path: null
+scale: 8
+fix_length: 10
+
+
+# train setting
+one_hot: true
+base_learning_rate: 0.0001
+learning_rate_decay: 0.8
+decay_at_step: 10000
+num_epochs: 81
+max_step: null
+optimize: GradientDescentOptimizer
+keep_checkpoint_every_n_hour: 2
+max_to_keep: 10
+regularization_penalty: 0.0000001
+device_id:
+- 6
+
+# dataset seting
+vocab_size: 500
+
+# train path
+train_dir: /mnt/md0/LSVC/ExWorkSpace/gru_pooling_ex2/

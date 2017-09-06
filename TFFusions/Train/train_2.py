@@ -167,8 +167,14 @@ def main(config_yaml=None):
     init_op = tf.global_variables_initializer()
 
     # Load from TFRecord
-    val_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/val_*')
-    train_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/train_*')
+    data_kind = getattr(FLAGS,'train_data','inc')
+    if data_kind == 'inc':
+        val_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/val_*')
+        train_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/train_*')
+    elif data_kind == 'vgg':
+        val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
+        train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
+
     train_file_queue = tf.train.string_input_producer(train_file_list)
     val_file_queue = tf.train.string_input_producer(val_file_list)
     train_frame_len_batch, train_feature_batch, train_label_batch, train_name_batch = read_and_decode(train_file_queue,
