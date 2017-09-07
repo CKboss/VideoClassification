@@ -97,7 +97,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     return features_ret, target_label_ret, video_frames_ret
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_lstm_cell1024_EX20.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_NetVLAD_EX2.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -240,7 +240,7 @@ predict_result = np.concatenate(predict_result).reshape(-1,500)
 correct_labels = np.array(correct_labels)
 video_names = np.concatenate(video_names)
 
-np.savez('/datacenter/1/LSVC/downloads/accs_5.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
+np.savez(FLAGS.train_dir+'/accs_1.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
          label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels,video_names=video_names)
 
 coord.request_stop()

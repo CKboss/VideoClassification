@@ -8,7 +8,7 @@ import numpy as np
 
 # In[126]:
 
-data = np.load('/datacenter/1/LSVC/downloads/accs_4.binary.npz')
+data = np.load('/datacenter/1/LSVC/downloads/accs_5.binary.npz')
 cnt_1,cnt_5,cnt_10,cnt = data['acc_1'],data['acc_5'],data['acc_10'],data['label_cnt']
 correct_labels = data['correct_labels']
 predict_result = data['predict_result']
@@ -134,20 +134,18 @@ def toOneHot(x, vocab=500):
         ret[i, x[i]] = 1
     return ret
 
-def mean_ap(probs, labels, needSoftmax=True):
+def mean_ap(probs, labels,issigmoid=True):
     """
     Computes the mean average precision for all classes.
     :param probs: the predict probvalue batchsize x vocab_num
     :param labels: a one hot tensor which size is batchsize x vocab_num
     :return: a float num which is mean_ap
     """
-
-    if needSoftmax:
-        probs = softmax(probs)
-
     mAP = np.zeros((probs.shape[1], 1))
     for i in range(probs.shape[1]):
         iClass = probs[:, i]
+        if issigmoid==True:
+            iClass = sigmoid(iClass)
         iY = labels[:, i]
         idx = np.argsort(-iClass)
         iY = iY[idx]
@@ -167,16 +165,6 @@ def mean_ap(probs, labels, needSoftmax=True):
 correct_labels = toOneHot(correct_labels)
 
 
-# In[29]:
-
-mAP = mean_ap(predict_result,correct_labels,False)
-
-
-# In[30]:
-
-mAP
-
-
 # In[31]:
 
 mAP = mean_ap(predict_result,correct_labels)
@@ -185,4 +173,18 @@ mAP = mean_ap(predict_result,correct_labels)
 # In[32]:
 
 mAP
+
+
+def MaxMinNormalization(x):
+    Min = np.min(x)
+    Max = np.max(x)
+    x = (x - Min) / (Max - Min);
+    return x
+
+corr = 0
+for i in range(len(correct_labels)):
+    a = np.argmax(correct_labels[i])
+    b = np.argmax(predict_result[i])
+    corr += a==b
+print(corr/len(correct_labels))
 
