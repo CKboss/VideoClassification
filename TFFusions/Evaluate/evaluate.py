@@ -174,6 +174,8 @@ if FLAGS.model_checkpoint_path is not None:
     print('load model from {} ...'.format(FLAGS.model_checkpoint_path))
     Saver.restore(sess=sess, save_path=FLAGS.model_checkpoint_path)
     print('Success !!!')
+else:
+    raise NotImplementedError
 
 pylog.info('train_config: {}'.format(FLAGS.YAML))
 
