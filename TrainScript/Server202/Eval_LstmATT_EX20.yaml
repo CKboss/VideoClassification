@@ -21,6 +21,7 @@ lstm_layers: 2
 rnn_swap_memory: true
 
 model_checkpoint_path: /datacenter/1/LSVC/downloads/LstmAttention_EX20/LstmAttentionLstmModel_EX_20_save12000.ckpt-12000
+
 scale: 3
 
 fix_length: 64

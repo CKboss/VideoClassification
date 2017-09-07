@@ -4,6 +4,7 @@ import numpy as np
 file = '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz'
 # file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz'
 
+
 data = np.load(file)
 
 cnt_1,cnt_5,cnt_10,cnt = data['acc_1'],data['acc_5'],data['acc_10'],data['label_cnt']
@@ -74,6 +75,14 @@ def mean_ap(probs, labels):
                 mAP[i] = ap / count
     return np.mean(mAP)
 
+def write_to_file(filename):
+    with open(filename,'w') as f:
+        for i in range(len(pred)):
+            part2 = str(pred[i].tolist())[1:-1]
+            part2 = part2.replace(',','')
+            line = '{}, {}\n'.format(video_name[i],part2)
+            f.write(line)
+
 first_name = video_name[0]
 bk = False
 
@@ -87,8 +96,8 @@ for i,name in enumerate(video_name):
         elif bk == True:
             break
     p = predict_result[i]
-    p = p - np.max(p)
-    p = softmax(p)
+    p = p / np.max(p)
+    # p = softmax(p)
     label.append(correct_labels[i])
     pred.append(p)
 
@@ -128,12 +137,4 @@ for i in range(len(label)):
 
 print(corr/len(label))
 
-def write_to_file(filename):
-    with open(filename,'w') as f:
-        for i in range(len(pred)):
-            part2 = str(pred[i].tolist())[1:-1]
-            part2 = part2.replace(',','')
-            line = '{}, {}\n'.format(video_name[i],part2)
-            f.write(line)
-
-# write_to_file('/home/qiu/t4.txt')
+write_to_file('/home/qiu/t5.txt')
