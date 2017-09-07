@@ -139,6 +139,9 @@ def main(config_yaml=None):
     predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_size, num_frames=num_frames,
                                         num_mixtures=FLAGS.moe_num_mixtures)
     predict_labels = predict_labels['predictions']
+    enable_softmax = getattr(FLAGS,'enable_softmax',False)
+    if enable_softmax:
+        predict_labels = tf.nn.softmax(predict_labels)
 
     vars = tf.trainable_variables()
     lossL2 = tf.add_n([tf.nn.l2_loss(v) for v in vars if 'bias' not in v.name]) * FLAGS.regularization_penalty

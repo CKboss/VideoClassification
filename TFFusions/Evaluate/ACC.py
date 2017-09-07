@@ -13,6 +13,7 @@ print('data.files:',data.files)
 
 for zid in np.where(cnt==0)[0].tolist():
     cnt[zid] += 1
+    print('add 1 to {}'.format(zid))
 
 acc_1 = cnt_1/cnt
 acc_5 = cnt_5/cnt
@@ -24,7 +25,6 @@ video_name = list(map(lambda x : x.decode(), video_names.tolist()))
 
 
 # In[128]:
-
 def softmax(x):
     """Compute softmax values for each sets of scores in x."""
     return np.exp(x) / np.sum(np.exp(x))
@@ -127,3 +127,12 @@ for i in range(len(label)):
 
 print(corr/len(label))
 
+def write_to_file(filename):
+    with open(filename,'w') as f:
+        for i in range(len(pred)):
+            part2 = str(pred[i].tolist())[1:-1]
+            part2 = part2.replace(',','')
+            line = '{}, {}\n'.format(video_name[i],part2)
+            f.write(line)
+
+write_to_file('/home/qiu/t4.txt')

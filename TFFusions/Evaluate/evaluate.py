@@ -126,6 +126,10 @@ predict_labels = model.create_model(model_input=inputs, vocab_size=FLAGS.vocab_s
                                     num_mixtures=FLAGS.moe_num_mixtures)
 predict_labels = predict_labels['predictions']
 
+enable_softmax = getattr(FLAGS,'enable_softmax',False)
+if enable_softmax:
+    predict_labels = tf.nn.softmax(predict_labels)
+
 tp_1 = tf.nn.top_k(predict_labels,k=1)
 tp_5 = tf.nn.top_k(predict_labels,k=5)
 tp_10 = tf.nn.top_k(predict_labels,k=10)
