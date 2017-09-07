@@ -97,9 +97,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     return features_ret, target_label_ret, video_frames_ret
 
-FLAGS = None
-
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_lstmAtt_EX1.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_lstm_cell1024_EX20.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -184,6 +182,7 @@ acc_10 = np.zeros((500))
 label_cnt = np.zeros(500)
 predict_result = []
 correct_labels = []
+video_names = []
 
 for i in range(loop):
 
@@ -199,23 +198,50 @@ for i in range(loop):
     # _,top_1 = sess.run(tp_1,feed_dict=fd)
     # _,top_5 = sess.run(tp_5,feed_dict=fd)
 
-    (_,top_10),pred = sess.run([tp_10,predict_labels],feed_dict=fd)
-    predict_result.append(pred)
-    correct_labels.append(input_target_labels)
-    for j,label in  enumerate(input_target_labels):
-        if label == top_10[j][0]:
+    (_,tf_top_10),pred = sess.run([tp_10,predict_labels],feed_dict=fd)
+
+    Labels = np.argmax(input_target_labels,axis=1)
+
+    video_names.append(test_name)
+
+    for j in range(FLAGS.batchsize):
+
+        l = j*FLAGS.scale
+        r = l+FLAGS.scale
+        ped = np.sum(pred[l:r],axis=0)/FLAGS.scale
+        top_10 = np.argsort(ped)[-10:][::-1]
+        label = Labels[l]
+
+        if label == top_10[0]:
             acc_1[label] += 1
-        if label in top_10[j][:5]:
+        if label in top_10[:5]:
             acc_5[label] += 1
-        if label in top_10[j]:
+        if label in top_10:
             acc_10[label] += 1
+
         label_cnt[label] += 1
 
-predict_result = np.concatenate(predict_result)
-correct_labels = np.concatenate(correct_labels)
+        predict_result.append(np.array(ped))
+        correct_labels.append(label)
 
-np.savez('/datacenter/1/LSVC/downloads/accs_2.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
-         label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels)
+    # for j,label in  enumerate(input_target_labels):
+    #     if label == top_10[j][0]:
+    #         acc_1[label] += 1
+    #     if label in top_10[j][:5]:
+    #         acc_5[label] += 1
+    #     if label in top_10[j]:
+    #         acc_10[label] += 1
+    #     label_cnt[label] += 1
+
+# predict_result = np.concatenate(predict_result)
+# correct_labels = np.concatenate(correct_labels)
+
+predict_result = np.concatenate(predict_result).reshape(-1,500)
+correct_labels = np.array(correct_labels)
+video_names = np.concatenate(video_names)
+
+np.savez('/datacenter/1/LSVC/downloads/accs_5.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
+         label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels,video_names=video_names)
 
 coord.request_stop()
 coord.join(threads)
