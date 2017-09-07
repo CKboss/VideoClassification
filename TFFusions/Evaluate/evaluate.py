@@ -97,7 +97,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     return features_ret, target_label_ret, video_frames_ret
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_NetVLAD_EX2.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20.yaml'
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -198,10 +198,6 @@ for i in range(loop):
     input_features, input_target_labels, input_video_frames = split_into_small_peice(input_features, input_target_labels, input_video_frames)
     fd = {inputs: input_features, target_labels: input_target_labels, num_frames: input_video_frames}
 
-    # pred = sess.run(predict_labels,feed_dict=fd)
-    # _,top_1 = sess.run(tp_1,feed_dict=fd)
-    # _,top_5 = sess.run(tp_5,feed_dict=fd)
-
     (_,tf_top_10),pred = sess.run([tp_10,predict_labels],feed_dict=fd)
 
     Labels = np.argmax(input_target_labels,axis=1)
@@ -228,23 +224,11 @@ for i in range(loop):
         predict_result.append(np.array(ped))
         correct_labels.append(label)
 
-    # for j,label in  enumerate(input_target_labels):
-    #     if label == top_10[j][0]:
-    #         acc_1[label] += 1
-    #     if label in top_10[j][:5]:
-    #         acc_5[label] += 1
-    #     if label in top_10[j]:
-    #         acc_10[label] += 1
-    #     label_cnt[label] += 1
-
-# predict_result = np.concatenate(predict_result)
-# correct_labels = np.concatenate(correct_labels)
-
 predict_result = np.concatenate(predict_result).reshape(-1,500)
 correct_labels = np.array(correct_labels)
 video_names = np.concatenate(video_names)
 
-file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary'
+file = FLAGS.train_dir+'acc_1.binary'
 np.savez(file,acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
          label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels,video_names=video_names)
 

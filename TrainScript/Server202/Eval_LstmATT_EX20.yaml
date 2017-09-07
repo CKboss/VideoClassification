@@ -22,7 +22,7 @@ rnn_swap_memory: true
 
 model_checkpoint_path: null
 
-scale: 4
+scale: 3
 
 fix_length: 64
 

@@ -1,6 +1,7 @@
 import numpy as np
 
-file = '/datacenter/1/LSVC/downloads/accs_5.binary.npz'
+# file = '/datacenter/1/LSVC/downloads/accs_5.binary.npz'
+file = '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz'
 # file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz'
 
 data = np.load(file)
@@ -135,4 +136,4 @@ def write_to_file(filename):
             line = '{}, {}\n'.format(video_name[i],part2)
             f.write(line)
 
-write_to_file('/home/qiu/t4.txt')
+# write_to_file('/home/qiu/t4.txt')
