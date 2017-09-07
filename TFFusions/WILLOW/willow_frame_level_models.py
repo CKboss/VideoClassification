@@ -310,7 +310,6 @@ class GatedDBoF():
         self.is_training = is_training
         self.add_batch_norm = add_batch_norm
         self.cluster_size = cluster_size
-        self.max_pool = max_pool
 
     def forward(self, reshaped_input):
 
@@ -319,7 +318,6 @@ class GatedDBoF():
         add_batch_norm = self.add_batch_norm
         max_frames = self.max_frames
         is_training = self.is_training
-        max_pool = self.max_pool
 
         cluster_weights = tf.get_variable("cluster_weights",
                                           [feature_size, cluster_size],
@@ -1033,6 +1031,108 @@ class GatedDbofModelLF(models.BaseModel):
             dbof_audio = audio_Dbof.forward(reshaped_input[:, 1024:])
 
         dbof = tf.concat([dbof_video, dbof_audio], 1)
+
+        dbof_dim = dbof.get_shape().as_list()[1]
+
+        if fc_dimred:
+            hidden1_weights = tf.get_variable("hidden1_weights",
+                                              [dbof_dim, hidden1_size],
+                                              initializer=tf.random_normal_initializer(
+                                                  stddev=1 / math.sqrt(cluster_size)))
+            tf.summary.histogram("hidden1_weights", hidden1_weights)
+            activation = tf.matmul(dbof, hidden1_weights)
+
+            if add_batch_norm and relu:
+                activation = slim.batch_norm(
+                    activation,
+                    center=True,
+                    scale=True,
+                    is_training=is_training,
+                    scope="hidden1_bn")
+            else:
+                hidden1_biases = tf.get_variable("hidden1_biases",
+                                                 [hidden1_size],
+                                                 initializer=tf.random_normal_initializer(stddev=0.01))
+                tf.summary.histogram("hidden1_biases", hidden1_biases)
+                activation += hidden1_biases
+
+            if relu:
+                activation = tf.nn.relu6(activation)
+            tf.summary.histogram("hidden1_output", activation)
+        else:
+            activation = dbof
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=activation,
+            vocab_size=vocab_size,
+            is_training=is_training,
+            **unused_params)
+
+
+class GatedDbofModelLF_VideoOnly(models.BaseModel):
+    """Creates a Gated Deep Bag of Frames model.
+    The model projects the features for each frame into a higher dimensional
+    'clustering' space, pools across frames in that space, and then
+    uses a configurable video-level model to classify the now aggregated features.
+    The model will randomly sample either frames or sequences of frames during
+    training to speed up convergence.
+    Args:
+      model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                   input features.
+      vocab_size: The number of classes in the dataset.
+      num_frames: A vector of length 'batch' which indicates the number of
+           frames for each video (before padding).
+    Returns:
+      A dictionary with a tensor containing the probability predictions of the
+      model in the 'predictions' key. The dimensions of the tensor are
+      'batch_size' x 'num_classes'.
+    """
+
+    def __init__(self):
+        global FLAGS
+        FLAGS = Get_GlobalFLAG()
+
+    def create_model(self,
+                     model_input,
+                     vocab_size,
+                     num_frames,
+                     iterations=None,
+                     add_batch_norm=None,
+                     sample_random_frames=None,
+                     cluster_size=None,
+                     hidden_size=None,
+                     is_training=True,
+                     **unused_params):
+        add_batch_norm = add_batch_norm or FLAGS.dbof_add_batch_norm
+        cluster_size = cluster_size or FLAGS.dbof_cluster_size
+        hidden1_size = hidden_size or FLAGS.dbof_hidden_size
+        fc_dimred = getattr(FLAGS,'fc_dimred',True)
+        relu = getattr(FLAGS,'dbof_relu',True)
+        max_pool = getattr(FLAGS,'softdbof_maxpool',None)
+
+        max_frames = model_input.get_shape().as_list()[1]
+        feature_size = model_input.get_shape().as_list()[2]
+        reshaped_input = tf.reshape(model_input, [-1, feature_size])
+        # tf.summary.histogram("input_hist", reshaped_input)
+
+        FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+        video_Dbof = GatedDBoF(FEATURE_SIZE, max_frames, cluster_size, max_pool, add_batch_norm, is_training)
+
+        if add_batch_norm:
+            reshaped_input = slim.batch_norm(
+                reshaped_input,
+                center=True,
+                scale=True,
+                is_training=is_training,
+                scope="input_bn")
+
+        with tf.variable_scope("video_DBOF"):
+            dbof_video = video_Dbof.forward(reshaped_input[:, 0:FEATURE_SIZE])
+
+        dbof = dbof_video
 
         dbof_dim = dbof.get_shape().as_list()[1]
 
