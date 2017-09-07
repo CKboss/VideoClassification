@@ -240,7 +240,8 @@ predict_result = np.concatenate(predict_result).reshape(-1,500)
 correct_labels = np.array(correct_labels)
 video_names = np.concatenate(video_names)
 
-np.savez(FLAGS.train_dir+'/accs_1.binary',acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
+file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary'
+np.savez(file,acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
          label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels,video_names=video_names)
 
 coord.request_stop()
