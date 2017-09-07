@@ -14,6 +14,10 @@ from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20.yaml'
+LOAD_YAML_TO_FLAG(train_config)
+FLAGS = Get_GlobalFLAG()
+
 def read_and_decode(filename_queue, batch_size):
     reader = tf.TFRecordReader()
 
@@ -29,7 +33,9 @@ def read_and_decode(filename_queue, batch_size):
 
     frame_len = tffeatures['frame_len']
     features = tf.decode_raw(tffeatures['features'], tf.float32)
-    features = tf.reshape(features, [600, 1024])
+    global FLAGS
+    FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+    features = tf.reshape(features, [600, FEATURE_SIZE])
     labels = tf.decode_raw(tffeatures['labels'], tf.int32)
     labels = tf.reshape(labels, [500])
     name = tffeatures['name']
@@ -97,9 +103,6 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
 
     return features_ret, target_label_ret, video_frames_ret
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20.yaml'
-LOAD_YAML_TO_FLAG(train_config)
-FLAGS = Get_GlobalFLAG()
 
 if os.path.exists(FLAGS.train_dir) == False:
     print('mk train dir {}'.format(FLAGS.train_dir))
@@ -112,7 +115,8 @@ one_hot = getattr(FLAGS, 'one_hot', False)
 if FLAGS.device_id != None:
     os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.device_id)[1:-1]
 
-inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, 1024))
+FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, FEATURE_SIZE))
 num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
 
 if one_hot == True:
@@ -138,7 +142,14 @@ tp_10 = tf.nn.top_k(predict_labels,k=10)
 init_op = tf.global_variables_initializer()
 
 # Load from TFRecord
-val_file_list = glob.glob('/datacenter/1/LSVC/inc_tfrecords/val_*')
+data_kind = getattr(FLAGS,'train_data','inc')
+if data_kind == 'inc':
+    val_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/val_*')
+elif data_kind == 'vgg':
+    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
+elif data_kind == 'sen':
+    val_file_list = glob.glob('/mnt/md0/LSVC/sen_tfrecords/val_*')
+
 val_file_queue = tf.train.string_input_producer(val_file_list)
 test_frame_len_batch, test_feature_batch, test_label_batch, test_name_batch = read_and_decode(val_file_queue, FLAGS.batchsize)
 
