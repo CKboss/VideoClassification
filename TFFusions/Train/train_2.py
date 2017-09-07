@@ -153,6 +153,8 @@ def main(config_yaml=None):
         lossfunc = CrossEntropyLoss()
         loss = lossfunc.calculate_loss(predict_labels, target_labels) + lossL2
     else:
+        # WARNNING!!!
+        # this loss function can't work well
         loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=predict_labels, labels=target_labels)
         loss = tf.reduce_mean(loss) + lossL2
 

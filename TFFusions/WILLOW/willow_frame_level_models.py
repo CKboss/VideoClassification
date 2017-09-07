@@ -769,12 +769,14 @@ class NetVLADModelLF_VideoOnly(models.BaseModel):
         feature_size = model_input.get_shape().as_list()[2]
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
 
+        FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+
         if lightvlad:
-            video_NetVLAD = LightVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            video_NetVLAD = LightVLAD(FEATURE_SIZE, max_frames, cluster_size, add_batch_norm, is_training)
         elif vlagd:
-            video_NetVLAD = NetVLAGD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            video_NetVLAD = NetVLAGD(FEATURE_SIZE, max_frames, cluster_size, add_batch_norm, is_training)
         else:
-            video_NetVLAD = NetVLAD(1024, max_frames, cluster_size, add_batch_norm, is_training)
+            video_NetVLAD = NetVLAD(FEATURE_SIZE, max_frames, cluster_size, add_batch_norm, is_training)
 
         if add_batch_norm:  # and not lightvlad:
             reshaped_input = slim.batch_norm(

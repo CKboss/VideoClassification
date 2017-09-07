@@ -21,10 +21,8 @@ acc_1 = cnt_1/cnt
 acc_5 = cnt_5/cnt
 acc_10 = cnt_10/cnt
 
-
 # In[127]:
 video_name = list(map(lambda x : x.decode(), video_names.tolist()))
-
 
 # In[128]:
 def softmax(x):
