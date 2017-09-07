@@ -96,7 +96,7 @@ for i,name in enumerate(video_name):
         elif bk == True:
             break
     p = predict_result[i]
-    p = p / np.max(p)
+    p = (p - np.min(p)) / (np.max(p) - np.min(p))
     # p = softmax(p)
     label.append(correct_labels[i])
     pred.append(p)
@@ -137,4 +137,4 @@ for i in range(len(label)):
 
 print(corr/len(label))
 
-write_to_file('/home/qiu/t5.txt')
+# write_to_file('/home/qiu/t5.txt')

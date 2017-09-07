@@ -126,7 +126,8 @@ def main(config_yaml=None):
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.device_id)[1:-1]
 
-    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, 1024))
+    FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+    inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, FEATURE_SIZE))
     num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
 
     if one_hot == True:
@@ -177,6 +178,10 @@ def main(config_yaml=None):
     elif data_kind == 'vgg':
         val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
         train_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/train_*')
+    elif data_kind == 'sen':
+        val_file_list = glob.glob('/mnt/md0/LSVC/sen_tfrecords/val_*')
+        train_file_list = glob.glob('/mnt/md0/LSVC/sen_tfrecords/train_*')
+
 
     train_file_queue = tf.train.string_input_producer(train_file_list)
     val_file_queue = tf.train.string_input_producer(val_file_list)

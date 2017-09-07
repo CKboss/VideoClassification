@@ -1,5 +1,6 @@
 import TFFusions.Config.Config as Config
 from TFFusions.toolkits.dataloader import getTrainItems, concurrent_get_items, getTestItems, getValItems, Load_Features_SENET, Load_Features_INC
+from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG
 
 import tensorflow as tf
 import numpy as np
@@ -73,6 +74,7 @@ def RUN_make_TF_records():
         make_tfrecord(items, filename, kind='val')
         # make_tfrecord(items, filename, kind='train')
 
+FLAGS = None
 
 def read_and_decode(filename_queue, batch_size):
     reader = tf.TFRecordReader()
@@ -86,10 +88,14 @@ def read_and_decode(filename_queue, batch_size):
                                              'features': tf.FixedLenFeature([], tf.string),
                                              'labels': tf.FixedLenFeature([], tf.string),
                                          })
+    global FLAGS
+    if FLAGS is None:
+        FLAGS = Get_GlobalFLAG()
+    FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
 
     frame_len = tffeatures['frame_len']
     features = tf.decode_raw(tffeatures['features'], tf.float32)
-    features = tf.reshape(features, [600, 1024])
+    features = tf.reshape(features, [600, FEATURE_SIZE])
     labels = tf.decode_raw(tffeatures['labels'], tf.int32)
     labels = tf.reshape(labels, [500])
     name = tffeatures['name']
