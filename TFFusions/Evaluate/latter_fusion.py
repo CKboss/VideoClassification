@@ -193,12 +193,15 @@ acc_1 = acc_1/cnt
 acc_5 = acc_5/cnt
 acc_10 = acc_10/cnt
 
+
 # In[27]:
 items = sorted(list(zip(acc_1.tolist(),list(range(500)))))
 # In[28]:
 for item in items:
     print('{:3}  {:30} {:.5f}    {:3.0f}'.format(item[1],Labels[item[1]],item[0]*100,cnt[item[1]]))
 
+print('')
+print('mean_ap: top_1 {:2f} top_5 {:2f} top_10 {:2f}'.format(np.mean(acc_1)*100,np.mean(acc_5)*100,np.mean(acc_10)*100))
 mAP = mean_ap(pred,label)
 print('mAP:',mAP)
 
