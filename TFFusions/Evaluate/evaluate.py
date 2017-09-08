@@ -15,7 +15,8 @@ from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_NetVLAD_EX3.yaml'
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save16000_EX2.yaml'
+# train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save16000_EX2.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_lstm_cell1024_EX20.yaml'
 
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()

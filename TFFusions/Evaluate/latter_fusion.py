@@ -6,6 +6,7 @@
 
 npz_file_list = [
     # '/datacenter/1/LSVC/downloads/accs_5.binary.npz',
+    '/datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
     '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
@@ -136,8 +137,6 @@ def Chuli():
         else: common_video_name = common_video_name.intersection(set(tmp.video_names))
         NPZs.append(tmp)
 
-        # print('model acc_1: {} acc_5: {} acc_10: {}')
-
     return NPZs
 
 # load label
@@ -160,6 +159,8 @@ label = np.zeros((len(common_video_name),500))
 model_num = len(npz_file_list)
 
 acc_1 = np.zeros(500)
+acc_5 = np.zeros(500)
+acc_10 = np.zeros(500)
 cnt = np.zeros(500)
 
 for id,video_name in enumerate(common_video_name):
@@ -174,9 +175,13 @@ for id,video_name in enumerate(common_video_name):
     label[id] = npz.correct_labels[npz.name2id[video_name]]
 
     a = np.argmax(label[id])
-    b = np.argmax(pred[id])
-    if a==b:
+    b = np.argsort(-pred[id])[:10]
+    if a==b[0]:
         acc_1[a]+=1
+    if a in b[:5]:
+        acc_5[a]+=1
+    if a in b:
+        acc_10[a]+=1
     cnt[a]+=1
 
 
@@ -185,6 +190,8 @@ for zid in np.where(cnt==0)[0].tolist():
     print('add 1 to {}'.format(zid))
 
 acc_1 = acc_1/cnt
+acc_5 = acc_5/cnt
+acc_10 = acc_10/cnt
 
 # In[27]:
 items = sorted(list(zip(acc_1.tolist(),list(range(500)))))
