@@ -19,7 +19,6 @@ weights = np.array([1, 1, 1, 1]) / model_num
 
 #############################
 
-
 class NPZ(object):
     cnt_1 = 0
     cnt_5 = 0
@@ -122,7 +121,7 @@ def Chuli():
                 p -= np.max(p)
                 p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 p = softmax(p)
-                # p = (p - np.min(p)) / (np.max(p) - np.min(p))
+                p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 tmp.predict_result.append(p)
 
         tmp.predict_result = np.concatenate(tmp.predict_result).reshape(-1,500)
