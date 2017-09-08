@@ -14,7 +14,7 @@ npz_file_list = [
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([0.9, 1, 3, 2.5]) / model_num
+weights = np.array([1, 1, 1, 1]) / model_num
 
 
 #############################
@@ -122,7 +122,7 @@ def Chuli():
                 p -= np.max(p)
                 p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 p = softmax(p)
-                p = (p - np.min(p)) / (np.max(p) - np.min(p))
+                # p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 tmp.predict_result.append(p)
 
         tmp.predict_result = np.concatenate(tmp.predict_result).reshape(-1,500)
@@ -150,8 +150,10 @@ with open('/datacenter/1/LSVC/lsvc_class_index.txt','r') as f:
 
 Chuli()
 
-pred = np.zeros((len(common_video_name),500))
-label = np.zeros((len(common_video_name),500))
+common_video_num = len(common_video_name)
+
+pred = np.zeros((common_video_num,500))
+label = np.zeros((common_video_num,500))
 
 
 acc_1 = np.zeros(500)
@@ -218,4 +220,8 @@ def write_to_file(filename):
             line = '{}, {}\n'.format(video_name,part2)
             f.write(line)
 
-# write_to_file('/home/qiu/t6.txt')
+write_to_file('/home/qiu/t7.txt')
+
+
+# for id,video_name in enumerate(common_video_name):
+#     print(np.max(pred[id]))
