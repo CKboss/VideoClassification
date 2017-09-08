@@ -226,7 +226,6 @@ def write_to_file(filename):
 # write_to_file('/home/qiu/t9.txt')
 
 #
-#
 # for id,video_name in enumerate(common_video_name):
 #     print(id)
 #     print(video_name)
