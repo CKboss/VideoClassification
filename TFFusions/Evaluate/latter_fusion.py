@@ -1,3 +1,5 @@
+import numpy as np
+
 #############################
 #    FUSION_NPZ_FILE_LIST   #
 #############################
@@ -12,12 +14,12 @@ npz_file_list = [
     '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
 ]
 
-# weight_list = [0.33,0.33,0.33]
+model_num = len(npz_file_list)
+weights = np.array([1,1,1,1]) / model_num
 
 
 #############################
 
-import numpy as np
 
 class NPZ(object):
     cnt_1 = 0
@@ -152,7 +154,6 @@ Chuli()
 pred = np.zeros((len(common_video_name),500))
 label = np.zeros((len(common_video_name),500))
 
-model_num = len(npz_file_list)
 
 acc_1 = np.zeros(500)
 acc_5 = np.zeros(500)
@@ -163,10 +164,10 @@ for id,video_name in enumerate(common_video_name):
     tmp_pred = None
     for i,npz in enumerate(NPZs):
         id = npz.name2id[video_name]
-        if tmp_pred is None: tmp_pred = npz.predict_result[id]
-        else: tmp_pred += npz.predict_result[id]
+        if tmp_pred is None: tmp_pred = npz.predict_result[id]*weights[i]
+        else: tmp_pred += npz.predict_result[id]*weights[i]
 
-    tmp_pred /= model_num
+    # tmp_pred /= model_num
     pred[id] = tmp_pred
     label[id] = npz.correct_labels[npz.name2id[video_name]]
 
