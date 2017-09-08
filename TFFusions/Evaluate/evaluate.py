@@ -14,7 +14,9 @@ from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20.yaml'
+# train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_NetVLAD_EX3.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save16000_EX2.yaml'
+
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
 
@@ -144,11 +146,11 @@ init_op = tf.global_variables_initializer()
 # Load from TFRecord
 data_kind = getattr(FLAGS,'train_data','inc')
 if data_kind == 'inc':
-    val_file_list = glob.glob('/mnt/md0/LSVC/inc_tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/inc_tfrecords/val_*')
 elif data_kind == 'vgg':
-    val_file_list = glob.glob('/mnt/md0/LSVC/tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/val_*')
 elif data_kind == 'sen':
-    val_file_list = glob.glob('/mnt/md0/LSVC/sen_tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/sen_tfrecords/val_*')
 
 val_file_queue = tf.train.string_input_producer(val_file_list)
 test_frame_len_batch, test_feature_batch, test_label_batch, test_name_batch = read_and_decode(val_file_queue, FLAGS.batchsize)

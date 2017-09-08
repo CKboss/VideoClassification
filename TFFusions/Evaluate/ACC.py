@@ -1,8 +1,13 @@
 import numpy as np
 
 # file = '/datacenter/1/LSVC/downloads/accs_5.binary.npz'
-file = '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz'
+# file = '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz'
+# netvlad_3
+# file = '/datacenter/1/LSVC/ExWorkSpace/Eval_NetVLAD_Video_EX3/acc_1.binary.npz'
 # file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz'
+file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz'
+
+# file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX2/acc_1.binary.npz'
 
 
 data = np.load(file)
@@ -31,6 +36,9 @@ def softmax(x):
 
 def sigmoid(x):
     return 1/(1+np.exp(-x))
+
+def tanh(x):
+    return (np.exp(x)-np.exp(-x))/(np.exp(x)+np.exp(-x))
 
 def normalize(v):
     norm=np.linalg.norm(v, ord=1)
@@ -69,8 +77,8 @@ def mean_ap(probs, labels):
             if iY[j] == 1:
                 count = count + 1
                 ap = ap + count / float(j + 1)
-            if count != 0:
-                mAP[i] = ap / count
+        if count != 0:
+            mAP[i] = ap / count
     return np.mean(mAP)
 
 def write_to_file(filename):
@@ -94,8 +102,10 @@ for i,name in enumerate(video_name):
         elif bk == True:
             break
     p = predict_result[i]
+    p -= np.max(p)
     p = (p - np.min(p)) / (np.max(p) - np.min(p))
-    # p = softmax(p)
+    p = softmax(p)
+    # p = tanh(p)
     label.append(correct_labels[i])
     pred.append(p)
 
@@ -133,6 +143,7 @@ for i in range(len(label)):
     b = np.argmax(pred[i])
     corr += a==b
 
-print(corr/len(label))
+accuracy_all = corr/len(label)
+print('accuracy_all:',accuracy_all)
 
 # write_to_file('/home/qiu/t5.txt')

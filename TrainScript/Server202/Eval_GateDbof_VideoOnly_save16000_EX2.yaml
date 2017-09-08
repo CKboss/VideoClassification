@@ -1,0 +1,43 @@
+# Eval GatedDbofModel video only
+
+name: Eval_GatedDbof_Videoonly
+EX_ID: EX_2
+batchsize: 64
+model_checkpoint_path: /datacenter/1/LSVC/downloads/GatedDBof_EX1_16000/GatedDbof_Videoonly_EX_1_save16000.ckpt-16000
+scale: 3
+fix_length: 32
+
+# Model Setting
+frame_level_model: GatedDbofModelLF_VideoOnly
+video_level_classifier_model: MoeModel
+dbof_add_batch_norm: true
+dbof_cluster_size: 128
+dbof_hidden_size: 1024
+dbof_relu: true
+gating: true
+lightvlad: false
+vlagd: true
+moe_num_mixtures: 4
+gating_remove_diag: false
+regularization_penalty: 0.000001
+
+# Train Setting
+one_hot: true
+base_learning_rate: 0.1
+learning_rate_decay: 0.7
+decay_at_step: 5000
+num_epochs: 41
+max_step: null
+optimize: GradientDescentOptimizer
+keep_checkpoint_every_n_hour: 2
+
+device_id:
+- 6
+
+# dataset seting
+vocab_size: 500
+
+# train path
+train_data: sen
+feature_size: 2048
+train_dir: /datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX2/
