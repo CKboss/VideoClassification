@@ -7,7 +7,6 @@ import numpy as np
 # each npz shold have correct_labels, predict_results, video_names
 
 npz_file_list = [
-    # '/datacenter/1/LSVC/downloads/accs_5.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
     '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
@@ -15,7 +14,7 @@ npz_file_list = [
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([1,1,1,1]) / model_num
+weights = np.array([0.9, 1, 3, 2.5]) / model_num
 
 
 #############################
