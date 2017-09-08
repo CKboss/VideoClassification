@@ -118,6 +118,7 @@ def Chuli():
             p -= np.max(p)
             p = (p - np.min(p)) / (np.max(p) - np.min(p))
             p = softmax(p)
+            p = (p - np.min(p)) / (np.max(p) - np.min(p))
             pred.append(p)
             label.append(correct_labels[i])
 
@@ -214,4 +215,12 @@ for i in range(len(label)):
 accuracy_all = corr/len(label)
 print('accuracy_all:',accuracy_all)
 
-# write_to_file('/home/qiu/t5.txt')
+def write_to_file(filename):
+    with open(filename,'w') as f:
+        for id,video_name in enumerate(common_video_name):
+            part2 = str(pred[id].tolist())[1:-1]
+            part2 = part2.replace(',','')
+            line = '{}, {}\n'.format(video_name,part2)
+            f.write(line)
+
+# write_to_file('/home/qiu/t6.txt')
