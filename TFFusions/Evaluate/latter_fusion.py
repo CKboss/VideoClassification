@@ -14,7 +14,7 @@ npz_file_list = [
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([1, 1, 1, 1]) / model_num
+weights = np.array([0.8, 0.8, 2.5, 2]) / model_num
 
 
 #############################
@@ -83,12 +83,14 @@ def mean_ap(probs, labels):
 
 NPZs = []
 common_video_name = None
+common_video_num = None
 
 # load files
 def Chuli():
 
     global NPZs
     global common_video_name
+    global common_video_num
 
     for file in npz_file_list:
 
@@ -133,6 +135,9 @@ def Chuli():
 
         NPZs.append(tmp)
 
+    common_video_name = sorted(list(common_video_name))
+    common_video_num = len(common_video_name)
+
     return NPZs
 
 # load label
@@ -149,7 +154,6 @@ with open('/datacenter/1/LSVC/lsvc_class_index.txt','r') as f:
 
 Chuli()
 
-common_video_num = len(common_video_name)
 
 pred = np.zeros((common_video_num,500))
 label = np.zeros((common_video_num,500))
@@ -163,9 +167,9 @@ cnt = np.zeros(500)
 for id,video_name in enumerate(common_video_name):
     tmp_pred = None
     for i,npz in enumerate(NPZs):
-        id = npz.name2id[video_name]
-        if tmp_pred is None: tmp_pred = npz.predict_result[id]*weights[i]
-        else: tmp_pred += npz.predict_result[id]*weights[i]
+        ID = npz.name2id[video_name]
+        if tmp_pred is None: tmp_pred = npz.predict_result[ID]*weights[i]
+        else: tmp_pred += npz.predict_result[ID]*weights[i]
 
     # tmp_pred /= model_num
     pred[id] = tmp_pred
@@ -219,8 +223,12 @@ def write_to_file(filename):
             line = '{}, {}\n'.format(video_name,part2)
             f.write(line)
 
-write_to_file('/home/qiu/t7.txt')
+# write_to_file('/home/qiu/t9.txt')
 
-
+#
+#
 # for id,video_name in enumerate(common_video_name):
-#     print(np.max(pred[id]))
+#     print(id)
+#     print(video_name)
+#     print(pred[id])
+#     break
