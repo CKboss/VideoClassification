@@ -5,9 +5,17 @@ import numpy as np
 # netvlad_3
 # file = '/datacenter/1/LSVC/ExWorkSpace/Eval_NetVLAD_Video_EX3/acc_1.binary.npz'
 # file = '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz'
-file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz'
+# file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz'
+
+
+file_lst = ['/datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/acc_1.binary.npz',
+'/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
+'/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
+'/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',]
 
 # file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX2/acc_1.binary.npz'
+
+file = file_lst[3]
 
 
 data = np.load(file)
@@ -142,6 +150,8 @@ for i in range(len(label)):
     a = np.argmax(label[i])
     b = np.argmax(pred[i])
     corr += a==b
+    # if a==0 and b==0:
+    #     print(a,b)
 
 accuracy_all = corr/len(label)
 print('accuracy_all:',accuracy_all)

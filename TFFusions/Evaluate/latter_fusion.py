@@ -24,9 +24,9 @@ class NPZ(object):
     cnt_5 = 0
     cnt_10 = 0
     cnt = 0
-    correct_labels = None
-    predict_result = None
-    video_names = None
+    correct_labels = []
+    predict_result = []
+    video_names = []
     name2id = dict()
 
 
@@ -105,37 +105,32 @@ def Chuli():
         tmp.cnt_1 = cnt_1
         tmp.cnt_5 = cnt_5
         tmp.cnt_10 = cnt_10
+        tmp.video_names = video_names
+        tmp.correct_labels = []
+        tmp.predict_result = []
+        tmp.name2id = dict()
 
-        first_name = video_names[0]
-        bk = False
-        pred = []
-        label = []
-        for i,name in enumerate(video_names):
-            if name == first_name:
-                if bk == False: bk = True
-                elif bk == True: break
-            p = predict_result[i]
-            p -= np.max(p)
-            p = (p - np.min(p)) / (np.max(p) - np.min(p))
-            p = softmax(p)
-            p = (p - np.min(p)) / (np.max(p) - np.min(p))
-            pred.append(p)
-            label.append(correct_labels[i])
+        for i,name in enumerate(tmp.video_names):
+            goon = tmp.name2id.get(name,None)
+            if goon is None:
+                tmp.name2id[name] = i
+                tmp.video_names.append(name)
+                tmp.correct_labels.append(correct_labels[i])
+                # do something
+                p = predict_result[i]
+                p -= np.max(p)
+                p = (p - np.min(p)) / (np.max(p) - np.min(p))
+                p = softmax(p)
+                p = (p - np.min(p)) / (np.max(p) - np.min(p))
+                tmp.predict_result.append(p)
 
-        reallen = len(pred)
-        pred = np.concatenate(pred).reshape(-1,500)
-        label = np.array(label)
-        label = toOneHot(label)
-
-        tmp.video_names = video_names[:reallen]
-        tmp.correct_labels = label[:reallen,:]
-        tmp.predict_result = pred[:reallen,:]
-
-        for id in range(reallen):
-            tmp.name2id[tmp.video_names[id]] = min(id,tmp.name2id.get(tmp.video_names[id],999999999999999))
+        tmp.predict_result = np.concatenate(tmp.predict_result).reshape(-1,500)
+        tmp.correct_labels = np.array(tmp.correct_labels)
+        tmp.correct_labels = toOneHot(tmp.correct_labels)
 
         if common_video_name is None: common_video_name = set(tmp.video_names)
         else: common_video_name = common_video_name.intersection(set(tmp.video_names))
+
         NPZs.append(tmp)
 
     return NPZs
