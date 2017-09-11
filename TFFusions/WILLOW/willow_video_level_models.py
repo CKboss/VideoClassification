@@ -45,7 +45,6 @@ from TFFusions.Train.load_yaml_to_FLAG import Get_GlobalFLAG, SetDefaultlValueTo
 
 FLAGS = None
 
-
 class MoeModel(models.BaseModel):
     """A softmax over a mixture of logistic models (with L2 regularization)."""
 
