@@ -33,13 +33,14 @@ def find_class_by_name(name, models):
 
 #############################################################################
 
-def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, scale=8, one_hot=True):
+def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, scale=8, one_hot=True, only_shuffle=False):
     '''
     :param features:  a tensor batchsize x max_frams_len x features
     :param target_label: a tensor batchsize x 500
     :param video_frames: a tensor batchsize
     :param fix_lenght: a int output features's len
     :param scale: output batchsize will be mulit scale
+    :param only_shuffle: if set True will gen data without of order
     :return:
         features: (scale x batchsize) x fix_lenght x features
         target_label: (scale x batchsize) x 500
@@ -50,6 +51,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
     fix_lenght = getattr(FLAGS, 'fix_length', fix_lenght)
     scale = getattr(FLAGS, 'scale', scale)
     one_hot = getattr(FLAGS, 'one_hot', one_hot)
+    only_shuffle = getattr(FLAGS,'only_shuffle',only_shuffle)
 
     n = features.shape[0]
     n2 = target_label.shape[-1]
@@ -59,27 +61,45 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
     target_label_ret = []
     video_frames_ret = []
 
-    for i in range(n):
-        video_len = video_frames[i]
-        rid = random.choices(list(range(fix_lenght)), k=scale)
+    if only_shuffle == False:
+        for i in range(n):
+            video_len = video_frames[i]
+            rid = random.choices(list(range(fix_lenght)), k=scale)
 
-        ff = features[i,:,:]
-        if video_len <= fix_lenght:
-            ff = np.tile(ff,(fix_lenght//video_len+1,1))
-            video_len = fix_lenght + 1
+            ff = features[i,:,:]
+            if video_len <= fix_lenght:
+                ff = np.tile(ff,(fix_lenght//video_len+1,1))
+                video_len = fix_lenght + 1
 
-        for rg in rid:
-            l = rg
-            r = rg + fix_lenght - 1
-            if r >= video_len:
-                l = video_len - fix_lenght - 1
-                r = video_len - 2
-            features_ret.append(ff[l:r + 1, :])
-            video_frames_ret.append(fix_lenght)
-            if one_hot == True:
-                target_label_ret.append(target_label[i])
-            else:
-                target_label_ret.append(np.argmax(target_label[i]))
+            for rg in rid:
+                l = rg
+                r = rg + fix_lenght - 1
+                if r >= video_len:
+                    l = video_len - fix_lenght - 1
+                    r = video_len - 2
+                features_ret.append(ff[l:r + 1, :])
+                video_frames_ret.append(fix_lenght)
+                if one_hot == True:
+                    target_label_ret.append(target_label[i])
+                else:
+                    target_label_ret.append(np.argmax(target_label[i]))
+    elif only_shuffle == True:
+
+        for i in range(n):
+            video_len = video_frames[i]
+            ff = features[i,:,:]
+            if video_len <= fix_lenght:
+                ff = np.tile(ff,(fix_lenght//video_len+1,1))
+                video_len = fix_lenght + 1
+            for j in range(scale):
+                ids = random.choices(list(range(video_len)), k=fix_lenght)
+                for k in ids:
+                    features_ret.append(ff[k, :])
+                video_frames_ret.append(fix_lenght)
+                if one_hot == True:
+                    target_label_ret.append(target_label[i])
+                else:
+                    target_label_ret.append(np.argmax(target_label[i]))
 
     features_ret = np.vstack(features_ret).reshape(-1, fix_lenght, m)
     video_frames_ret = np.array(video_frames_ret)
