@@ -15,7 +15,7 @@ npz_file_list = [
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([0.8, 0.8, 2.5, 2, 1]) / model_num
+weights = np.array([0.8, 0.8, 2.1, 2.3, 0.8]) / model_num
 
 
 #############################
@@ -191,7 +191,7 @@ for zid in np.where(cnt==0)[0].tolist():
     cnt[zid] += 1
     print('add 1 to {}'.format(zid))
 
-str_accurency = 'accurancy: acc_1: {:2f}% acc_5: {:2f}% acc_10: {:2f}%'.format(np.sum(acc_1)/np.sum(cnt)*100,np.sum(acc_5)/np.sum(cnt)*100,np.sum(acc_10)/np.sum(cnt)*100)
+str_accurency = 'acc_1: {} acc_5: {} acc_10: {}'.format(np.sum(acc_1)/np.sum(cnt),np.sum(acc_5)/np.sum(cnt),np.sum(acc_10)/np.sum(cnt))
 
 acc_1 = acc_1/cnt
 acc_5 = acc_5/cnt
