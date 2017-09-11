@@ -9,13 +9,16 @@ import numpy as np
 
 
 file_lst = ['/datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/acc_1.binary.npz',
-        '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
-        '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
-        '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',]
+            '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
+            '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
+            '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
+            '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX3/acc_1.binary.npz',
+            '/datacenter/1/LSVC/ExWorkSpace/Eval_BILSTM_EX4_78000/acc_1.binary.npz',
+            ]
 
 # file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX2/acc_1.binary.npz'
 
-file = file_lst[3]
+file = file_lst[-1]
 
 
 data = np.load(file)

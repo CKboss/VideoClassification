@@ -1540,21 +1540,12 @@ class NetFVModelLF_VideoOnly(models.BaseModel):
                      hidden_size=None,
                      is_training=True,
                      **unused_params):
-        iterations = iterations or FLAGS.iterations
-        add_batch_norm = add_batch_norm or FLAGS.netvlad_add_batch_norm
-        random_frames = sample_random_frames or FLAGS.sample_random_frames
+        add_batch_norm = add_batch_norm or FLAGS.fv_add_batch_norm
         cluster_size = cluster_size or FLAGS.fv_cluster_size
         hidden1_size = hidden_size or FLAGS.fv_hidden_size
         relu = FLAGS.fv_relu
         gating = FLAGS.gating
 
-        num_frames = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
-        if random_frames:
-            model_input = utils.SampleRandomFrames(model_input, num_frames,
-                                                   iterations)
-        else:
-            model_input = utils.SampleRandomSequence(model_input, num_frames,
-                                                     iterations)
         max_frames = model_input.get_shape().as_list()[1]
         feature_size = model_input.get_shape().as_list()[2]
         reshaped_input = tf.reshape(model_input, [-1, feature_size])

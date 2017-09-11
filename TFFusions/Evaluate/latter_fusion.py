@@ -11,10 +11,11 @@ npz_file_list = [
     '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20/acc_1.binary.npz',
     '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
+    '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX3/acc_1.binary.npz',
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([0.8, 0.8, 2.5, 2]) / model_num
+weights = np.array([0.8, 0.8, 2.5, 2, 1]) / model_num
 
 
 #############################
@@ -123,7 +124,7 @@ def Chuli():
                 p -= np.max(p)
                 p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 p = softmax(p)
-                p = (p - np.min(p)) / (np.max(p) - np.min(p))
+                # p = (p - np.min(p)) / (np.max(p) - np.min(p))
                 tmp.predict_result.append(p)
 
         tmp.predict_result = np.concatenate(tmp.predict_result).reshape(-1,500)
@@ -190,6 +191,8 @@ for zid in np.where(cnt==0)[0].tolist():
     cnt[zid] += 1
     print('add 1 to {}'.format(zid))
 
+str_accurency = 'accurancy: acc_1: {:2f}% acc_5: {:2f}% acc_10: {:2f}%'.format(np.sum(acc_1)/np.sum(cnt)*100,np.sum(acc_5)/np.sum(cnt)*100,np.sum(acc_10)/np.sum(cnt)*100)
+
 acc_1 = acc_1/cnt
 acc_5 = acc_5/cnt
 acc_10 = acc_10/cnt
@@ -202,6 +205,7 @@ for item in items:
     print('{:3}  {:30} {:.5f}    {:3.0f}'.format(item[1],Labels[item[1]],item[0]*100,cnt[item[1]]))
 
 print('')
+print(str_accurency)
 print('mean_ap: top_1 {:2f}% top_5 {:2f}% top_10 {:2f}%'.format(np.mean(acc_1)*100,np.mean(acc_5)*100,np.mean(acc_10)*100))
 mAP = mean_ap(pred,label)
 print('mAP:',mAP)
