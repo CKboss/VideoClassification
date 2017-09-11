@@ -4,8 +4,8 @@ name: NetFV_Videoonly
 EX_ID: EX_2
 batchsize: 8
 model_checkpoint_path: null
-scale: 2
-fix_length: 32
+scale: 4
+fix_length: 64
 only_shuffle: true
 
 # Model Setting
@@ -21,20 +21,20 @@ lightvlad: false
 vlagd: true
 moe_num_mixtures: 4
 gating_remove_diag: false
-regularization_penalty: 0.000001
+regularization_penalty: 0.00001
 
 # Train Setting
 one_hot: true
-base_learning_rate: 0.9
+base_learning_rate: 0.1
 learning_rate_decay: 0.7
-decay_at_step: 5000
-num_epochs: 41
+decay_at_step: 2000
+num_epochs: 21
 max_step: null
 optimize: GradientDescentOptimizer
 keep_checkpoint_every_n_hour: 2
 
 device_id:
-- 6
+- 8
 
 # dataset seting
 vocab_size: 500
