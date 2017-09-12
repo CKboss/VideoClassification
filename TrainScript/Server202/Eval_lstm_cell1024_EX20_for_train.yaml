@@ -1,0 +1,86 @@
+# 2017-09-06 15:07:37,364-lstm-memory-cell1024_EX20-INFO: train_config: # 3. LSTM model (Section 2).
+
+# cell of LSTM is 1024.
+
+# layer of LSTM is 2.
+
+# mixture of MoE is 8.
+
+# model setting
+
+name: Eval_lstm-memory-cell1024
+
+EX_ID: EX20
+
+batchsize: 64
+
+loop: 1000
+
+moe_num_mixtures: 8
+
+frame_level_model: lstm_memory_model
+
+video_level_model: moe_model
+
+lstm_cells: 1024
+
+lstm_layers: 3
+
+rnn_swap_memory: true
+
+model_checkpoint_path: /datacenter/1/LSVC/downloads/lstm_cell1024_ex20_104000/lstm-memory-cell1024_EX20_save104000.ckpt-104000
+
+scale: 5
+
+fix_length: 64
+
+one_hot: true
+
+# train setting
+
+base_learning_rate: 0.001
+
+learning_rate_decay: 0.8
+
+decay_at_step: 20000
+
+num_epochs: 91
+
+max_step: null
+
+optimize: GradientDescentOptimizer
+
+noise_level: 0.000001
+
+dropout: true
+
+keep_prob: 0.5
+
+keep_checkpoint_every_n_hour: 2
+
+
+optimize: GradientDescentOptimizer
+
+noise_level: null
+
+dropout: true
+
+keep_prob: 1.0
+
+keep_checkpoint_every_n_hour: 2
+
+max_to_keep: 10
+
+regularization_penalty: 0.000000001
+
+device_id:
+
+- 6
+
+# dataset seting
+
+vocab_size: 500
+
+# train path
+
+train_dir: /datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/

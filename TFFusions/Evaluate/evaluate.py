@@ -18,8 +18,9 @@ from TFFusions.Logger import Logger
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save16000_EX2.yaml'
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_lstm_cell1024_EX20.yaml'
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save92000.yaml'
+# train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_netFV_EX1.yaml'
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_BILSTM_Ex4.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20_save78000.yaml'
 
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
@@ -200,7 +201,7 @@ tf_config.log_device_placement = True
 
 # init session
 sess = tf.Session(config=tf_config)
-sess.run(init_op)
+# sess.run(init_op)
 
 coord = tf.train.Coordinator()
 threads = tf.train.start_queue_runners(coord=coord, sess=sess)
@@ -218,7 +219,7 @@ else:
 pylog.info('train_config: {}'.format(FLAGS.YAML))
 
 cnt = 0
-loop = 502
+loop = getattr(FLAGS,'loop',502)
 
 acc_1 = np.zeros((500))
 acc_5 = np.zeros((500))
@@ -268,7 +269,7 @@ predict_result = np.concatenate(predict_result).reshape(-1,500)
 correct_labels = np.array(correct_labels)
 video_names = np.concatenate(video_names)
 
-file = FLAGS.train_dir+'acc_1.binary'
+file = FLAGS.train_dir+FLAGS.save_file
 np.savez(file,acc_1=acc_1,acc_5=acc_5,acc_10=acc_10,
          label_cnt=label_cnt,predict_result=predict_result,correct_labels=correct_labels,video_names=video_names)
 
