@@ -14,6 +14,7 @@ rid = random.choices(list(range(len(train_items))),k=1000)
 train_X = list()
 train_Y = list()
 
+
 for i in range(100):
 
     try:
@@ -40,3 +41,4 @@ train_Y = np.array(train_Y)
 
 gcf = gcForest(shape_1X=512, window=4, tolerance=0.2, n_jobs=10)
 gcf.fit(train_X,train_Y)
+

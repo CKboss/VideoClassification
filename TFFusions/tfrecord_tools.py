@@ -25,7 +25,7 @@ def make_tfrecord(items, filename, kind):
     for item in items:
         name = item[0]
         try:
-            frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_INC)
+            frame_len, features, labellst = concurrent_get_items(item, kind=kind, load_func=Load_Features_SENET)
             assert frame_len != 0
         except Exception as E:
             print(E)
@@ -53,25 +53,29 @@ def make_tfrecord(items, filename, kind):
 
 def RUN_make_TF_records():
 
-    valitems = getValItems()
+    # valitems = getValItems()
     # trainitems = getTrainItems()
+    testitems = getTestItems()
 
-    n = len(valitems)
+    # n = len(valitems)
     # n = len(trainitems)
+    n = len(testitems)
     duansize = 10240
     duan = n // duansize + 1
 
     # prefixname = '/mnt/md0/LSVC/tfrecords/train_tf_{}_{}.tfrecord'
-    prefixname = '/mnt/md0/LSVC/inc_tfrecords/val_tf_{}_{}.tfrecord'
+    # prefixname = '/mnt/md0/LSVC/inc_tfrecords/val_tf_{}_{}.tfrecord'
+    prefixname = '/datacenter/1/LSVC/sen_tfrecords/test_tf_{}_{}.tfrecord'
 
     for i in range(duan):
         l = i * duansize
         r = min(l + duansize, n - 1)
         filename = prefixname.format(l, r - 1)
-        items = valitems[l:r]
+        # items = valitems[l:r]
         # items = trainitems[l:r]
+        items = testitems[l:r]
         print(filename + '....')
-        make_tfrecord(items, filename, kind='val')
+        make_tfrecord(items, filename, kind='test')
         # make_tfrecord(items, filename, kind='train')
 
 FLAGS = None

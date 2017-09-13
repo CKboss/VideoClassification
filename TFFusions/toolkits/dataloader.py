@@ -89,9 +89,15 @@ def Load_Features_INC(videoname=None,kind=None,limitlen=600):
     return frame_features
 
 def Load_Features_SENET(videoname=None, kind=None, limitlen=600):
-    prefix = Config.DATA_PATH + 'feat_senet/'
     # videoname example : lsvc000000
-    filename = prefix + '{}_pool5_senet.binary'.format(videoname)
+
+    if kind == 'test':
+        prefix = Config.DATA_PATH + 'sen_test_features/'
+        filename = prefix + '{}_pool5_test_senet.binary'.format(videoname)
+    else :
+        prefix = Config.DATA_PATH + 'feat_senet/'
+        filename = prefix + '{}_pool5_senet.binary'.format(videoname)
+
     frame_features = np.fromfile(filename, dtype='float32').reshape(-1, 2048)
     # limit the frames len to limitlen
     if frame_features.shape[0] > limitlen:

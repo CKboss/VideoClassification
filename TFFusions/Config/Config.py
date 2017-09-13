@@ -1,4 +1,4 @@
-WHERE = 'SERVER'
+WHERE = 'SERVER202'
 
 if WHERE == 'LOCAL':
     CODE_PATH = '/home/lab/Desktop/Development/VideoClassification/'
