@@ -12,10 +12,13 @@ npz_file_list = [
     '/datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
     '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX3/acc_1.binary.npz',
+    '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20_save78000/acc_lstmatt_20_save78000.binary.npz',
 ]
 
 model_num = len(npz_file_list)
-weights = np.array([0.8, 0.8, 2.1, 2.3, 0.8]) / model_num
+# weights = np.array([0.8, 0.8, 2.1, 2.3, 0.8, 0.5]) / model_num
+# weights = np.array([1, 1, 0, 0, 0, 1]) / model_num
+weights = np.array([0, 0, 1, 1, 1, 0]) / model_num
 
 
 #############################
@@ -227,7 +230,7 @@ def write_to_file(filename):
             line = '{}, {}\n'.format(video_name,part2)
             f.write(line)
 
-# write_to_file('/home/qiu/t9.txt')
+write_to_file('/home/qiu/t12.txt')
 
 #
 # for id,video_name in enumerate(common_video_name):

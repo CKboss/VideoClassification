@@ -14,6 +14,7 @@ file_lst = ['/datacenter/1/LSVC/ExWorkSpace/Eval_lstm_memory_cell_1024_EX20/acc_
             '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX1/acc_1.binary.npz',
             '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX3/acc_1.binary.npz',
             '/datacenter/1/LSVC/ExWorkSpace/Eval_BILSTM_EX4_78000/acc_1.binary.npz',
+            '/datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20_save78000/acc_lstmatt_20_save78000.binary.npz',
             ]
 
 # file = '/datacenter/1/LSVC/ExWorkSpace/Eval_GatedDbof_Video_EX2/acc_1.binary.npz'
