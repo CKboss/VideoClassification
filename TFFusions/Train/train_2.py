@@ -52,6 +52,7 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
     scale = getattr(FLAGS, 'scale', scale)
     one_hot = getattr(FLAGS, 'one_hot', one_hot)
     only_shuffle = getattr(FLAGS,'only_shuffle',only_shuffle)
+    input_dropout = getattr(FLAGS,'input_dropout',False)
 
     n = features.shape[0]
     n2 = target_label.shape[-1]
@@ -77,7 +78,15 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
                 if r >= video_len:
                     l = video_len - fix_lenght - 1
                     r = video_len - 2
-                features_ret.append(ff[l:r + 1, :])
+
+                if input_dropout == False:
+                    features_ret.append(ff[l:r + 1, :])
+                elif input_dropout == True:
+                    input_dropout_size = getattr(FLAGS,'input_dropout_size',1024)
+                    l2 = random.randint(0,m-input_dropout_size-1)
+                    r2 = l+input_dropout_size
+                    features_ret.append(ff[l:r+1, l2:r2])
+
                 video_frames_ret.append(fix_lenght)
                 if one_hot == True:
                     target_label_ret.append(target_label[i])
@@ -92,16 +101,32 @@ def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, 
                 ff = np.tile(ff,(fix_lenght//video_len+1,1))
                 video_len = fix_lenght + 1
             for j in range(scale):
-                ids = random.choices(list(range(video_len)), k=fix_lenght)
+                if getattr(FLAGS,'shuffle_order',False):
+                    ids = random.choices(list(range(video_len)), k=fix_lenght)
+                else:
+                    ids = sorted(random.choices(list(range(video_len)), k=fix_lenght))
                 for k in ids:
-                    features_ret.append(ff[k, :])
+
+                    if input_dropout == False:
+                        features_ret.append(ff[k, :])
+                    elif input_dropout == True:
+                        input_dropout_size = getattr(FLAGS,'input_dropout_size',1024)
+                        l = random.randint(0,m-input_dropout_size-1)
+                        r = l+input_dropout_size
+                        features_ret.append(ff[k, l:r])
+
                 video_frames_ret.append(fix_lenght)
                 if one_hot == True:
                     target_label_ret.append(target_label[i])
                 else:
                     target_label_ret.append(np.argmax(target_label[i]))
 
-    features_ret = np.vstack(features_ret).reshape(-1, fix_lenght, m)
+    if input_dropout == True:
+        real_feature_size = input_dropout_size
+    else:
+        real_feature_size = m
+
+    features_ret = np.vstack(features_ret).reshape(-1, fix_lenght, real_feature_size)
     video_frames_ret = np.array(video_frames_ret)
 
     if one_hot == True:
@@ -146,7 +171,7 @@ def main(config_yaml=None):
     if FLAGS.device_id != None:
         os.environ['CUDA_VISIBLE_DEVICES'] = str(FLAGS.device_id)[1:-1]
 
-    FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+    FEATURE_SIZE = getattr(FLAGS,'real_feature_size',getattr(FLAGS,'feature_size',1024))
     inputs = tf.placeholder(dtype=tf.float32, shape=(batchsize * FLAGS.scale, FLAGS.fix_length, FEATURE_SIZE))
     num_frames = tf.placeholder(dtype=tf.int32, shape=(batchsize * FLAGS.scale))
 

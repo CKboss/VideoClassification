@@ -10,6 +10,7 @@ import tensorflow as tf
 import TFFusions.Config.Config as Config
 from TFFusions.Train.load_yaml_to_FLAG import LOAD_YAML_TO_FLAG, Get_GlobalFLAG
 from TFFusions.all_frame_models.frame_level_models import GetFrameModel
+from TFFusions.Train.train_2 import split_into_small_peice,read_and_decode
 from TFFusions.losses import SoftmaxLoss
 from TFFusions.average_precision_calculator import mean_ap, accuracy
 from TFFusions.Logger import Logger
@@ -55,83 +56,84 @@ def read_and_decode(filename_queue, batch_size):
     return frame_len_batch, features_batch, labels_batch, name_batch
 
 
-def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, scale=8, one_hot=True, only_shuffle=False):
-    '''
-    :param features:  a tensor batchsize x max_frams_len x features
-    :param target_label: a tensor batchsize x 500
-    :param video_frames: a tensor batchsize
-    :param fix_lenght: a int output features's len
-    :param scale: output batchsize will be mulit scale
-    :param only_shuffle: if set True will gen data without of order
-    :return:
-        features: (scale x batchsize) x fix_lenght x features
-        target_label: (scale x batchsize) x 500
-        videoframes: (scale x batchsize)
-    '''
-    global FLAGS
-
-    fix_lenght = getattr(FLAGS, 'fix_length', fix_lenght)
-    scale = getattr(FLAGS, 'scale', scale)
-    one_hot = getattr(FLAGS, 'one_hot', one_hot)
-    only_shuffle = getattr(FLAGS,'only_shuffle',only_shuffle)
-
-    n = features.shape[0]
-    n2 = target_label.shape[-1]
-    m = features.shape[-1]
-
-    features_ret = []
-    target_label_ret = []
-    video_frames_ret = []
-
-    if only_shuffle == False:
-        for i in range(n):
-            video_len = video_frames[i]
-            rid = random.choices(list(range(fix_lenght)), k=scale)
-
-            ff = features[i,:,:]
-            if video_len <= fix_lenght:
-                ff = np.tile(ff,(fix_lenght//video_len+1,1))
-                video_len = fix_lenght + 1
-
-            for rg in rid:
-                l = rg
-                r = rg + fix_lenght - 1
-                if r >= video_len:
-                    l = video_len - fix_lenght - 1
-                    r = video_len - 2
-                features_ret.append(ff[l:r + 1, :])
-                video_frames_ret.append(fix_lenght)
-                if one_hot == True:
-                    target_label_ret.append(target_label[i])
-                else:
-                    target_label_ret.append(np.argmax(target_label[i]))
-    elif only_shuffle == True:
-
-        for i in range(n):
-            video_len = video_frames[i]
-            ff = features[i,:,:]
-            if video_len <= fix_lenght:
-                ff = np.tile(ff,(fix_lenght//video_len+1,1))
-                video_len = fix_lenght + 1
-            for j in range(scale):
-                ids = random.choices(list(range(video_len)), k=fix_lenght)
-                for k in ids:
-                    features_ret.append(ff[k, :])
-                video_frames_ret.append(fix_lenght)
-                if one_hot == True:
-                    target_label_ret.append(target_label[i])
-                else:
-                    target_label_ret.append(np.argmax(target_label[i]))
-
-    features_ret = np.vstack(features_ret).reshape(-1, fix_lenght, m)
-    video_frames_ret = np.array(video_frames_ret)
-
-    if one_hot == True:
-        target_label_ret = np.vstack(target_label_ret).reshape(-1, n2)
-    else:
-        target_label_ret = np.array(target_label_ret)
-
-    return features_ret, target_label_ret, video_frames_ret
+#
+# def split_into_small_peice(features, target_label, video_frames, fix_lenght=10, scale=8, one_hot=True, only_shuffle=False):
+#     '''
+#     :param features:  a tensor batchsize x max_frams_len x features
+#     :param target_label: a tensor batchsize x 500
+#     :param video_frames: a tensor batchsize
+#     :param fix_lenght: a int output features's len
+#     :param scale: output batchsize will be mulit scale
+#     :param only_shuffle: if set True will gen data without of order
+#     :return:
+#         features: (scale x batchsize) x fix_lenght x features
+#         target_label: (scale x batchsize) x 500
+#         videoframes: (scale x batchsize)
+#     '''
+#     global FLAGS
+#
+#     fix_lenght = getattr(FLAGS, 'fix_length', fix_lenght)
+#     scale = getattr(FLAGS, 'scale', scale)
+#     one_hot = getattr(FLAGS, 'one_hot', one_hot)
+#     only_shuffle = getattr(FLAGS,'only_shuffle',only_shuffle)
+#
+#     n = features.shape[0]
+#     n2 = target_label.shape[-1]
+#     m = features.shape[-1]
+#
+#     features_ret = []
+#     target_label_ret = []
+#     video_frames_ret = []
+#
+#     if only_shuffle == False:
+#         for i in range(n):
+#             video_len = video_frames[i]
+#             rid = random.choices(list(range(fix_lenght)), k=scale)
+#
+#             ff = features[i,:,:]
+#             if video_len <= fix_lenght:
+#                 ff = np.tile(ff,(fix_lenght//video_len+1,1))
+#                 video_len = fix_lenght + 1
+#
+#             for rg in rid:
+#                 l = rg
+#                 r = rg + fix_lenght - 1
+#                 if r >= video_len:
+#                     l = video_len - fix_lenght - 1
+#                     r = video_len - 2
+#                 features_ret.append(ff[l:r + 1, :])
+#                 video_frames_ret.append(fix_lenght)
+#                 if one_hot == True:
+#                     target_label_ret.append(target_label[i])
+#                 else:
+#                     target_label_ret.append(np.argmax(target_label[i]))
+#     elif only_shuffle == True:
+#
+#         for i in range(n):
+#             video_len = video_frames[i]
+#             ff = features[i,:,:]
+#             if video_len <= fix_lenght:
+#                 ff = np.tile(ff,(fix_lenght//video_len+1,1))
+#                 video_len = fix_lenght + 1
+#             for j in range(scale):
+#                 ids = random.choices(list(range(video_len)), k=fix_lenght)
+#                 for k in ids:
+#                     features_ret.append(ff[k, :])
+#                 video_frames_ret.append(fix_lenght)
+#                 if one_hot == True:
+#                     target_label_ret.append(target_label[i])
+#                 else:
+#                     target_label_ret.append(np.argmax(target_label[i]))
+#
+#     features_ret = np.vstack(features_ret).reshape(-1, fix_lenght, m)
+#     video_frames_ret = np.array(video_frames_ret)
+#
+#     if one_hot == True:
+#         target_label_ret = np.vstack(target_label_ret).reshape(-1, n2)
+#     else:
+#         target_label_ret = np.array(target_label_ret)
+#
+#     return features_ret, target_label_ret, video_frames_ret
 
 
 if os.path.exists(FLAGS.train_dir) == False:
