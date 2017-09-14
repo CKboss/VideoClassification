@@ -1,0 +1,49 @@
+# netvlad video only
+name: NetVLAD_Videoonly
+EX_ID: EX_4
+batchsize: 96
+model_checkpoint_path: null
+scale: 8
+fix_length: 32
+
+# Model Setting
+frame_level_model: NetVLADModelLF_VideoOnly
+video_level_classifier_model: MoeModel
+netvlad_add_batch_norm: true
+netvlad_cluster_size: 128
+netvlad_hidden_size: 1024
+netvlad_relu: true
+gating: true
+lightvlad: false
+vlagd: true
+moe_num_mixtures: 4
+gating_remove_diag: false
+regularization_penalty: 0.000001
+
+# Train Setting
+one_hot: true
+base_learning_rate: 0.1
+learning_rate_decay: 0.7
+decay_at_step: 3000
+num_epochs: 51
+max_step: null
+optimize: GradientDescentOptimizer
+keep_checkpoint_every_n_hour: 2
+
+device_id:
+- 1
+
+# dataset seting
+vocab_size: 500
+
+# train path
+
+train_data: sen
+feature_size: 2048
+only_shuffle: true
+shuffle_order: false
+input_dropout: true
+input_dropout_size: 512
+real_feature_size: 512
+
+train_dir: /mnt/md0/LSVC/ExWorkSpace/NetVLAD_Video_EX4/

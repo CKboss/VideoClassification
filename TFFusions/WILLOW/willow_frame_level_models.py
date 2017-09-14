@@ -767,7 +767,8 @@ class NetVLADModelLF_VideoOnly(models.BaseModel):
         feature_size = model_input.get_shape().as_list()[2]
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
 
-        FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+        # FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+        FEATURE_SIZE = getattr(FLAGS,'real_feature_size',getattr(FLAGS,'feature_size',1024))
 
         if lightvlad:
             video_NetVLAD = LightVLAD(FEATURE_SIZE, max_frames, cluster_size, add_batch_norm, is_training)
@@ -1551,7 +1552,7 @@ class NetFVModelLF_VideoOnly(models.BaseModel):
         reshaped_input = tf.reshape(model_input, [-1, feature_size])
         tf.summary.histogram("input_hist", reshaped_input)
 
-        FEATURE_SIZE = getattr(FLAGS,'feature_size',1024)
+        FEATURE_SIZE = getattr(FLAGS,'real_feature_size',getattr(FLAGS,'feature_size',1024))
         video_NetFV = NetFV(FEATURE_SIZE, max_frames, cluster_size, add_batch_norm, is_training)
 
         if add_batch_norm:
