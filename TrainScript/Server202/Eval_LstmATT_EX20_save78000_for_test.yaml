@@ -1,0 +1,75 @@
+# 2017-09-07 19:22:35,021-LstmAttentionLstmModel2_EX_20-INFO: train_config: # Attion lstm
+
+# description of the train config
+
+# model setting
+
+name: LstmAttentionLstmModel2
+
+EX_ID: EX_20
+
+batchsize: 64
+loop: 1250
+
+moe_num_mixtures: 4
+
+frame_level_model: LstmAttentionLstmModel2
+
+video_level_model: moe_model
+
+lstm_cells: 1024
+
+lstm_layers: 2
+
+rnn_swap_memory: true
+
+model_checkpoint_path: /datacenter/1/LSVC/downloads/LstmAttention_EX20_save78000/LstmAttentionLstmModel2_EX_20_save78000.ckpt-78000
+
+scale: 16
+
+fix_length: 32
+
+# train setting
+
+one_hot: true
+
+base_learning_rate: 0.0001
+
+learning_rate_decay: 0.8
+
+decay_at_step: 5000
+
+num_epochs: 91
+
+max_step: null
+
+optimize: GradientDescentOptimizer
+
+keep_checkpoint_every_n_hour: 2
+
+dropout: true
+
+keep_prob: 0.5
+
+max_to_keep: 10
+
+regularization_penalty: 0.000001
+
+noise_level: 0.0001
+
+device_id:
+
+- 3
+
+# dataset seting
+
+vocab_size: 500
+
+# train path
+
+train_data: sen
+feature_size: 2048
+is_test: true
+
+train_dir: /datacenter/1/LSVC/ExWorkSpace/Eval_LstmAttentionModel_EX20_save78000_test/
+save_file: acc_lstmatt_20_save78000_test.binary

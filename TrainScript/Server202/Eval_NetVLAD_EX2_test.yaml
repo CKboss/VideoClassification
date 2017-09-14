@@ -1,0 +1,73 @@
+# 2017-09-06 14:50:50,574-NetVLAD_Videoonly_EX_2-INFO: train_config: # netvlad video only
+
+name: Eval_NetVLAD_Videoonly_test
+
+EX_ID: EX_2
+
+batchsize: 64
+
+loop: 1250
+
+model_checkpoint_path: /datacenter/1/LSVC/downloads/NetVLAD_EX2_8000/NetVLAD_Videoonly_EX_2_save8000.ckpt-8000
+
+scale: 8
+
+fix_length: 64
+
+# Model Setting
+
+frame_level_model: NetVLADModelLF_VideoOnly
+
+video_level_classifier_model: MoeModel
+
+netvlad_add_batch_norm: true
+
+netvlad_cluster_size: 128
+
+netvlad_hidden_size: 1024
+
+netvlad_relu: true
+
+gating: true
+
+lightvlad: false
+
+vlagd: true
+
+moe_num_mixtures: 4
+
+gating_remove_diag: false
+
+regularization_penalty: 0.000001
+
+# Train Setting
+
+one_hot: true
+
+base_learning_rate: 0.1
+
+learning_rate_decay: 0.7
+
+decay_at_step: 20000
+
+num_epochs: 41
+
+max_step: null
+
+optimize: GradientDescentOptimizer
+
+keep_checkpoint_every_n_hour: 2
+
+device_id:
+
+- 1
+
+# dataset seting
+
+vocab_size: 500
+
+# train path
+
+train_dir: /datacenter/1/LSVC/ExWorkSpace/Eval_NetVLAD_Video_EX2/
+save_file: netvlad_ex2_save8000_test.binary
+is_test: true

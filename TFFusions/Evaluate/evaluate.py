@@ -20,7 +20,9 @@ from TFFusions.Logger import Logger
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save92000.yaml'
 # train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_netFV_EX1.yaml'
 
-train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20_save78000.yaml'
+# train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_LstmATT_EX20_save78000_for_test.yaml'
+# train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save92000_test.yaml'
+train_config = '/datacenter/1/LSVC/Code/VideoClassification/TrainScript/Server202/Eval_GateDbof_VideoOnly_save16000_EX2_test.yaml'
 
 LOAD_YAML_TO_FLAG(train_config)
 FLAGS = Get_GlobalFLAG()
@@ -171,12 +173,22 @@ init_op = tf.global_variables_initializer()
 
 # Load from TFRecord
 data_kind = getattr(FLAGS,'train_data','inc')
+
+
+if getattr(FLAGS,'is_test',False) == True:
+    suffix_ = 'test_*'
+else :
+    suffix_ = 'val_*'
+
+print('eval for {}'.format(suffix_))
+
 if data_kind == 'inc':
-    val_file_list = glob.glob('/datacenter/1/LSVC/inc_tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/inc_tfrecords/'+suffix_)
 elif data_kind == 'vgg':
-    val_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/tfrecords/'+suffix_)
 elif data_kind == 'sen':
-    val_file_list = glob.glob('/datacenter/1/LSVC/sen_tfrecords/val_*')
+    val_file_list = glob.glob('/datacenter/1/LSVC/sen_tfrecords/'+suffix_)
+
 
 val_file_queue = tf.train.string_input_producer(val_file_list)
 test_frame_len_batch, test_feature_batch, test_label_batch, test_name_batch = read_and_decode(val_file_queue, FLAGS.batchsize)
@@ -219,7 +231,13 @@ else:
 pylog.info('train_config: {}'.format(FLAGS.YAML))
 
 cnt = 0
-loop = getattr(FLAGS,'loop',502)
+
+if suffix_ == 'test_*':
+    loop = getattr(FLAGS,'loop',80000//getattr(FLAGS,'batchsize',32))
+elif suffix_ == 'val_*':
+    loop = getattr(FLAGS,'loop',16000//getattr(FLAGS,'batchsize',32))
+
+print('loop:',loop)
 
 acc_1 = np.zeros((500))
 acc_5 = np.zeros((500))
